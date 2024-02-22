@@ -1,8 +1,16 @@
 <template>
 
-<span class="dot"></span>
-<div class="circle"></div> 
-<p class="text1"></p>
+<!-- <span class="dot"></span>
+<div class="circle"></div>  -->
+<div class="mx-auto box-border rounded-full h-96 w-96 p-4 border-4 border-teal-400 ">
+  <div class="py-20 rounded-full h-full w-full bg-teal-400">
+    
+    <h1>youe periods are up</h1>
+    <h1>please login again to continue.</h1>
+    <p class="font-bold text-9xl">ssss</p>
+  </div>
+</div>
+
 <br>
 
 <p>quick view</p>
@@ -30,7 +38,7 @@ export default {
 </script>
 
 <style>
-
+/* 
 .dot {
   height: 300px;
   width: 300px;
@@ -39,10 +47,7 @@ export default {
   align-items: center;
   position: absolute;
   display: inline-block;
-  top: 75px;
-  left: 300px;
   box-shadow: 0px 0px 0px 5px #f00;
-
   background-image: radial-gradient(#e4b1b1, #f3427a, #FF8AB0);
 }
 .circle 
@@ -50,10 +55,10 @@ export default {
     width: 500px; 
     height: 500px; 
     border: 1px solid black; 
-    border-radius: 100%; 
+    border-radius: 50%; 
     margin: auto; 
     align-items: center;
     position: relative;
-} 
+}  */
 
 </style>
