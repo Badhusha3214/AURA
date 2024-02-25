@@ -7,9 +7,11 @@
                 <div class="central-circle__inner">
                     
                     <div class="central-circle__content">
-                        <span class="text-xl font-medium">Your Next</span>
-                        <span class="text-xl font-medium">Period Starts in</span>
-                        <span class="text-4xl font-semibold mt-3">{{ days }} Days</span>
+                        <span class="text-xl font-medium text-center" v-html="info"></span>
+
+                        <template v-if="days">
+                            <span class="text-4xl font-semibold mt-3">{{ days }} {{ days > 1 ? 'Days' : 'Day' }}</span>
+                        </template>
                     </div>
                         
                 </div>
@@ -24,13 +26,35 @@
 </template>
 
 
-<script>
+<script>    
     export default {
         name: 'CentralCircle',
         data() {
             return {
-                days: 5,
-                comment: 'Medium chance to get pregnant'
+                nextPeriodStartDate: null,
+                ovulationDate: null,
+                fertileWindowStartDate: null,
+                fertileWindowEndDate: null,
+                pmsStartDate: null,
+                pmsEndDate: null
+            }
+        },
+        props: {
+            dates: {
+                type: Object,
+                required: true
+            },
+            comment: {
+                type: String,
+                required: true
+            },
+            info: {
+                type: String,
+                required: true
+            },
+            days: {
+                type: Number,
+                required: true
             }
         }
     }
@@ -76,7 +100,7 @@
 
         &__comment {
             margin-top: 1rem;
-            width: 75%;
+            width: 70%;
         }
 
     }
