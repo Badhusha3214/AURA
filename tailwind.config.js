@@ -10,7 +10,7 @@ export default {
         primary: '#F43976',     // pink
         secondary: '#FF8AB0',    // light pink
         accent: '#1C1B1F',    // black
-        bgSecondary: '#EBEBEB'    // light gray
+        bgPrimary: '#EBEBEB'    // light gray
       }
     }
   },
