@@ -8,7 +8,7 @@
                 :key="control.name"
                 :to="control.route"
                 class="control-panel__item"
-                :class="{ 'text-primary': activeControl === control.name.toLowerCase(), 'text-secondary': activeControl !== control.name.toLowerCase() }"
+                :class="{ 'text-primary': activeControl === control.name.toLowerCase(), 'text-accent': activeControl !== control.name.toLowerCase() }"
             >
                 <span :class="control.icon" class="text-2xl"></span>
                 <span class="text-xs font-semibold">{{ control.name }}</span>

@@ -8,8 +8,9 @@ export default {
     extend: {
       colors: {
         primary: '#F43976',     // pink
-        secondary: '#1C1B1F',    // black
-        bgPrimary: '#EBEBEB'    // light gray
+        secondary: '#FF8AB0',    // light pink
+        accent: '#1C1B1F',    // black
+        bgSecondary: '#EBEBEB'    // light gray
       }
     }
   },

@@ -2,7 +2,7 @@
 <template>
     <div class="dashboard-layout">
         <div class="content">
-            <router-view />
+            <slot />
         </div>
         <ControlPanel />
     </div>
