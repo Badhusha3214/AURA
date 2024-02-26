@@ -19,7 +19,7 @@
     import CentralCircle from '@/components/CentralCircle.vue'
     import Calender from '@/components/Calender.vue'
 
-    import { calculateDates, generateComments } from '@/utils/helpers.js'
+    import { calculateMenstrualCycles, findClosestDate, getMessage } from '@/utils/helpers.js'
     import { getBasicData } from '@/api/index.js'
     
     export default {
@@ -62,59 +62,24 @@
             async getDates(lastMenstrualPeriod, cycleLength, periodLength) {
                 if (this.basicData.frequency === 'regular') {
                     this.frequency = 'regular'
-                    this.dates = calculateDates(lastMenstrualPeriod, cycleLength)
+
+                    this.dates = calculateMenstrualCycles(lastMenstrualPeriod, cycleLength, periodLength)
+                    let closestItem = findClosestDate(this.dates.currentCycle, this.dates.nextCycle)
+                    let msg = getMessage(closestItem)
+                    // console.log(msg);
+
+                    this.info = msg.description
+                    this.comment = msg.comments[0]
+                    this.days = msg.days
+
                 } else {
                     this.frequency = 'irregular'
                 }
-            },
-            async commentPriority() {
-
-                // let msgArray = Object.keys(this.messages).map(key => this.messages[key])
-
-                // object of objects to array of objects, along with the key as a property
-                let msgArray = Object.keys(this.messages).map(key => {
-                    return {
-                        key: key,
-                        ...this.messages[key]
-                    }
-                })
-                
-                msgArray = msgArray.filter(obj => obj.days >= 0)
-                msgArray.sort((a, b) => a.days - b.days)
-
-                // console.log(msgArray);
-
-                if (msgArray.length < 6) {
-                    let newDates = calculateDates(this.messages.nextPeriodStartDate.date, this.cycleLength)
-                    let resolvedDates = newDates;
-
-                    for (let key in msgArray) {
-                        if (msgArray.hasOwnProperty(key)) {
-                            // console.log(msgArray[key].key);
-                            resolvedDates[msgArray[key].key] = msgArray[key].date
-                        }
-                    }
-
-                    this.messages = generateComments(resolvedDates)
-                    
-                    msgArray = Object.keys(this.messages).map(key => this.messages[key])
-                    msgArray = msgArray.filter(obj => obj.days >= 0)
-                    msgArray.sort((a, b) => a.days - b.days)
-
-                    console.log(msgArray);
-
-                }
-
-                this.comment = msgArray[0].comments[0]
-                this.info = msgArray[0].description
-                this.days = msgArray[0].days
             }
         },
         async mounted() {
             await this.getBasicData()
             await this.getDates(this.lastMenstrualPeriod, this.cycleLength, this.periodLength)
-
-            this.messages = generateComments(this.dates)
         },
         watch: {
             messages: {
