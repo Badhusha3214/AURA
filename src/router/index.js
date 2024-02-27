@@ -53,6 +53,35 @@ const router = createRouter({
       }
     },
 
+
+    // -------------------------------------------------------------------------------
+
+    {
+      path: '/enroll',
+      name: 'Enroll',
+      component: () => import('@/views/EnrollView.vue'),
+      children: [
+        {
+          path: 'step1',
+          name: 'StepOne',
+          component: () => import('@/views/Enroll/_StepOne.vue')
+        },
+        // {
+        //   path: 'address',
+        //   name: 'Address',
+        //   component: () => import('@/views/Address.vue')
+        // },
+        // {
+        //   path: 'payment',
+        //   name: 'Payment',
+        //   component: () => import('@/views/Payment.vue')
+        // }
+      ],
+      meta: {
+        title: 'Enroll'
+      }
+    },
+
   ]
 })
 

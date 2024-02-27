@@ -16,8 +16,8 @@
 
 <script>
     import DashboardLayout from '@/layouts/DashboardLayout.vue'
-    import CentralCircle from '@/components/CentralCircle.vue'
-    import Calender from '@/components/Calender.vue'
+    import CentralCircle from '@/components/Home/CentralCircle.vue'
+    import Calender from '@/components/Home/Calender.vue'
 
     import { calculateMenstrualCycles, findClosestDate, getMessage } from '@/utils/helpers.js'
     import { getBasicData } from '@/api/index.js'
