@@ -35,16 +35,16 @@ import moment from 'moment';
 
 
 
-/*
-    @param {string} lastMenstrualPeriod
-    @param {number} cycleLength
-    @param {number} periodLength
-    @returns {object} menstrualCycle
-
-    @description
-    -   The function takes the lastMenstrualPeriod, cycleLength and periodLength as input.
-    -   It then calculates the menstrual cycle based on the input, by calling the calculateMenstrualCycles function.
-    -   It returns the menstrual cycle.
+/**
+ * @param {string} lastMenstrualPeriod
+ * @param {number} cycleLength
+ * @param {number} periodLength
+ * @returns {object} menstrualCycle
+ * 
+ * @description
+ * -   The function takes the lastMenstrualPeriod, cycleLength and periodLength as input.
+ * -   It then calculates the menstrual cycle based on the input, by calling the calculateMenstrualCycles function.
+ * -   It returns the menstrual cycle.
 */
 export const calculateMenstrualCycles = (lastMenstrualPeriod, cycleLength, periodLength) => {
 
@@ -52,7 +52,7 @@ export const calculateMenstrualCycles = (lastMenstrualPeriod, cycleLength, perio
 
     let nextCycle = getMenstrualCycle(lastMenstrualPeriod, cycleLength, periodLength);
     let currentCycle = getMenstrualCycle(beforeLastMenstrualPeriod, cycleLength, periodLength);
-    
+
     let menstrualCycle = {
 
         cycleLength: cycleLength,
@@ -63,11 +63,11 @@ export const calculateMenstrualCycles = (lastMenstrualPeriod, cycleLength, perio
 
         currentCycle: currentCycle,
         nextCycle: nextCycle,
-        
+
     };
 
     // console.log(menstrualCycle);
-    
+
     return menstrualCycle;
 
 };
@@ -75,16 +75,16 @@ export const calculateMenstrualCycles = (lastMenstrualPeriod, cycleLength, perio
 
 
 
-/*
-    @param {string} lastMenstrualPeriod
-    @param {number} cycleLength
-    @param {number} periodLength
-    @returns {object} menstrualCycle
-
-    @description
-    -   The function takes the lastMenstrualPeriod, cycleLength and periodLength as input.
-    -   It then it calculates all the important dates of the menstrual cycle.
-    -   It returns the dates of the menstrual cycle in an object.
+/**
+ * @param {string} lastMenstrualPeriod
+ * @param {number} cycleLength
+ * @param {number} periodLength
+ * @returns {object} menstrualCycle
+ * 
+ * @description
+ * -   The function takes the lastMenstrualPeriod, cycleLength and periodLength as input.
+ * -   It then it calculates all the important dates of the menstrual cycle.
+ * -   It returns the dates of the menstrual cycle in an object.
 */
 export const getMenstrualCycle = (lastMenstrualPeriod, cycleLength, periodLength) => {
 
@@ -92,7 +92,7 @@ export const getMenstrualCycle = (lastMenstrualPeriod, cycleLength, periodLength
         fertileWindowStartDate: moment(lastMenstrualPeriod).add(cycleLength / 2 - 5, 'days').format('YYYY-MM-DD'),
         ovulationDate: moment(lastMenstrualPeriod).add(cycleLength / 2, 'days').format('YYYY-MM-DD'),
         fertileWindowEndDate: moment(lastMenstrualPeriod).add(cycleLength / 2, 'days').format('YYYY-MM-DD'),
-        
+
         pmsStartDate: moment(lastMenstrualPeriod).add(cycleLength - 5, 'days').format('YYYY-MM-DD'),
         periodStartDate: moment(lastMenstrualPeriod).add(cycleLength, 'days').format('YYYY-MM-DD'),
         pmsEndDate: moment(lastMenstrualPeriod).add(cycleLength, 'days').format('YYYY-MM-DD'),
@@ -104,15 +104,15 @@ export const getMenstrualCycle = (lastMenstrualPeriod, cycleLength, periodLength
 
 
 
-/*
-    @param {object} currentCycle
-    @param {object} nextCycle
-    @returns {object} closestItem
-
-    @description
-    -   The function takes the currentCycle and nextCycle as input.
-    -   It then finds the closest date to the current date across the two cycles.
-    -   It returns the closest date.
+/**
+ * @param {object} currentCycle
+ * @param {object} nextCycle
+ * @returns {object} closestItem
+ * 
+ * @description
+ * -   The function takes the currentCycle and nextCycle as input.
+ * -   It then finds the closest date to the current date across the two cycles.
+ * -   It returns the closest date.
 */
 export const findClosestDate = (currentCycle, nextCycle) => {
 
@@ -125,7 +125,7 @@ export const findClosestDate = (currentCycle, nextCycle) => {
 
     let closestItem = allDates.reduce((a, b) => moment(a.value).isAfter(currentDate) ? a : b);
     // console.log("closestItem: ", closestItem);
-    
+
     return closestItem;
 
 };
@@ -133,13 +133,14 @@ export const findClosestDate = (currentCycle, nextCycle) => {
 
 
 
-/*
-    @param {object} closestItem
-    @returns {string} message
-
-    @description
-    -   The function takes the closestItem as input.
-    -   It then returns the message based on the closest date.
+/**
+ * @param {object} closestItem
+ * @returns {string} message
+ * 
+ * @description
+ * -   The function takes the closestItem as input.
+ * -   It then returns the message based on the closest date.
+ * -   It returns the message.
 */
 export const getMessage = (closestItem) => {
 
@@ -157,7 +158,7 @@ export const getMessage = (closestItem) => {
                     'High chance to get pregnant.',
                 ]
             }
-        
+
         case 'ovulationDate':
             return {
                 message: `You might ovulate in ${moment(closestDate).diff(currentDate, 'days')} days`,
@@ -221,9 +222,9 @@ export const getMessage = (closestItem) => {
                     'You might experience cramps, mood swings, etc.',
                     'Medium chance to get pregnant'
                 ]
-            
+
             };
-            
+
         default:
             return `Your next cycle starts in ${moment(closestDate).diff(currentDate, 'days')} days`;
     }

@@ -14,31 +14,52 @@ const router = createRouter({
     {
       path: '/',
       name: 'SplashScreen',
-      component: SplashScreen
+      component: SplashScreen,
+      meta: {
+        title: 'SplashScreen'
+      }
     },
 
     {
       path: '/home',
       name: 'HomeView',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        title: 'Home'
+      }
     },
     {
       path: '/appoinment',
       name: 'AppoinmentView',
-      component: AppoinmentView
+      component: AppoinmentView,
+      meta: {
+        title: 'Appoinments'
+      }
     },
     {
       path: '/analytics',
       name: 'AnalyticsView',
-      component: AnalyticsView
+      component: AnalyticsView,
+      meta: {
+        title: 'Analytics'
+      }
     },
     {
       path: '/profile',
       name: 'ProfileView',
-      component: ProfileView
+      component: ProfileView,
+      meta: {
+        title: 'Profile'
+      }
     },
 
   ]
+})
+
+
+router.beforeEach((to, from, next) => {
+  document.title = `${to.meta.title} | Aura`
+  next()
 })
 
 export default router
