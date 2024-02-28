@@ -14,31 +14,81 @@ const router = createRouter({
     {
       path: '/',
       name: 'SplashScreen',
-      component: SplashScreen
+      component: SplashScreen,
+      meta: {
+        title: 'SplashScreen'
+      }
     },
 
     {
       path: '/home',
       name: 'HomeView',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        title: 'Home'
+      }
     },
     {
       path: '/appoinment',
       name: 'AppoinmentView',
-      component: AppoinmentView
+      component: AppoinmentView,
+      meta: {
+        title: 'Appoinments'
+      }
     },
     {
       path: '/analytics',
       name: 'AnalyticsView',
-      component: AnalyticsView
+      component: AnalyticsView,
+      meta: {
+        title: 'Analytics'
+      }
     },
     {
       path: '/profile',
       name: 'ProfileView',
-      component: ProfileView
+      component: ProfileView,
+      meta: {
+        title: 'Profile'
+      }
+    },
+
+
+    // -------------------------------------------------------------------------------
+
+    {
+      path: '/enroll',
+      name: 'Enroll',
+      component: () => import('@/views/EnrollView.vue'),
+      children: [
+        {
+          path: 'step1',
+          name: 'StepOne',
+          component: () => import('@/views/Enroll/_StepOne.vue')
+        },
+        // {
+        //   path: 'address',
+        //   name: 'Address',
+        //   component: () => import('@/views/Address.vue')
+        // },
+        // {
+        //   path: 'payment',
+        //   name: 'Payment',
+        //   component: () => import('@/views/Payment.vue')
+        // }
+      ],
+      meta: {
+        title: 'Enroll'
+      }
     },
 
   ]
+})
+
+
+router.beforeEach((to, from, next) => {
+  document.title = `${to.meta.title} | Aura`
+  next()
 })
 
 export default router
