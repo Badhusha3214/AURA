@@ -1,5 +1,7 @@
 
 <template>
+    <navbar />
+
     <DashboardLayout>
 
         <Calender />
@@ -13,13 +15,15 @@
     import DashboardLayout from '@/layouts/DashboardLayout.vue'
     import CentralCircle from '@/components/CentralCircle.vue'
     import Calender from '@/components/Calender.vue'
+    import navbar from '@/components/Navbar.vue'
     
     export default {
         name: 'HomeView',
         components: {
             DashboardLayout,
             Calender,
-            CentralCircle
+            CentralCircle,
+            navbar
         }
     }
 </script>
