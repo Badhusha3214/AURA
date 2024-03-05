@@ -65,7 +65,15 @@ const router = createRouter({
           path: 'step1',
           name: 'StepOne',
           component: () => import('@/views/Enroll/_StepOne.vue')
-        },
+        },{
+          path: 'step2',
+          name: 'StepTwo',
+          component: () => import('@/views/Enroll/_StepTwo.vue')
+        },{
+          path: 'step3',
+          name: 'StepThree',
+          component: () => import('@/views/Enroll/_StepThree.vue')
+        }
         // {
         //   path: 'address',
         //   name: 'Address',
@@ -80,8 +88,7 @@ const router = createRouter({
       meta: {
         title: 'Enroll'
       }
-    },
-
+    }
   ]
 })
 

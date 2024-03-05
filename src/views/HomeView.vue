@@ -1,5 +1,7 @@
 
 <template>
+    <navbar />
+
     <DashboardLayout>
 
         <Calender />
