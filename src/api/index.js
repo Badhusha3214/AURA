@@ -12,9 +12,9 @@ export const getBasicData = () => {
             email: 'jane@company.com',
             dob: '1990-01-01',
     
-            cycleLength: 28,                    // Length of menstrual cycle in days
-            periodLength: 5,                    // Length of period in days (bleeding days)
-            lastMenstrualPeriod: '2024-02-01',  // Start date of last period
+            cycleLength: 21,                    // Length of menstrual cycle in days
+            periodLength: 9,                    // Length of period in days (bleeding days)
+            lastMenstrualPeriod: '2024-02-11',  // Start date of last period
             frequency: 'regular',               // 'regular' | 'irregular'
             
             createdAt: '2020-01-01',

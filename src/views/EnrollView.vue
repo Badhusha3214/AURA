@@ -1,8 +1,6 @@
-
 <template>
     <EnrollLayout>
         <div class="flex flex-col items-center justify-center">
-
             <div class="my-10 py-10">
                 <router-view />
             </div>
@@ -13,7 +11,6 @@
                     <button class="text-sm font-medium text-gray-500">I'm not sure</button>
                 </div>
             </div>
-
         </div>
     </EnrollLayout>
 </template>
@@ -28,7 +25,17 @@
         },
         data() {
             return {
-                nextEnabled: true
+                nextEnabled: true,
+                currentStep: 0 // Track the current step
+            }
+        },
+        methods: {
+            nextStep() {
+                // Increment the current step
+                this.currentStep++;
+                
+                // Navigate to the next step using Vue Router
+                this.$router.push({ name: `Step${this.currentStep}` });
             }
         }
     }

@@ -63,15 +63,15 @@ const router = createRouter({
       children: [
         {
           path: 'step1',
-          name: 'StepOne',
+          name: 'Step1',
           component: () => import('@/views/Enroll/_StepOne.vue')
         },{
           path: 'step2',
-          name: 'StepTwo',
+          name: 'Step2',
           component: () => import('@/views/Enroll/_StepTwo.vue')
         },{
           path: 'step3',
-          name: 'StepThree',
+          name: 'Step3',
           component: () => import('@/views/Enroll/_StepThree.vue')
         }
         // {
