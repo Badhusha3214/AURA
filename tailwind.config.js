@@ -9,6 +9,7 @@ export default {
       colors: {
         primary: '#F43976',     // pink
         secondary: '#FF8AB0',    // light pink
+        tertiary: '#FFD3E0',     // lightest pink
         accent: '#1C1B1F',    // black
         bgPrimary: '#EBEBEB'    // light gray
       }
