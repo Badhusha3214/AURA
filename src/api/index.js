@@ -14,7 +14,7 @@ export const getBasicData = () => {
     
             cycleLength: 21,                    // Length of menstrual cycle in days
             periodLength: 9,                    // Length of period in days (bleeding days)
-            lastMenstrualPeriod: '2024-02-11',  // Start date of last period
+            lastMenstrualPeriod: '2024-02-13',  // Start date of last period
             frequency: 'regular',               // 'regular' | 'irregular'
             
             createdAt: '2020-01-01',

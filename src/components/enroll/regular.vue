@@ -1,14 +1,9 @@
-
-  <template>
+<template>
     <div>
-      <h1>Regular Frame</h1>
-      <div class="flex flex-wrap justify-center gap-4 mt-12">
-        <button v-for="(day, index) in days" :key="index" @click="selected = day"
-                class="rounded-full py-3 px-6 bg-gray-200 hover:bg-blue-400 text-gray-800 font-bold mb-4"
-                :class="{ 'bg-blue-500 text-white': selected === day }"
-                v-show="(index + 1) % 5 !== 0 || index === days.length - 1">
-          {{ day }}
-        </button>
+      <div class="w-96 h-99 text-center border-pink-500 rounded-3xl border-2 p-4 bg-white">
+        <h2 class="text-xl font-bold">Enter the Number of Days</h2>
+        <p class="text-sm text-gray-500">The number of days must be between 1 to 100</p>
+        <input type="number" v-model="numberOfDays" class="border border-gray-300 p-2 rounded-md w-32 mt-2">
       </div>
     </div>
   </template>
@@ -18,14 +13,12 @@
     name: 'RegularFrame',
     data() {
       return {
-        days: Array.from({ length: 12 }, (_, i) => 19 + i), // Generate days from 19 to 30
-        selected: null,
+        numberOfDays: '' // Holds the value entered by the user
       }
     }
   }
   </script>
   
-  <style scoped>
-  /* Add your component-specific styles here */
-  </style>
+  <!-- No scoped style tag needed -->
+  
   
