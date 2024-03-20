@@ -6,6 +6,7 @@ import HomeView from '@/views/HomeView.vue'
 import AppoinmentView from '@/views/AppoinmentView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import HaveAcco from '@/views/HaveAcco.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +51,15 @@ const router = createRouter({
       component: ProfileView,
       meta: {
         title: 'Profile'
+      }
+    },
+    //----------------------------------------------------------------------------
+    {
+      path: '/Account',
+      name: 'HaveAcco',
+      component: HaveAcco,
+      meta: {
+        title: 'HaveAcco'
       }
     },
 
