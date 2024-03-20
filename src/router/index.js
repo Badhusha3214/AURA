@@ -6,7 +6,7 @@ import HomeView from '@/views/HomeView.vue'
 import AppoinmentView from '@/views/AppoinmentView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
-import HaveAcco from '@/views/HaveAcco.vue'
+import HaveAcco from '@/views/HaveAccount.vue'
 import DoneFlash from '@/views/DoneFlash.vue'
 
 const router = createRouter({
