@@ -31,7 +31,7 @@ import IrregularFrame from '@/components/enroll/irregular.vue';
 import RegularFrame from '@/components/enroll/regular.vue';
 
 export default {
-  name: 'StepOne',
+  name: 'StepThree',
   components: {
     EnrollProgress,
     RegularFrame,

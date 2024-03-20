@@ -7,6 +7,7 @@ import AppoinmentView from '@/views/AppoinmentView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import HaveAcco from '@/views/HaveAcco.vue'
+import DoneFlash from '@/views/DoneFlash.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,6 +53,13 @@ const router = createRouter({
       meta: {
         title: 'Profile'
       }
+    },{
+      path: '/done',
+      name: 'DoneFlash',
+      component: DoneFlash,
+      meta: {
+        title: 'DoneFlash'
+      }
     },
     //----------------------------------------------------------------------------
     {
@@ -83,7 +91,12 @@ const router = createRouter({
           path: 'step3',
           name: 'Step3',
           component: () => import('@/views/Enroll/_StepThree.vue')
+        },{
+          path: 'step4',
+          name: 'Step4',
+          component: () => import('@/views/Enroll/_StepFour.vue')
         }
+        // {
         // {
         //   path: 'address',
         //   name: 'Address',
