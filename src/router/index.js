@@ -6,9 +6,9 @@ import HomeView from '@/views/HomeView.vue'
 import AppoinmentView from '@/views/AppoinmentView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+
 import HaveAccount from '@/views/HaveAccount.vue'
 import OtpVerification from '@/views/OtpVerification.vue'
-import ConfirmationView from '@/views/ConfirmationView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,6 +53,20 @@ const router = createRouter({
       component: ProfileView,
       meta: {
         title: 'Profile'
+      }
+    },{
+      path: '/done',
+      name: 'DoneFlash',
+      component: DoneFlash,
+      meta: {
+        title: 'DoneFlash'
+      }
+    },{
+      path: '/test',
+      name: 'caltest',
+      component: caltest,
+      meta: {
+        title: 'caltest'
       }
     },
     //----------------------------------------------------------------------------
@@ -101,7 +115,12 @@ const router = createRouter({
           path: 'step3',
           name: 'Step3',
           component: () => import('@/views/Enroll/_StepThree.vue')
+        },{
+          path: 'step4',
+          name: 'Step4',
+          component: () => import('@/views/Enroll/_StepFour.vue')
         }
+        // {
         // {
         //   path: 'address',
         //   name: 'Address',
