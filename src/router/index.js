@@ -7,15 +7,10 @@ import AppoinmentView from '@/views/AppoinmentView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 
-
-
-
 import HaveAccount from '@/views/HaveAccount.vue'
 import OtpVerification from '@/views/OtpVerification.vue'
-
- main
 import DoneFlash from '@/views/DoneFlash.vue'
- main
+import caltest from '@/views/calTest.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -67,6 +62,13 @@ const router = createRouter({
       component: DoneFlash,
       meta: {
         title: 'DoneFlash'
+      }
+    },{
+      path: '/test',
+      name: 'caltest',
+      component: caltest,
+      meta: {
+        title: 'caltest'
       }
     },
     //----------------------------------------------------------------------------
