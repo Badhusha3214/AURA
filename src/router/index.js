@@ -8,6 +8,7 @@ import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import HaveAcco from '@/views/HaveAccount.vue'
 import DoneFlash from '@/views/DoneFlash.vue'
+import caltest from '@/views/calTest.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -59,6 +60,13 @@ const router = createRouter({
       component: DoneFlash,
       meta: {
         title: 'DoneFlash'
+      }
+    },{
+      path: '/test',
+      name: 'caltest',
+      component: caltest,
+      meta: {
+        title: 'caltest'
       }
     },
     //----------------------------------------------------------------------------
