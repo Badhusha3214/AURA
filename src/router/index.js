@@ -7,13 +7,9 @@ import AppoinmentView from '@/views/AppoinmentView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 
-
-
-
 import HaveAccount from '@/views/HaveAccount.vue'
 import OtpVerification from '@/views/OtpVerification.vue'
 import DoneFlash from '@/views/DoneFlash.vue'
- main
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
