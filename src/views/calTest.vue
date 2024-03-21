@@ -1,5 +1,5 @@
 <script setup>
-import Datepicker from 'vue3-datepicker'
+// import Datepicker from 'vue3-datepicker'
 import { ref } from 'vue'
 const picked = ref(new Date())
 console.log(picked)
@@ -7,7 +7,7 @@ console.log(picked)
 </script>
 
 <template>
-  <Datepicker class="xyz w-72  text-center border-pink-500 rounded-3xl border-2 p-4 bg-white" v-model="picked" />
+  <!-- <Datepicker class="xyz w-72  text-center border-pink-500 rounded-3xl border-2 p-4 bg-white" v-model="picked" /> -->
 </template>
 
 <style>
