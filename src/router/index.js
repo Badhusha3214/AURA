@@ -6,8 +6,12 @@ import HomeView from '@/views/HomeView.vue'
 import AppoinmentView from '@/views/AppoinmentView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
-import HaveAcco from '@/views/HaveAcco.vue'
+
+import HaveAccount from '@/views/HaveAccount.vue'
+import OtpVerification from '@/views/OtpVerification.vue'
+
 import DoneFlash from '@/views/DoneFlash.vue'
+ main
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -64,10 +68,18 @@ const router = createRouter({
     //----------------------------------------------------------------------------
     {
       path: '/Account',
-      name: 'HaveAcco',
-      component: HaveAcco,
+      name: 'HaveAccount',
+      component: HaveAccount,
       meta: {
-        title: 'HaveAcco'
+        title: 'HaveAccount'
+      }
+    },
+    {
+      path: '/otp',
+      name: 'OtpVerification',
+      component: OtpVerification,
+      meta: {
+        title: 'OtpVerification'
       }
     },
 

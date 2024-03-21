@@ -13,8 +13,6 @@
         </div>
     </div>
 
-<!-- Modal toggle -->
-
 <!-- Main modal -->
 <div id="authentication-modal" tabindex="-1" aria-hidden="true" class="hidden bg-zinc-800/75 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-md max-h-full">
@@ -66,17 +64,17 @@
 
     <div class="absolute bottom-0 w-full flex justify-center mb-12">
         <div class="relative flex flex-col items-center gap-2 justify-center my-3">
+            <!-- Modal toggle -->
             <button data-modal-target="authentication-modal" data-modal-toggle="authentication-modal" class="text-white font-bold text-2xl w-72 p-3 rounded-full bg-primary" type="button">
                 🌐 sign in with Gmail
             </button>
-            <!-- <button class="text-white font-bold text-2xl w-72 p-3 rounded-full bg-primary" @click="nextaction()" >🌐 sign in with Gmail</button> -->
         </div>
     </div>
 </template>
 
 <script>
 export default{
-    name : "HaveAcco",
+    name : "HaveAccount",
     methods:{
         nextaction(){
             this.$router.push( "/home" );
