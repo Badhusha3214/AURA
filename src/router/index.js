@@ -7,9 +7,13 @@ import AppoinmentView from '@/views/AppoinmentView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 
+
+
+
 import HaveAccount from '@/views/HaveAccount.vue'
 import OtpVerification from '@/views/OtpVerification.vue'
 
+ main
 import DoneFlash from '@/views/DoneFlash.vue'
  main
 
