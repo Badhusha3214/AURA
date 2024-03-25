@@ -1,5 +1,7 @@
 
 <template>
+    <navbar />
+
     <DashboardLayout>
 
         <Calender />
@@ -18,6 +20,7 @@
     import DashboardLayout from '@/layouts/DashboardLayout.vue'
     import CentralCircle from '@/components/Home/CentralCircle.vue'
     import Calender from '@/components/Home/Calender.vue'
+    import navbar from '@/components/Navbar.vue'
 
     import { calculateMenstrualCycles, findClosestDate, getMessage } from '@/utils/helpers.js'
     import { getBasicData } from '@/api/index.js'
@@ -27,7 +30,8 @@
         components: {
             DashboardLayout,
             Calender,
-            CentralCircle
+            CentralCircle,
+            navbar
         },
         data() {
             return {

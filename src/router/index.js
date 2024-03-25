@@ -7,6 +7,11 @@ import AppoinmentView from '@/views/AppoinmentView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 
+import HaveAccount from '@/views/HaveAccount.vue'
+import OtpVerification from '@/views/OtpVerification.vue'
+import DoneFlash from '@/views/DoneFlash.vue'
+import ConfirmationView from '@/views/ConfirmationView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -51,6 +56,38 @@ const router = createRouter({
       meta: {
         title: 'Profile'
       }
+    },{
+      path: '/done',
+      name: 'DoneFlash',
+      component: DoneFlash,
+      meta: {
+        title: 'DoneFlash'
+      }
+    },
+    //----------------------------------------------------------------------------
+    {
+      path: '/Account',
+      name: 'HaveAccount',
+      component: HaveAccount,
+      meta: {
+        title: 'HaveAccount'
+      }
+    },
+    {
+      path: '/otp',
+      name: 'OtpVerification',
+      component: OtpVerification,
+      meta: {
+        title: 'OtpVerification'
+      }
+    },
+    {
+      path: '/Confirmation',
+      name: 'ConfirmationView',
+      component: ConfirmationView,
+      meta: {
+        title: 'ConfirmationView'
+      }
     },
 
 
@@ -63,9 +100,22 @@ const router = createRouter({
       children: [
         {
           path: 'step1',
-          name: 'StepOne',
+          name: 'Step1',
           component: () => import('@/views/Enroll/_StepOne.vue')
-        },
+        },{
+          path: 'step2',
+          name: 'Step2',
+          component: () => import('@/views/Enroll/_StepTwo.vue')
+        },{
+          path: 'step3',
+          name: 'Step3',
+          component: () => import('@/views/Enroll/_StepThree.vue')
+        },{
+          path: 'step4',
+          name: 'Step4',
+          component: () => import('@/views/Enroll/_StepFour.vue')
+        }
+        // {
         // {
         //   path: 'address',
         //   name: 'Address',
@@ -80,8 +130,7 @@ const router = createRouter({
       meta: {
         title: 'Enroll'
       }
-    },
-
+    }
   ]
 })
 
