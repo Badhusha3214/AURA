@@ -11,6 +11,7 @@ import HaveAccount from '@/views/HaveAccount.vue'
 import OtpVerification from '@/views/OtpVerification.vue'
 import DoneFlash from '@/views/DoneFlash.vue'
 import ConfirmationView from '@/views/ConfirmationView.vue'
+import NotFoundView from '@/views/404.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,6 +89,11 @@ const router = createRouter({
       meta: {
         title: 'ConfirmationView'
       }
+    },{
+      path: '/:pathMatch(.*)*',
+      name: '404',
+      component: NotFoundView,
+      meta: { title: '404' }
     },
 
 
