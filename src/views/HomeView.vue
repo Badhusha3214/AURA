@@ -1,19 +1,21 @@
 
 <template>
+    
     <navbar />
 
     <DashboardLayout>
-
+        
         <Calender />
-
+        
         <CentralCircle
-            :dates="dates"
-            :comment="comment"
-            :info="info"
-            :days="days"
+        :dates="dates"
+        :comment="comment"
+        :info="info"
+        :days="days"
         />
-
+        
     </DashboardLayout>
+
 </template>
 
 <script>
