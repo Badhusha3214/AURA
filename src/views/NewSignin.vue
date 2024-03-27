@@ -1,8 +1,8 @@
 <template>
     <div class=" w-full flex justify-center mb-12">
         <div class="relative flex flex-col items-center gap-2 justify-center my-3">
-            <div class="w-full lg:w-1/3 lg:py-20 ">
-                 <img class="w-full h-full" src="/assets/illustration/Welcome-bro 1.svg" alt="Socials" />
+            <div class="w-full lg:w-1/3 py-4 lg:py-20 ">
+                 <img class="w-full h-full" src="/assets/illustration/Hello-cuate 1.svg" alt="Socials" />
             </div>
         </div>
     </div>    
@@ -74,7 +74,7 @@
 
 <script>
 export default{
-    name : "HaveAccount",
+    name : "NewSignin",
     methods:{
         nextaction(){
             this.$router.push( '/otp' );

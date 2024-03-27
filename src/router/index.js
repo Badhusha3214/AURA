@@ -12,6 +12,7 @@ import OtpVerification from '@/views/OtpVerification.vue'
 import DoneFlash from '@/views/DoneFlash.vue'
 import ConfirmationView from '@/views/ConfirmationView.vue'
 import NotFoundView from '@/views/404.vue'
+import NewSignin from '@/views/NewSignin.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -94,6 +95,12 @@ const router = createRouter({
       name: '404',
       component: NotFoundView,
       meta: { title: '404' }
+    },{
+      path: '/NewSignin',
+      name: 'NewSignin',
+      component: NewSignin,
+      meta: { 
+        title: 'NewSignin' }
     },
 
 
