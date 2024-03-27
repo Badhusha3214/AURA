@@ -27,7 +27,27 @@ export const getBasicData = () => {
 export const userRegister = async (user) => {
 
     try {
-        const res = await axios.post(`${import.meta.env.AURA_BASE_URL}/user/register`, user);
+        const res = await axios.post(`${import.meta.env.AURA_BASE_URL}/users/register`, user);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+
+};
+export const userLogin = async (user) => {
+
+    try {
+        const res = await axios.post(`${import.meta.env.AURA_BASE_URL}/users/login`, user);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+
+};
+export const userVerify = async (user) => {
+
+    try {
+        const res = await axios.post(`${import.meta.env.AURA_BASE_URL}/users/verify`, user);
         return res.data;
     } catch (error) {
         console.log(error);
