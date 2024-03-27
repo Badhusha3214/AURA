@@ -22,3 +22,15 @@ export const getBasicData = () => {
         }
     }
 };
+
+
+export const userRegister = async (user) => {
+
+    try {
+        const res = await axios.post(`${import.meta.env.AURA_BASE_URL}/user/register`, user);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+
+};
