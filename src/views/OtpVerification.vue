@@ -51,17 +51,18 @@ export default {
 
             }).then((response) => {
                 if (response.status === 200) {
+                    // check the cread and proced
                     console.log(this.otp);
                     console.log(response.data.Token);
                     document.cookie = `token=${response.data.Token}; max-age=864000`;
                     this.$router.push('/');
                 } else if (response.response.status === 404) {
+                    // check and display error
                     console.log(this.otp);
                     console.log(response.response.data.message);
-
                     this.message = response.response.data.message
-                    // this.$router.push('/');
-                } else {;
+
+                } else {
                     console.log(response.response.status);
                     console.log(response.data);
                 }

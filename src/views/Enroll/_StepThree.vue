@@ -39,7 +39,7 @@ export default {
   },
   data() {
     return {
-      selectedType: 'regular', // Default to irregular
+      selectedType: 'regular', // Default to regular
       days: Array.from({ length: 14 }, (_, i) => 16 + i), // Generate days from 16 to 29
       selected: null,
       showPopup: false,
