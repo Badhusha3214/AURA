@@ -35,7 +35,7 @@
                 <form class="space-y-4" action="#">
                     <div>
                         <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                        <input type="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" v-model="email" required />
+                        <input type="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" v-model="email" required  />
                     </div>
 
                     <div class="flex justify-between">
@@ -72,7 +72,7 @@ export default {
     data() {
         return {
             email: "",
-            errors: false
+            errors: ""
         }
     },
     methods: {
@@ -90,11 +90,10 @@ export default {
                 } else {
                     console.log(this.email);
                     console.log(response.response.status);
-                    let errors = true;
+                    console.log(response);
+                    this.errors = true;
                 }
-            }).catch((error) => {
-                this.error = error;
-            });
+            })
         },
 
         nextaction() {

@@ -39,7 +39,6 @@
         </div>
       </template>
     </div>
-    <button :disabled="!nextEnabled" @click="goToNextPage">Next</button>
   </template>
   
   <script>
@@ -78,12 +77,10 @@
           this.selected = value;
           this.nextEnabled = true;
           console.log('Selected value:', value);
+          localStorage.setItem('conceive', value)
         }
       },
-      goToNextPage() {
-        // Add your logic here to navigate to the next page
-        // You can use Vue Router or any other navigation method you prefer
-      }
+
     }
   }
   </script>
