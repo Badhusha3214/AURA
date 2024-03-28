@@ -85,9 +85,11 @@ export default {
                     console.log(this.email);
                     console.log(response);
                     this.$router.push('/otp');
+                } else if (response.response.status === 400) {
+                    alert(" error")
                 } else {
                     console.log(this.email);
-
+                    console.log(response.response.status);
                     let errors = true;
                 }
             }).catch((error) => {
