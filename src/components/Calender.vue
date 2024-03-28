@@ -41,7 +41,7 @@
 
 <script>
 export default {
-  name: 'Calender',
+  name: 'Calendar',
   data() {
     return {
       currentDate: new Date(),
@@ -52,18 +52,8 @@ export default {
   computed: {
     currentMonthYear() {
       const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
       ];
       const month = months[this.currentDate.getMonth()];
       const year = this.currentDate.getFullYear();
@@ -86,6 +76,19 @@ export default {
       return daysInMonth;
     },
   },
+  watch: {
+    selectedDate(newVal) {
+      const day = newVal.getDate();
+      const month = newVal.getMonth() + 1;
+      const year = newVal.getFullYear();
+      const formattedDay = day < 10 ? '0' + day : day;
+      const formattedMonth = month < 10 ? '0' + month : month;
+      const formattedDate = `${formattedDay}-${formattedMonth}-${year}`;
+      console.log("Selected date:", formattedDate);
+      // Store selected date in local storage
+      localStorage.setItem('selectedDate', formattedDate);
+    }
+  },
   methods: {
     prevMonth() {
       this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1);
@@ -99,3 +102,4 @@ export default {
   },
 };
 </script>
+
