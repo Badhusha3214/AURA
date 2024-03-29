@@ -14,7 +14,11 @@ import ConfirmationView from '@/views/ConfirmationView.vue'
 import NotFoundView from '@/views/404.vue'
 import NewSignin from '@/views/NewSignin.vue'
 import RegistrationConfirm from '@/views/RegistrationConfirm.vue'
-import OtpRegistration from '@/views/OtpRegistration.vue'
+
+/*temporary delete it  */
+import CompleteProfile from '@/views/CompleteProfile.vue'
+
+
 
 
 
@@ -106,13 +110,6 @@ const router = createRouter({
       meta: { 
         title: 'NewSignin' }
     },{
-      path: '/OtpRegistration',
-      name: 'OtpRegistration',
-      component: OtpRegistration,
-      meta: {
-        title: 'OtpRegistration'
-      }
-    },,{
       path: '/RegistrationConfirm',
       name: 'RegistrationConfirm',
       component: RegistrationConfirm,
@@ -121,6 +118,15 @@ const router = createRouter({
       }
     },
 
+    //-----------------------temprory routes for testing---------------------------
+    {
+      path: '/CompleteProfile',
+      name: 'CompleteProfile',
+      component: CompleteProfile,
+      meta: {
+        title: 'CompleteProfile'
+      }
+    },
 
 
     // -------------------------------------------------------------------------------
