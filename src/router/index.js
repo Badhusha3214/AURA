@@ -8,11 +8,15 @@ import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 
 import HaveAccount from '@/views/HaveAccount.vue'
-import OtpVerification from '@/views/OtpVerification.vue'
+import OtpLogin from '@/views/OtpVerification.vue'
 import DoneFlash from '@/views/DoneFlash.vue'
 import ConfirmationView from '@/views/ConfirmationView.vue'
 import NotFoundView from '@/views/404.vue'
 import NewSignin from '@/views/NewSignin.vue'
+import RegistrationConfirm from '@/views/RegistrationConfirm.vue'
+import OtpRegistration from '@/views/OtpRegistration.vue'
+
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -77,10 +81,10 @@ const router = createRouter({
     },
     {
       path: '/otp',
-      name: 'OtpVerification',
-      component: OtpVerification,
+      name: 'OtpLogin',
+      component: OtpLogin,
       meta: {
-        title: 'OtpVerification'
+        title: 'OtpLogin'
       }
     },
     {
@@ -101,7 +105,22 @@ const router = createRouter({
       component: NewSignin,
       meta: { 
         title: 'NewSignin' }
+    },{
+      path: '/OtpRegistration',
+      name: 'OtpRegistration',
+      component: OtpRegistration,
+      meta: {
+        title: 'OtpRegistration'
+      }
+    },,{
+      path: '/RegistrationConfirm',
+      name: 'RegistrationConfirm',
+      component: RegistrationConfirm,
+      meta: {
+        title: 'RegistrationConfirm'
+      }
     },
+
 
 
     // -------------------------------------------------------------------------------
