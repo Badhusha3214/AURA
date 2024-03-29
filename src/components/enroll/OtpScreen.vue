@@ -48,14 +48,27 @@ export default {
             enableButton: false,
         }
     },
+    computed: {
+        user: {
+            get() {
+                return this.$store.state.user
+            },
+            set(value) {
+                this.$store.dispatch('setUser', value)
+            }
+        }
+    },
     methods: {
         async usersverify() {
             await userVerify({
                 otp: this.otp,
             }).then((response) => {
                 if (response.status === 200) {
+
                     document.cookie = `aura-token=${response.data.token}; max-age=864000`;
+                    this.user.email = response.data.email;
                     router.push('/steps');
+                    
                 } else {
                     this.message = response.data.message;
                 }

@@ -112,26 +112,41 @@ export default {
             required: true
         }
     },
+    computed: {
+        user: {
+            get() {
+                return this.$store.state.user
+            },
+            set(value) {
+                this.$store.dispatch('setUser', value)
+            }
+        }
+    },
     methods: {
         
         async getUserLogin() {
-
             if(this.mode === 'enroll') {
+
                 await userRegister({
                     email: this.email,
                     password: this.password
                 }).then(() => {
                     this.$emit('triggerNext', 'otp')
                 })
-                return
+
             } else {
+
                 await userLogin({
                     email: this.email,
                     password: this.password
-                }).then(() => {
+                }).then((response) => {
+
                     document.cookie = `auth-token=${response.data.token}; max-age=864000`;
+                    this.user.email = response.data.email;
                     this.$emit('triggerNext', 'login')
+                    
                 })
+
             }
         },
 

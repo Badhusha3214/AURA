@@ -1,7 +1,30 @@
 <template>
     <EnrollLayout>
 
-        
+
+        <template v-if="displayStep === 'StepOne'">
+            <StepOne
+                @updateEnrollData="updateEnrollData"
+                @triggerNext="triggerNext"
+            />
+        </template>
+
+
+        <template v-else-if="displayStep === 'StepTwo'">
+            <StepTwo
+                @updateEnrollData="updateEnrollData"
+                @triggerNext="triggerNext"
+            />
+        </template>
+
+
+        <template v-else-if="displayStep === 'StepThree'">
+            <StepThree
+                @updateEnrollData="updateEnrollData"
+                @triggerNext="triggerNext"
+            />
+        </template>
+
 
     </EnrollLayout>
 </template>
@@ -9,14 +32,31 @@
 <script>
     import EnrollLayout from '@/layouts/EnrollLayout.vue'
 
+    import StepOne from '@/components/enroll/steps/_StepOne.vue'
+    import StepTwo from '@/components/enroll/steps/_StepTwo.vue'
+    import StepThree from '@/components/enroll/steps/_StepThree.vue'
+
     export default {
         name: 'StepsView',
         components: {
-            EnrollLayout
+            EnrollLayout,
+            StepOne,
+            StepTwo,
+            StepThree
         },
         data() {
             return {
-                
+                displayStep: 'StepOne'
+            }
+        },
+        computed: {
+            enrollData: {
+                get() {
+                    return this.$store.state.enrollData
+                },
+                set(value) {
+                    this.$store.dispatch('setEnrollData', value)
+                }
             }
         },
         // mounted() {
@@ -24,8 +64,18 @@
         //         this.$router.push('/enroll')
         //     }
         // },
+
         methods: {
-            
+            updateEnrollData(data) {
+                this.enrollData = {
+                    ...this.enrollData,
+                    ...data
+                }
+            },
+            triggerNext(step) {
+                this.displayStep = step
+            }
         }
+
     }
 </script>
