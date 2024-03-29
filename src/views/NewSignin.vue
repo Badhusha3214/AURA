@@ -80,7 +80,7 @@ export default{
     name : "NewSignin",
     methods:{
         nextaction(){
-            this.$router.push( '/OtpRegistration' );
+            this.$router.push( '/OtpVerification' );
         }
     }
 }

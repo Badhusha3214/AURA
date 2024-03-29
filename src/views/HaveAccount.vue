@@ -12,7 +12,7 @@
             <div class="font-bold text-2xl w-72 rounded-full text-center">Welcome Back</div>
         </div>
     </div>
-</div>
+
 
     
     
