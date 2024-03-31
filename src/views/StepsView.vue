@@ -31,9 +31,17 @@
                 @triggerNext="triggerNext"
             />
         </template>
+        
+        <template v-else-if="displayStep === 'Splash'">
+            <!-- Show the splash screen with a loading spinner -->
+            <LoadScreen  />
+        </template>
 
-
+        
     </EnrollLayout>
+
+
+
 </template>
 
 <script>
@@ -43,6 +51,8 @@
     import StepTwo from '@/components/enroll/steps/_StepTwo.vue'
     import StepThree from '@/components/enroll/steps/_StepThree.vue'
     import StepFour from '@/components/enroll/steps/_StepFour.vue'
+    import LoadScreen from '@/components/enroll/LoadScreen.vue'
+
 
 
     export default {
@@ -52,11 +62,13 @@
             StepOne,
             StepTwo,
             StepThree,
-            StepFour
+            StepFour,
+            LoadScreen
         },
         data() {
             return {
-                displayStep: 'StepOne'
+                displayStep: 'StepOne',
+                Message: 'done'
             }
         },
         computed: {
