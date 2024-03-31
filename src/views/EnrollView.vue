@@ -2,7 +2,7 @@
     <EnrollLayout>
 
         <template v-if="showSplash">
-            <SplashScreen
+            <SplashScreen 
                 @triggerWelcome="triggerWelcome"
                 @setMode="setMode"
             />

@@ -21,11 +21,16 @@
         </div>
       </div>
       <div class="grid grid-cols-7 gap-1 sm:h-64 overflow-y-auto">
-        <div v-for="day in daysInCurrentMonth" :key="day.date" class="text-center py-1 text-gray-700" :class="{
-          'font-semibold bg-gray-200 rounded-full w-8 h-8 mx-auto': day.isToday,
-          'text-white bg-pink-500 rounded-full w-8 h-8 mx-auto': day.day === selectedDate,
-        }">
-          <button @click="selectDate(day.day)" class="focus:outline-none w-full h-full">
+        <div
+          v-for="day in daysInCurrentMonth"
+          :key="day.date"
+          class="text-center py-1 text-gray-700"
+          :class="{
+            'font-semibold bg-gray-200 rounded-full w-8 h-8 mx-auto': day.isToday,
+            'text-white bg-pink-500 rounded-full w-8 h-8 mx-auto': day.date === selectedDate,
+          }"
+        >
+          <button @click="selectDate(day.date)" class="focus:outline-none w-full h-full">
             {{ day.day }}
           </button>
         </div>
@@ -37,7 +42,6 @@
 <script>
 export default {
   name: 'Calendar',
-  emits: ['dateSelected'],
   data() {
     return {
       currentDate: new Date(),
@@ -48,18 +52,8 @@ export default {
   computed: {
     currentMonthYear() {
       const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
       ];
       const month = months[this.currentDate.getMonth()];
       const year = this.currentDate.getFullYear();
@@ -69,6 +63,7 @@ export default {
       const daysInMonth = [];
       const firstDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
       const lastDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
+
       for (let date = firstDayOfMonth; date <= lastDayOfMonth; date.setDate(date.getDate() + 1)) {
         const day = {
           date: new Date(date),
@@ -77,18 +72,22 @@ export default {
         };
         daysInMonth.push(day);
       }
+
       return daysInMonth;
     },
   },
   watch: {
     selectedDate(newVal) {
-      const formattedDate = `${newVal}-${this.currentDate.getMonth() + 1}-${this.currentDate.getFullYear()}`;
+      const day = newVal.getDate();
+      const month = newVal.getMonth() + 1;
+      const year = newVal.getFullYear();
+      const formattedDay = day < 10 ? '0' + day : day;
+      const formattedMonth = month < 10 ? '0' + month : month;
+      const formattedDate = `${formattedDay}-${formattedMonth}-${year}`;
       console.log("Selected date:", formattedDate);
       // Store selected date in local storage
       localStorage.setItem('selectedDate', formattedDate);
-      // Emit the selected date to the parent component
-      this.$emit('dateSelected', formattedDate);
-    },
+    }
   },
   methods: {
     prevMonth() {
@@ -97,9 +96,10 @@ export default {
     nextMonth() {
       this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1);
     },
-    selectDate(day) {
-      this.selectedDate = day;
+    selectDate(date) {
+      this.selectedDate = date;
     },
   },
 };
 </script>
+
