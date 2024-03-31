@@ -25,6 +25,13 @@
             />
         </template>
 
+        <template v-else-if="displayStep === 'StepFour'">
+            <StepFour
+                @updateEnrollData="updateEnrollData"
+                @triggerNext="triggerNext"
+            />
+        </template>
+
 
     </EnrollLayout>
 </template>
@@ -35,6 +42,8 @@
     import StepOne from '@/components/enroll/steps/_StepOne.vue'
     import StepTwo from '@/components/enroll/steps/_StepTwo.vue'
     import StepThree from '@/components/enroll/steps/_StepThree.vue'
+    import StepFour from '@/components/enroll/steps/_StepFour.vue'
+
 
     export default {
         name: 'StepsView',
@@ -42,7 +51,8 @@
             EnrollLayout,
             StepOne,
             StepTwo,
-            StepThree
+            StepThree,
+            StepFour
         },
         data() {
             return {
