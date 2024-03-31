@@ -27,8 +27,8 @@
 
 <script>
 import EnrollProgress from '@/components/partials/EnrollProgress.vue';
-import IrregularFrame from '@/components/enroll/irregular.vue';
-import RegularFrame from '@/components/enroll/regular.vue';
+import IrregularFrame from '@/components/enroll/steps/irregular.vue';
+import RegularFrame from '@/components/enroll/steps/regular.vue';
 
 export default {
   name: 'StepThree',
