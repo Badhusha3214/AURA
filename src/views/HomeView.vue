@@ -3,8 +3,11 @@
     
     <navbar />
 
-    <DashboardLayout>
+    <popup />
         
+    <DashboardLayout>
+
+ 
         <Calender />
         
         <CentralCircle
@@ -21,6 +24,7 @@
 <script>
     import DashboardLayout from '@/layouts/DashboardLayout.vue'
     import CentralCircle from '@/components/Home/CentralCircle.vue'
+    import Popup from '@/components/CompleteProfile.vue'
     import Calender from '@/components/Home/Calender.vue'
     import navbar from '@/components/Navbar.vue'
 
@@ -33,7 +37,8 @@
             DashboardLayout,
             Calender,
             CentralCircle,
-            navbar
+            navbar,
+            Popup
         },
         data() {
             return {
@@ -65,6 +70,7 @@
                     console.log(error)
                 }
             },
+            
             async getDates(lastMenstrualPeriod, cycleLength, periodLength) {
                 if (this.basicData.frequency === 'regular') {
                     this.frequency = 'regular'
@@ -81,7 +87,8 @@
                 } else {
                     this.frequency = 'irregular'
                 }
-            }
+            },
+            
         },
         async mounted() {
             // if (!document.cookie.includes('aura-token')) {
