@@ -78,17 +78,17 @@ export default {
         }
     },
     watch: {
-        otp() {
-            const mobileRegex = /^[0-9]{6}$/;
-            if (!mobileRegex.test(this.otp)) {
-                this.message = "Please enter a valid OTP";
-                this.enableButton = false;
-            } else {
-                this.enableButton = true;
-                this.message = null;
-            }
-        }
+  otp() {
+    const mobileRegex = /^[0-9]{6}$/; // Changed this line
+    if (!mobileRegex.test(this.otp)) {
+      this.message = "Please enter a valid OTP";
+      this.enableButton = false;
+    } else {
+      this.enableButton = true;
+      this.message = null;
     }
+  }
+}
 }
 
 </script>
