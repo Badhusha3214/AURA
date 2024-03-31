@@ -32,6 +32,7 @@
             />
         </template>
 
+
     </EnrollLayout>
 </template>
 
@@ -42,6 +43,7 @@
     import StepTwo from '@/components/enroll/steps/_StepTwo.vue'
     import StepThree from '@/components/enroll/steps/_StepThree.vue'
     import StepFour from '@/components/enroll/steps/_StepFour.vue'
+
 
     export default {
         name: 'StepsView',
