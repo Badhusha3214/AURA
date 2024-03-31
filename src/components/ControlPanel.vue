@@ -20,17 +20,20 @@
     <div v-if="showPopup" class="fixed inset-x-0 bottom-20 z-50 flex justify-center">
       <div class="absolute inset-0 bg-black opacity-50" @click="showPopup = false"></div>
       <div
-        class="bg-secondary rounded-t-lg p-6 w-full max-w-screen-sm mx-auto relative z-10 transition-all duration-300 transform"
+        class="bg-white rounded-t-lg p-6 w-full max-w-screen-sm mx-auto relative z-10 transition-all duration-300 transform"
         :class="{
         'translate-y-0': showPopup,
         'translate-y-full': !showPopup,
       }">
+      <h2 class="text-xl font-bold mb-4">Quick View Options</h2>
+      <hr class="h-px mb-2 bg-gray-500 border-0 dark:bg-gray-700">
+
         <div class="grid grid-cols-4 gap-8">
           <router-link v-for="icon in icons" :key="icon.name" :to="icon.route" class="flex flex-col items-center">
             <div class="w-10 h-10 rounded-full overflow-hidden">
               <img :src="icon.iconSrc" :alt="icon.name" class="w-full h-full object-cover" />
             </div>
-            <span class="text-sm mt-2">{{ icon.name }}</span>
+            <span class="text-sm text-center mt-2">{{ icon.name }}</span>
           </router-link>
         </div>
       </div>
@@ -52,18 +55,18 @@ export default {
       activeControl: null,
       showPopup: false,
       icons: [
-        { name: 'Icon 1', iconSrc: 'path/to/icon1.png', route: '/icon1' },
-        { name: 'Icon 2', iconSrc: 'path/to/icon2.png', route: '/icon2' },
-        { name: 'Icon 3', iconSrc: 'path/to/icon3.png', route: '/icon3' },
-        { name: 'Icon 4', iconSrc: 'path/to/icon4.png', route: '/icon4' },
-        { name: 'Icon 5', iconSrc: 'path/to/icon5.png', route: '/icon5' },
-        { name: 'Icon 6', iconSrc: 'path/to/icon6.png', route: '/icon6' },
-        { name: 'Icon 7', iconSrc: 'path/to/icon7.png', route: '/icon7' },
-        { name: 'Icon 8', iconSrc: 'path/to/icon8.png', route: '/icon8' },
-        { name: 'Icon 9', iconSrc: 'path/to/icon9.png', route: '/icon9' },
-        { name: 'Icon 10', iconSrc: 'path/to/icon10.png', route: '/icon10' },
-        { name: 'Icon 11', iconSrc: 'path/to/icon11.png', route: '/icon11' },
-        { name: 'Icon 12', iconSrc: 'path/to/icon12.png', route: '/icon12' }
+        { name: 'Protected Sex', iconSrc: '/assets/Icons/Group 59.png', route: '/icon1' },
+        { name: 'Very Heavy', iconSrc: '/assets/Icons/Group 60.png', route: '/icon2' },
+        { name: 'Your Mood', iconSrc: '/assets/Icons/Group 61.png', route: '/icon3' },
+        { name: 'Drink Water', iconSrc: '/assets/Icons/Group 62.png', route: '/icon4' },
+        { name: 'Icon 5', iconSrc: '/assets/Icons/Group 59.png', route: '/icon5' },
+        { name: 'Icon 6', iconSrc: '/assets/Icons/Group 60.png', route: '/icon6' },
+        { name: 'Icon 7', iconSrc: '/assets/Icons/Group 61.png', route: '/icon7' },
+        { name: 'Icon 8', iconSrc: '/assets/Icons/Group 62.png', route: '/icon8' },
+        { name: 'Icon 9', iconSrc: '/assets/Icons/Group 59.png', route: '/icon9' },
+        { name: 'Icon 10', iconSrc: '/assets/Icons/Group 60.png', route: '/icon10' },
+        { name: 'Icon 11', iconSrc: '/assets/Icons/Group 61.png', route: '/icon11' },
+        { name: 'Icon 12', iconSrc: '/assets/Icons/Group 62.png', route: '/icon12' }
       ]
     }
   },
