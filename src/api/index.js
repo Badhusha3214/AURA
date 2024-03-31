@@ -13,8 +13,8 @@ export const getBasicData = () => {
             dob: '1990-01-01',
     
             cycleLength: 21,                    // Length of menstrual cycle in days
-            periodLength: 9,                    // Length of period in days (bleeding days)
-            lastMenstrualPeriod: '2024-02-13',  // Start date of last period
+            periodLength: 8,                    // Length of period in days (bleeding days)
+            lastMenstrualPeriod: '2024-02-23',  // Start date of last period
             frequency: 'regular',               // 'regular' | 'irregular'
             
             createdAt: '2020-01-01',
