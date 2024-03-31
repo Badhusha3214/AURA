@@ -1,5 +1,5 @@
 <template>
-    <EnrollLayout>
+    <!-- <EnrollLayout> -->
 
         <template v-if="showSplash">
             <SplashScreen 
@@ -19,7 +19,7 @@
             <OtpScreen />
         </template>
 
-    </EnrollLayout>
+    <!-- </EnrollLayout> -->
 </template>
 
 <script>
