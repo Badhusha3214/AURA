@@ -84,11 +84,11 @@
             }
         },
         async mounted() {
-            if (!document.cookie.includes('aura-token')) {
-                this.$router.push('/enroll')
-            }
-            await this.getBasicData()
-            await this.getDates(this.lastMenstrualPeriod, this.cycleLength, this.periodLength)
+            // if (!document.cookie.includes('aura-token')) {
+            //     this.$router.push('/enroll')
+            // }
+            // await this.getBasicData()
+            // await this.getDates(this.lastMenstrualPeriod, this.cycleLength, this.periodLength)
         },
         watch: {
             messages: {
