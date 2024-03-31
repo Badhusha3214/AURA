@@ -6,12 +6,13 @@
             <img class="w-full h-full" src="/assets/Profile/profile.png" alt="welcome" />
         </div>
     </div>
-    <div class="absolute w-full flex justify-center mb-12">
+    <div v-if="getdata()"></div>
+    <div  class="absolute w-full flex justify-center mb-12">
         <div class="relative flex flex-col items-center gap-5 justify-center my-3">
             <div>
-                <p class="font-medium text-22 w-72 text-center">Ms. Shamallya Agarthi</p>
+                <p class="font-medium text-22 w-72 text-center">{{ userName }}</p>
                 <p class="font-extralight text-center text-sm">example.email@gmail.com</p>
-                <p class="font-extralight text-center text-sm">+91 9651965325</p>
+                <p class="font-extralight text-center text-sm">{{ userNumber }}</p>
                 <hr class="h-px my-8 bg-gray-500 border-0 dark:bg-gray-700">
             </div>
 
@@ -48,14 +49,7 @@
     </div>
 
 
-    <!-- 
-        <div class="h-96 flex items-center justify-center flex-col">
-            <h1 class="text-4xl font-bold text-primary">{{ counter }}</h1>
-            <div class="flex space-x-4 mt-5">
-                <button @click="updateCounter(2, '++')" class="font-semibold text-xl bg-primary text-white px-4 py-2 rounded">+</button>
-                <button @click="updateCounter(2, '--')" class="font-semibold text-xl bg-primary text-white px-4 py-2 rounded">-</button>
-            </div>
-        </div> -->
+
 
     <DashboardLayout />
 </template>
@@ -69,18 +63,23 @@ export default {
     components: {
         DashboardLayout,
         navbar,
+        
+    },data() {
+      return {
+        userName: null,
+        userNumber: null,
+      };
     },
-    computed: {
-        counter: {
-            get() {
-                return this.$store.state.counter;
-            },
-            set(value) {
-                this.$store.dispatch("setCounter", value);
-            },
-        },
-    },
+   
     methods: {
+        getdata(){
+            this.userName = localStorage.getItem('userName');
+            this.userNumber = localStorage.getItem('userNumber');
+            // this.DOB = localStorage.getItem('DOB');
+
+            console.log('Name:', this.userName);
+            console.log('Number:', this.userNumber);
+        },
         updateCounter(value, action) {
             action === "++" ? (this.counter += value) : (this.counter -= value);
         },
