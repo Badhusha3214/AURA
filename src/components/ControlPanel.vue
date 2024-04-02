@@ -10,20 +10,15 @@
         <span class="text-xs font-semibold">{{ control.name }}</span>
       </router-link>
     </div>
-<<<<<<< HEAD
-    <div class="control-panel__plus-btn ml-2 -mt-12">
-      <button class="bg-primary text-white rounded-full  w-14 h-14" @click="togglePopup">
-=======
+
     <div class="control-panel__plus-btn ml-2 -mt-12 z-auto">
       <button class="bg-primary text-white rounded-full w-14 h-14 transition-transform duration-300 ease-in-out"
         @click="togglePopup" :class="{ 'rotate-45': showPopup }">
->>>>>>> 9f741b2 (WIP)
         <span class="text-2xl icon-ic-add"></span>
       </button>
     </div>
 
     <!-- Slide Popup -->
-<<<<<<< HEAD
     <div v-if="showPopup" class="fixed inset-x-0 bottom-20 z-50 flex justify-center">
       <div class="absolute inset-0 bg-black opacity-50" @click="showPopup = false"></div>
       <div
@@ -32,19 +27,8 @@
         'translate-y-0': showPopup,
         'translate-y-full': !showPopup,
       }">
-      <h2 class="text-xl font-bold mb-4">Quick View Options</h2>
-      <hr class="h-px mb-2 bg-gray-500 border-0 dark:bg-gray-700">
-=======
-    <div v-if="showPopup"
-      class="fixed inset-x-0 bottom-20 z-50 flex justify-center transition-all duration-300 ease-in-out" :class="{
-        'translate-y-0 opacity-100': showPopup,
-        'translate-y-full opacity-0': !showPopup,
-      }">
-      <div class="absolute inset-0 bg-black opacity-50" @click="showPopup = false"></div>
-      <div class="bg-white rounded-t-lg p-6 w-full max-w-screen-sm mx-auto relative z-10">
         <h2 class="text-xl font-bold mb-4">Quick View Options</h2>
-        <hr class="h-px mb-2 bg-gray-500 border-0 dark:bg-gray-700" />
->>>>>>> 9f741b2 (WIP)
+        <hr class="h-px mb-2 bg-gray-500 border-0 dark:bg-gray-700">
 
         <div class="grid grid-cols-4 gap-8">
           <router-link v-for="icon in icons" :key="icon.name" :to="icon.route" class="flex flex-col items-center">
@@ -127,8 +111,4 @@ export default {
 .control-panel__plus-btn {
   @apply absolute left-1/2 transform -translate-x-1/2 -translate-y-5;
 }
-<<<<<<< HEAD
 </style>
-=======
-</style>
->>>>>>> 9f741b2 (WIP)

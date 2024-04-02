@@ -11,7 +11,7 @@
         <div class="relative flex flex-col items-center gap-5 justify-center my-3">
             <div>
                 <p class="font-medium text-22 w-72 text-center">{{ userName }}</p>
-                <p class="font-extralight text-center text-sm">example.email@gmail.com</p>
+                <p class="font-extralight text-center text-sm">{{email}}</p>
                 <p class="font-extralight text-center text-sm">{{ userNumber }}</p>
                 <hr class="h-px my-8 bg-gray-500 border-0 dark:bg-gray-700">
             </div>
@@ -45,9 +45,9 @@
                 </ul>
             </div>
 
+            <notepad />
         </div>
     </div>
-
 
 
 
@@ -57,17 +57,20 @@
 <script>
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
 import navbar from "@/components/Navbar.vue";
+import notepad from "@/components/Notepad.vue";
 
 export default {
     name: "ProfileView",
     components: {
         DashboardLayout,
         navbar,
+        notepad
         
     },data() {
       return {
         userName: null,
         userNumber: null,
+        email: null,
       };
     },
    
