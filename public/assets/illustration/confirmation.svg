@@ -1,0 +1,8 @@
+<svg width="360" height="360" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="180" cy="180" r="180" fill="#F899B5" fill-opacity="0.2"/>
+<circle cx="180" cy="180" r="157" fill="#F899B5" fill-opacity="0.2"/>
+<circle cx="180" cy="180" r="140" fill="#F899B5" fill-opacity="0.4"/>
+<circle cx="180" cy="180" r="113" fill="#F899B5" fill-opacity="0.5"/>
+<path d="M180 265C226.944 265 265 226.944 265 180C265 133.056 226.944 95 180 95C133.056 95 95 133.056 95 180C95 226.944 133.056 265 180 265Z" fill="#FF3975"/>
+<path d="M141.373 186.039L162.612 207.923L235.986 140.342L241.456 141.951L162.44 224.889L124.639 199.556L141.373 186.039Z" fill="white"/>
+</svg>
