@@ -1,5 +1,13 @@
 <template>
+<<<<<<< HEAD
+<<<<<<< HEAD
     <EnrollLayout>
+=======
+    <!-- <EnrollLayout> -->
+>>>>>>> 9f741b2 (WIP)
+=======
+    <!-- <EnrollLayout> -->
+>>>>>>> 2a6e44581ac8db4cdc964720edae0578a33ab600
 
         <template v-if="showSplash">
             <SplashScreen 
@@ -19,7 +27,15 @@
             <OtpScreen />
         </template>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
     </EnrollLayout>
+=======
+    <!-- </EnrollLayout> -->
+>>>>>>> 9f741b2 (WIP)
+=======
+    <!-- </EnrollLayout> -->
+>>>>>>> 2a6e44581ac8db4cdc964720edae0578a33ab600
 </template>
 
 <script>

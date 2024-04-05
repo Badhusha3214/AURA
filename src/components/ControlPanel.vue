@@ -10,8 +10,10 @@
         <span class="text-xs font-semibold">{{ control.name }}</span>
       </router-link>
     </div>
-    <div class="control-panel__plus-btn ml-2 -mt-12">
-      <button class="bg-primary text-white rounded-full  w-14 h-14" @click="togglePopup">
+
+    <div class="control-panel__plus-btn ml-2 -mt-12 z-auto">
+      <button class="bg-primary text-white rounded-full w-14 h-14 transition-transform duration-300 ease-in-out"
+        @click="togglePopup" :class="{ 'rotate-45': showPopup }">
         <span class="text-2xl icon-ic-add"></span>
       </button>
     </div>
@@ -25,8 +27,8 @@
         'translate-y-0': showPopup,
         'translate-y-full': !showPopup,
       }">
-      <h2 class="text-xl font-bold mb-4">Quick View Options</h2>
-      <hr class="h-px mb-2 bg-gray-500 border-0 dark:bg-gray-700">
+        <h2 class="text-xl font-bold mb-4">Quick View Options</h2>
+        <hr class="h-px mb-2 bg-gray-500 border-0 dark:bg-gray-700">
 
         <div class="grid grid-cols-4 gap-8">
           <router-link v-for="icon in icons" :key="icon.name" :to="icon.route" class="flex flex-col items-center">
