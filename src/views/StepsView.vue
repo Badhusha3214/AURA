@@ -81,11 +81,11 @@
                 }
             }
         },
-        // mounted() {
-        //     if (!document.cookie.includes('aura-token')) {
-        //         this.$router.push('/enroll')
-        //     }
-        // },
+        mounted() {
+            if (!document.cookie.includes('aura-token')) {
+                this.$router.push('/enroll')
+            }
+        },
 
         methods: {
             updateEnrollData(data) {
