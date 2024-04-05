@@ -25,17 +25,18 @@
         'translate-y-0': showPopup,
         'translate-y-full': !showPopup,
       }">
-      <h2 class="text-xl font-bold mb-4">Quick View Options</h2>
+      <a href=""><h2 class="text-xl font-normal mb-4">health tips </h2></a>
       <hr class="h-px mb-2 bg-gray-500 border-0 dark:bg-gray-700">
+      <a href=""><h2 class="text-xl font-normal mb-4">health tips </h2></a>
 
-        <div class="grid grid-cols-4 gap-8">
+        <!-- <div class="grid grid-cols-4 gap-8">
           <router-link v-for="icon in icons" :key="icon.name" :to="icon.route" class="flex flex-col items-center">
             <div class="w-10 h-10 rounded-full overflow-hidden">
               <img :src="icon.iconSrc" :alt="icon.name" class="w-full h-full object-cover" />
             </div>
             <span class="text-sm text-center mt-2">{{ icon.name }}</span>
           </router-link>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
