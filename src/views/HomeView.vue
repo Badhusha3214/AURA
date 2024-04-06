@@ -91,7 +91,7 @@
             
         },
         async mounted() {
-            if (!document.cookie.includes('aura-token')) {
+            if (!document.cookie.includes('auth-token')) {
                 this.$router.push('/enroll')
             }
             await this.getBasicData()
