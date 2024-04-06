@@ -148,7 +148,7 @@ export default {
                         this.user.email = response.data.email;
                         this.$emit('triggerNext', 'otp')
                     } else if (response.response.status === 400) {
-                        this.error = response.response.data['message'];
+                        this.error = response.response.data;
                         console.log(this.error);
                     }
                 }).catch((error) => {
