@@ -21,6 +21,7 @@
                 placeholder="Enter OTP" required>
 
             <p v-if="message" class="text-xs mt-1 text-red-500">{{ message }}</p>
+            <button @click="otpresend" class="text-red-500 font-semibold  text-lg p-3 bg-white" type="button">Resend Otp</button>
         </div>
 
     </div>
@@ -28,14 +29,13 @@
     <div class="absolute bottom-0 w-screen flex justify-center p-5 mb-12">
         <button @click="usersverify" class="text-white font-semibold w-full text-lg p-3 rounded-full"
             :class="enableButton ? 'bg-primary' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
-            :disabled="enableButton ? true : false"
-            type="button">Next</button>
+            :disabled="!enableButton" type="button">Next</button>
     </div>
 
 </template>
 
 <script>
-import { userVerify } from '@/api/index.js'
+import { userVerify , resendotp } from '@/api/index.js'
 import router from '@/router';
 
 export default {
@@ -44,6 +44,7 @@ export default {
         return {
             otp: null,
             message: null,
+            gmail: localStorage.getItem('email'),
             error: null,
             enableButton: false,
         }
@@ -68,12 +69,33 @@ export default {
                     document.cookie = `aura-token=${response.data.token}; max-age=864000`;
                     this.user.email = response.data.email;
                     router.push('/steps');
-                    
+
                 } else {
                     this.message = response.data.message;
                 }
             }).catch((error) => {
                 this.error = error;
+            });
+        },
+        async otpresend() {
+            await resendotp({
+                email: this.gmail,
+            }).then((response) => {
+                if (response.status === 200) {
+                    console.log(this.gmail);
+                    this.user.email = response.data.email;
+                    this.message = "Opt send successfully"
+                    // console.log(response.data[message]);
+                    console.log(response);
+                } else {
+                    this.message = response.data.message;
+                    this.message = "try again"
+                    console.log(this.gmail);
+
+                }
+            }).catch((error) => {
+                this.error = error;
+                console.log(this.gmail);
             });
         }
     },
@@ -91,4 +113,3 @@ export default {
     }
 }
 </script>
-

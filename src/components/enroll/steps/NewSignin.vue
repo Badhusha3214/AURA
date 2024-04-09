@@ -1,13 +1,8 @@
 <template>
-<<<<<<< HEAD
     <div class=" w-full flex justify-center mb-12">
         <div class="relative flex flex-col items-center gap-2 justify-center my-3">
             <div class="w-full lg:w-1/3 py-4 lg:py-20 ">
-=======
-    <div class="w-full flex justify-center mb-12">
-        <div class="relative flex flex-col items-center gap-2 justify-center my-3">
-            <div class="w-full lg:w-1/3 py-4 lg:py-20">
->>>>>>> 4b4224db632d96670ad4670bdfaa546f1fa69833
+
                 <img class="w-full h-full" src="/assets/illustration/Hello-cuate 1.svg" alt="Socials" />
             </div>
         </div>
@@ -15,21 +10,13 @@
 
     <div class="absolute w-full flex justify-center mb-12">
         <div class="relative flex flex-col items-center gap-2 justify-center my-3">
-<<<<<<< HEAD
             <div class="font-bold text-2xl w-72 rounded-full text-center">Welcome Back</div>
         </div>
     </div>
 
 
 
-=======
-            <div class="font-bold text-2xl w-72 rounded-full text-center">
-                Welcome Back
-            </div>
-        </div>
-    </div>
 
->>>>>>> 4b4224db632d96670ad4670bdfaa546f1fa69833
     <div class="absolute bottom-0 w-full flex justify-center mb-12">
         <div class="relative flex flex-col items-center gap-2 justify-center my-3">
             <!-- Modal toggle -->
@@ -86,7 +73,6 @@
                     </div> -->
                         <div class="flex items-center mb-4">
                             <input id="default-checkbox" type="checkbox" value=""
-<<<<<<< HEAD
                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                             <label for="default-checkbox"
                                 class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sync your data, So
@@ -94,18 +80,7 @@
                         </div>
                         <button type="submit" @click="nextaction"
                             class="w-full text-white bg-pink-500 hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Done</button>
-=======
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                            <label for="default-checkbox"
-                                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sync your data, So
-                                your data won’t be lost when your device
-                                changed.</label>
-                        </div>
-                        <button type="submit" @click="nextaction"
-                            class="w-full text-white bg-pink-500 hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            Done
-                        </button>
->>>>>>> 4b4224db632d96670ad4670bdfaa546f1fa69833
+
                         <!-- <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
                         Not registered? <a href="#" class="text-blue-700 hover:underline dark:text-blue-500">Create account</a>
                     </div> -->
@@ -117,7 +92,7 @@
 </template>
 
 <script>
-<<<<<<< HEAD
+
 
 export default{
     name : "NewSignin",
@@ -128,14 +103,4 @@ export default{
     }
 }
 </script>
-=======
-export default {
-    name: "NewSignin",
-    methods: {
-        nextaction() {
-            this.$router.push("/OtpVerification");
-        },
-    },
-};
-</script>
->>>>>>> 4b4224db632d96670ad4670bdfaa546f1fa69833
+
