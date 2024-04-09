@@ -144,11 +144,11 @@ export default {
                 }).then((response) => {
                     console.log(response);
                     if (response.status === 201 ) {
-                        // document.cookie = `auth-token=${response.data.token}; max-age=864000`;
                         this.user.email = response.data.email;
+                        localStorage.setItem('email', this.email);
                         this.$emit('triggerNext', 'otp')
                     } else if (response.response.status === 400) {
-                        this.error = response.response.data;
+                        this.error = response.response.data[message];
                         console.log(this.error);
                     }
                 }).catch((error) => {
@@ -165,7 +165,8 @@ export default {
                 }).then((response) => {
                     console.log(response);
                     if (response.status === 200) {
-                        document.cookie = `auth-token=${response.data.Token}; max-age=864000`;
+                        localStorage.setItem('email', this.email);
+                        document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
                         this.user.email = response.data.UserData;
                         this.$router.push('/');
                     } else if (response.status === 400) {

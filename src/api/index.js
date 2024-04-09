@@ -28,7 +28,8 @@ export const getBasicData = () => {
 export const userRegister = async (user) => {
     try {
         const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/users/register`, user);
-        return res.data;
+        console.log(res);
+        return res;
     } catch (error) {
         console.log(error);
         return error;   
@@ -55,6 +56,17 @@ export const userVerify = async (user) => {
     try {
         const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/users/verify`, user);
         console.log(res.data)
+        return res;
+        
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+};
+export const resendotp = async (user) => {
+    try {
+        const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/users/otpresend`, user);
+        console.log(res)
         return res;
         
     } catch (error) {

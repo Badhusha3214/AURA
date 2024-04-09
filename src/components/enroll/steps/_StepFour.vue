@@ -40,7 +40,7 @@ export default {
     methods: {
         handleDateSelected(date) {
             this.selected = date;
-            console.log('Selected dateaaa:', date);
+            console.log('Selected date:', date);
         },
         triggerNext() {
             this.$emit('updateEnrollData', { lastperiod: this.selected });

@@ -70,9 +70,12 @@
     <div class="absolute bottom-0 w-full flex justify-center mb-12">
       <div class="relative flex flex-col items-center gap-2 justify-center my-3">
 
-        <button class="text-white font-semibold text-xl w-72 p-3 rounded-full"
-          :class="{ 'bg-primary': regular_days || (irregular_start && irregular_end), 'bg-gray-300 cursor-not-allowed': !regular_days && !(irregular_start && irregular_end) }"
-          @click="triggerNext" :disabled="!regular_days">Next</button>
+        <button class="text-white font-semibold text-xl w-72 p-3 rounded-full" :class="{
+            'bg-primary': regular_days || (irregular_start && irregular_end),
+            'bg-gray-300 cursor-not-allowed': !regular_days && !(irregular_start && irregular_end)
+          }" @click="triggerNext" :disabled="!(regular_days || (irregular_start && irregular_end))">
+          Next
+        </button>
         <button class="flex flex-row items-center gap-2 justify-center text-sm font-medium text-gray-500">I'm not
           sure</button>
 
