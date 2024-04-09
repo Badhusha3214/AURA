@@ -14,7 +14,8 @@
         </div>
     </div>
 
-    <p class="absolute bottom-0 w-screen flex justify-center mb-6 text-red-800 text-sm font-medium dark:text-red-500" v-if="error" >{{ error }}</p>
+    <p class="absolute bottom-0 w-screen flex justify-center mb-6 text-red-800 text-sm font-medium dark:text-red-500"
+        v-if="error">{{ error }}</p>
 
     <div class="absolute bottom-0 w-screen flex justify-center p-5 mb-12">
         <button data-modal-target="authentication-modal" data-modal-toggle="authentication-modal"
@@ -36,7 +37,7 @@
                 <!-- Modal header -->
                 <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                     <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ mode === 'enroll' ?
-                        'CreateAccount' : 'Sign In' }}</h3>
+            'CreateAccount' : 'Sign In' }}</h3>
 
                     <button type="button"
                         class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -137,14 +138,15 @@ export default {
 
         async getUserLogin() {
             if (this.mode === 'enroll') {
-
                 await userRegister({
                     email: this.email,
                     password: this.password
                 }).then((response) => {
                     console.log(response);
-                    if (response.status === 201 ) {
+                    if (response.status === 201) {
                         this.user.email = response.data.email;
+                        console.log(this.user.email);
+                        console.log(this.user);
                         localStorage.setItem('email', this.email);
                         this.$emit('triggerNext', 'otp')
                     } else if (response.response.status === 400) {
@@ -168,6 +170,8 @@ export default {
                         localStorage.setItem('email', this.email);
                         document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
                         this.user.email = response.data.UserData;
+                        console.log(this.user.email);
+                    console.log(this.user);
                         this.$router.push('/');
                     } else if (response.status === 400) {
                         this.error = response.data[message];
