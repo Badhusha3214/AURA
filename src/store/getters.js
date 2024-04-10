@@ -6,7 +6,7 @@ export const counter = (state) => {
 
 
 export const user = (state) => {
-    return state.user;
+    return state.user.email;
 };
 
 

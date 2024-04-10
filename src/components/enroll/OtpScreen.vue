@@ -84,6 +84,7 @@ export default {
                 if (response.status === 200) {
                     console.log(this.gmail);
                     this.user.email = response.data.email;
+                    console.log(this.user.email);
                     this.message = "Opt send successfully"
                     // console.log(response.data[message]);
                     console.log(response);
