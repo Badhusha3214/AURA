@@ -7,6 +7,7 @@ import router from './router'
 import store from "./store";
 
 import 'flowbite';
+import './registerServiceWorker'
 
 const app = createApp(App)
 

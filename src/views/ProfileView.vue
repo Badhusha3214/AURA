@@ -64,7 +64,7 @@ export default {
     components: {
         DashboardLayout,
         navbar,
-        notepad
+        notepad                 
         
     },data() {
       return {
@@ -78,6 +78,7 @@ export default {
         getdata(){
             this.userName = localStorage.getItem('userName');
             this.userNumber = localStorage.getItem('userNumber');
+            this.email = localStorage.getItem('email');
             // this.DOB = localStorage.getItem('DOB');
 
             console.log('Name:', this.userName);
