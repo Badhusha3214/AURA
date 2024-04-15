@@ -14,7 +14,7 @@
             <button @click="updateCounter(3, '--')" class="font-semibold text-xl bg-primary text-white px-4 py-2 rounded">-</button>
         </div>
     </div>
-    
+    <h1>{{ conceive }}</h1>
 </template>
 
 <script>
@@ -34,6 +34,15 @@
                 },
                 set(value) {
                     this.$store.dispatch('setCounter', value)
+                }
+            },
+            conceive: {
+                get() {
+                    return this.$store.state.conceive
+                    
+                },
+                set(value) {
+                  this.saveEmail(v)
                 }
             }
         },

@@ -14,3 +14,7 @@ export const enrollData = (state) => {
     return state.enrollData;
 };
 
+export const conceive = (state) => {
+    return state.conceive;
+};
+

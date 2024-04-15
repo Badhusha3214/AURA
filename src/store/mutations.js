@@ -12,3 +12,7 @@ export const SET_USER = (state, payload) => {
 export const SET_ENROLL_DATA = (state, payload) => {
     state.enrollData = payload;
 };
+
+export const SET_CONCEIVE = (state, payload) => {
+    state.conceive = payload;
+};

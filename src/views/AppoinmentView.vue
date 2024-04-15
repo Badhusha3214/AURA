@@ -12,7 +12,7 @@
         <button @click="updateCounter(1, '--')" class="font-semibold text-xl bg-primary text-white px-4 py-2 rounded">-</button>
       </div>
     </div>
-    <h1 class=" font-bold">{{ user }}</h1>
+    <h1>{{ conceive }}</h1>
     <div class="flex items-center justify-center mt-5">
       <label for="email" class="font-semibold text-xl mr-4">Email:</label>
       <input
@@ -53,17 +53,29 @@
       user: {
         get() {
           return this.$store.state.user.email
+          
         },
         set(v) {
           this.saveEmail(v)
         }
-      }
+      },
+      conceive: {
+                get() {
+                    return this.$store.state.conceive
+                    
+                },
+                set(value) {
+                  this.saveEmail(v)
+                }
+            }
     },
     methods: {
       saveEmail(value) {
-        console.log(localStorage.getItem('email'))
-        this.$store.commit("SET_USER", localStorage.getItem('email'))
+        // console.log(localStorage.getItem('email'))
+        // this.$store.commit("SET_USER", localStorage.getItem('email'))
+        this.$store.commit("SET_CONCEIVE", value)
         this.email = value
+        
       },
       updateCounter(value, action) {
         action === '++' ? this.counter += value : this.counter -= value
