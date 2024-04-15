@@ -1,5 +1,6 @@
 <template>
-    <navbar />
+<IsMobile />
+<navbar />
 
     <div class="justify-center flex items-center">
         <div class="h-auto w-20">
@@ -58,12 +59,15 @@
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
 import navbar from "@/components/Navbar.vue";
 import notepad from "@/components/Notepad.vue";
+import IsMobile from "@/components/IsMobile.vue";
+
 
 export default {
     name: "ProfileView",
     components: {
         DashboardLayout,
         navbar,
+        IsMobile,
         notepad                 
         
     },data() {
