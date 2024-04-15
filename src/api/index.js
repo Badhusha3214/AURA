@@ -75,3 +75,15 @@ export const resendotp = async (user) => {
     }
 };
 
+export const userdetail = async (user) => {
+    try {
+        const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/users/userdetail`, user);
+        console.log(res)
+        return res;
+        
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+};
+

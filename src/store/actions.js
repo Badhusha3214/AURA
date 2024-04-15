@@ -13,3 +13,7 @@ export const setUser = async ({ commit }, payload) => {
 export const setEnrollData = async ({ commit }, payload) => {
     commit("SET_ENROLL_DATA", payload);
 };
+
+export const setconceive = async ({ commit }, payload) => {
+    commit("SET_CONCEIVE", payload);
+};

@@ -28,7 +28,7 @@ export const initialState = () => {
             mode: null,
             periodLength: null,
             cycleLength: null,
-            conceive: null,
+            conceive: true,
             lastMenstrualPeriod: null,
         }
 
