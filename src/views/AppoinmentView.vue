@@ -1,6 +1,6 @@
 <template>
     <DashboardLayout />
-  
+    <IsMobile />
     <div class="flex items-center justify-center h-24 bg-primary">
       <h1 class="text-4xl font-bold text-white">Appointment</h1>
     </div>
@@ -28,11 +28,13 @@
   
   <script>
   import DashboardLayout from '@/layouts/DashboardLayout.vue'
-  
+  import IsMobile from "@/components/IsMobile.vue";
+
   export default {
     name: 'AppoinmentView',
     components: {
-      DashboardLayout
+      DashboardLayout,
+      IsMobile
     },
     data() {
       return {
