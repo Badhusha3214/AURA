@@ -85,7 +85,7 @@
               <button @click="getUserLogin" type="button" data-modal-hide="authentication-modal"
                 class="w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-pink-500 hover:bg-red-400"
                 :disabled="!enableButton"> {{ mode === 'enroll' ? 'Create Account' : 'Sign In' }}</button>
-              <button @click="showForgotPasswordModal = true; $emit('modal-hide')" type="button"
+              <button @click="showForgotPasswordModal = true  ; $emit('modal-hide')" type="button"
                 class="text-blue-600 hover:underline font-medium text-sm px-5 py-2.5 text-center">Forgot
                 Password</button>
             </div>
@@ -95,7 +95,7 @@
     </div>
   
     <!-- Forgot Password Modal -->
-    <div v-if="showForgotPasswordModal" class="fixed z-10 inset-0 overflow-y-auto">
+    <div v-if="showForgotPasswordModal" class="fixed z-50 inset-0 overflow-y-auto p-4 md:p-5 space-y-4">
       <div class="flex items-center justify-center min-h-screen">
         <div class="bg-white w-full max-w-md mx-auto rounded-lg shadow-lg p-6">
           <div class="mb-4">
@@ -106,7 +106,7 @@
             <input type="email" v-model="forgotPasswordEmail"
               class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4"
               placeholder="Enter your email" />
-            <button @click="resetPassword" class="w-full bg-blue-600 text-white font-bold py-2 rounded-lg">Reset
+            <button @click="resetPassword" class="w-full bg-pink-500 text-white font-bold py-2 rounded-lg">Reset
               Password</button>
           </div>
           <div class="mt-4 text-center">

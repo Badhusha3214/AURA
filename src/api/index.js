@@ -111,3 +111,25 @@ export const forgotPassword = async (user) => {
     }
 };
 
+export const resetpassword = async (user) => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('you have to log in first');
+      }
+      const token = tokenCookie.split('=')[1];
+  
+      const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/users/reset-password`, user, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res.headers);
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
