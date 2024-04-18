@@ -8,7 +8,7 @@ let token;
 const jsonDataString = localStorage.getItem('userdata'); // Replace 'key' with the key you used to store the data
 
 // Parse JSON string to JavaScript object
-const userdata = JSON.parse(jsonDataString);    
+// const userdata = JSON.parse(jsonDataString);    
 
 // console.log(userdata.last_period_start );
 
@@ -18,11 +18,11 @@ export const getBasicData = () => {
             id: '1',
             firstName: 'Jane',
             lastName: 'Doe',
-            email: userdata.email,
+            email: localStorage.getItem('email'),
             dob: '1990-01-01',
 
-            cycleLength: userdata.last_cycle_regular,                    // Length of menstrual cycle in days
-            periodLength: userdata.duration_period,                    // Length of period in days (bleeding days)
+            cycleLength: 31,                    // Length of menstrual cycle in days
+            periodLength: 8,                    // Length of period in days (bleeding days)
             lastMenstrualPeriod: '2024-04-02',  // Start date of last period
             frequency: 'regular',               // 'regular' | 'irregular'
 
