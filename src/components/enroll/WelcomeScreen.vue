@@ -168,7 +168,7 @@
             console.log(response);
             this.$store.commit("SET_PASSKEY", this.password)
             if (response.status === 201) {
-              this.user.email = response.data.email;
+              this.user.email = response.UserData.email;
               console.log(this.user.email);
               console.log(this.user);
               localStorage.setItem('email', this.email);
@@ -190,8 +190,7 @@
               localStorage.setItem('email', this.email);
               document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
               // this.user.email = response.data.UserData.email;
-              localStorage.setItem('userdata', JSON.stringify(response.data.UserData));
-              console.log(localStorage.getItem('userdata',email));    
+              localStorage.setItem('userdata', JSON.stringify(response.data.UserData));   
               this.$router.push('/');
             } else if (response.status === 400) {
               this.error = response.data["message"];
