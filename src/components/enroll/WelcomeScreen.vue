@@ -167,7 +167,7 @@
               localStorage.setItem('email', this.email);
               this.$emit('triggerNext', 'otp')
             } else if (response.response.status === 400) {
-              this.error = response.response.data[message];
+              this.error = response.response.data["message"];
               console.log(this.error);
             }
           }).catch((error) => {
@@ -187,7 +187,7 @@
               console.log(this.user);
               this.$router.push('/');
             } else if (response.status === 400) {
-              this.error = response.data[message];
+              this.error = response.data["message"];
               console.log(this.error);
             }
           }).catch((error) => {
