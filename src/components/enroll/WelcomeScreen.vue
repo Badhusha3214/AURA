@@ -165,12 +165,9 @@
           await userRegister({
             email: this.email,
           }).then((response) => {
-            console.log(response);
+            // console.log(response);
             this.$store.commit("SET_PASSKEY", this.password)
             if (response.status === 201) {
-              this.user.email = response.UserData.email;
-              console.log(this.user.email);
-              console.log(this.user);
               localStorage.setItem('email', this.email);
               this.$emit('triggerNext', 'otp')
             } else if (response.response.status === 400) {
@@ -185,12 +182,12 @@
             email: this.email,
             password: this.password
           }).then((response) => {
-            console.log(response);
+            // console.log(response);
             if (response.status === 200) {
               localStorage.setItem('email', this.email);
               document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
               // this.user.email = response.data.UserData.email;
-              localStorage.setItem('userdata', JSON.stringify(response.data.UserData));   
+              localStorage.setItem('userdata', JSON.stringify(response.UserData));   
               this.$router.push('/');
             } else if (response.status === 400) {
               this.error = response.data["message"];
@@ -206,7 +203,7 @@
           const response = await forgotPassword({
             email: this.forgotPasswordEmail
           });
-          console.log(response);
+          // console.log(response);
           this.showForgotPasswordModal = false;
           // Show a success message to the user
         } catch (error) {

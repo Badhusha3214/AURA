@@ -80,8 +80,8 @@ export default {
   },
   methods: {
     logAndStoreRegularData() {
-        console.log(this.regular_days);
-        console.log(this.selectedType);
+        // console.log(this.regular_days);
+        // console.log(this.selectedType);
         localStorage.setItem('mode', this.selectedType );
         localStorage.setItem('periodLength', this.regular_days );
         localStorage.setItem('periodLength_start', null);

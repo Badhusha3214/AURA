@@ -10,18 +10,19 @@ const jsonDataString = localStorage.getItem('userdata'); // Replace 'key' with t
 // Parse JSON string to JavaScript object
 const userdata = JSON.parse(jsonDataString);    
 
+// console.log(userdata.last_period_start );
 
 export const getBasicData = () => {
     return {
         data: {
-            id: userdata.id,
+            id: '1',
             firstName: 'Jane',
             lastName: 'Doe',
             email: userdata.email,
             dob: '1990-01-01',
 
-            cycleLength: 31,                    // Length of menstrual cycle in days
-            periodLength: 8,                    // Length of period in days (bleeding days)
+            cycleLength: userdata.last_cycle_regular,                    // Length of menstrual cycle in days
+            periodLength: userdata.duration_period,                    // Length of period in days (bleeding days)
             lastMenstrualPeriod: '2024-04-02',  // Start date of last period
             frequency: 'regular',               // 'regular' | 'irregular'
 
@@ -29,6 +30,22 @@ export const getBasicData = () => {
             updatedAt: '2020-01-01'
         }
     }
+    //     data: {
+    //         id: userdata.id,
+    //         firstName: 'Jane',
+    //         lastName: 'Doe',
+    //         email: userdata.email,
+    //         dob: '1990-01-01',
+
+    //         cycleLength: 31,                    // Length of menstrual cycle in days
+    //         periodLength: 8,                    // Length of period in days (bleeding days)
+    //         lastMenstrualPeriod: '2024-04-02',  // Start date of last period
+    //         frequency: 'regular',               // 'regular' | 'irregular'
+
+    //         createdAt: '2020-01-01',
+    //         updatedAt: '2020-01-01'
+    //     }
+    // }
 };
 
 
@@ -49,11 +66,11 @@ export const userRegister = async (user) => {
 export const userLogin = async (user) => {
     try {
         const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/users/login`, user);
-        console.log(res);
+        // console.log(res);
         token = res.data.Token
         return res;
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return error.response;
     }
 };
@@ -64,22 +81,22 @@ export const userLogin = async (user) => {
 export const userVerify = async (user) => {
     try {
         const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/users/verify`, user);
-        console.log(res.data)
+        // console.log(res.data)
         return res;
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return error;
     }
 };
 export const resendotp = async (user) => {
     try {
         const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/users/otpresend`, user);
-        console.log(res)
+        // console.log(res)
         return res;
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return error;
     }
 };
@@ -98,11 +115,11 @@ export const userdetail = async (user) => {
                 Authorization: `Bearer ${token}`,
             },
         });
-        console.log(res.headers);
-        console.log(res.data);
+        // console.log(res.headers);
+        // console.log(res.data);
         return res.data;
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return error;
     }
 };
@@ -110,11 +127,11 @@ export const userdetail = async (user) => {
 export const forgotPassword = async (user) => {
     try {
         const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/users/forgotPassword`, user);
-        console.log(res)
+        // console.log(res)
         return res;
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return error;
     }
 };
@@ -138,7 +155,7 @@ export const resetpassword = async (user) => {
 
     if(token){
         const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/users/reset-password/${token}`, user);
-        console.log(res)
+        // console.log(res)
         return res;
     }
     else{
@@ -146,7 +163,7 @@ export const resetpassword = async (user) => {
     }
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return error;
     }
 };

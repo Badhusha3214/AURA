@@ -75,7 +75,7 @@ export default {
                 password: this.passkey
             }).then((response) => {
                 if (response.status === 200) {
-                    console.log(response.data.Token);
+                    // console.log(response.data.Token);
                     document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
                     this.user.email = response.data.email;
                     router.push('/steps');
@@ -92,9 +92,9 @@ export default {
                 email: this.email,
             }).then((response) => {
                 if (response.status === 200) {
-                    console.log(this.email);
+                    // console.log(this.email);
                     this.user.email = response.data.email;
-                    console.log(this.user.email);
+                    // console.log(this.user.email);
                     this.message = "Opt send successfully"
                     // console.log(response.data[message]);
                     console.log(response);
