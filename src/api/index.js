@@ -4,13 +4,20 @@ import { useRoute } from 'vue-router';
 
 let token;
 
+// Retrieve data from local storage
+const jsonDataString = localStorage.getItem('userdata'); // Replace 'key' with the key you used to store the data
+
+// Parse JSON string to JavaScript object
+const userdata = JSON.parse(jsonDataString);    
+
+
 export const getBasicData = () => {
     return {
         data: {
-            id: '123',
+            id: userdata.id,
             firstName: 'Jane',
             lastName: 'Doe',
-            email: 'jane@company.com',
+            email: userdata.email,
             dob: '1990-01-01',
 
             cycleLength: 31,                    // Length of menstrual cycle in days

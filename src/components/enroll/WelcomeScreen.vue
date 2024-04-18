@@ -150,16 +150,23 @@
         set(value) {
           this.$store.dispatch('setUser', value)
         }
-      }
+      },passkey: {
+        get() {
+          return this.$store.state.passkey      
+        },
+        set(v) {
+          this.savepass(v)
+        }
+      },
     },
     methods: {
       async getUserLogin() {
         if (this.mode === 'enroll') {
           await userRegister({
             email: this.email,
-            password: this.password
           }).then((response) => {
             console.log(response);
+            this.$store.commit("SET_PASSKEY", this.password)
             if (response.status === 201) {
               this.user.email = response.data.email;
               console.log(this.user.email);
@@ -182,9 +189,9 @@
             if (response.status === 200) {
               localStorage.setItem('email', this.email);
               document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
-              this.user.email = response.data.UserData;
-              console.log(this.user.email);
-              console.log(this.user);
+              // this.user.email = response.data.UserData.email;
+              localStorage.setItem('userdata', JSON.stringify(response.data.UserData));
+              console.log(localStorage.getItem('userdata',email));    
               this.$router.push('/');
             } else if (response.status === 400) {
               this.error = response.data["message"];

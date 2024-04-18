@@ -17,3 +17,7 @@ export const setEnrollData = async ({ commit }, payload) => {
 export const setconceive = async ({ commit }, payload) => {
     commit("SET_CONCEIVE", payload);
 };
+
+export const setpasskey = async ({ commit }, payload) => {
+    commit("SET_PASSKEY", payload);
+};
