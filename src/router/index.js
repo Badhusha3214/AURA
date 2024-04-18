@@ -66,10 +66,20 @@ const router = createRouter({
       meta: {
         title: 'Steps'
       }
-    },{
+    }, {
       path: '/resetpassword',
       name: 'ResetPassword',
       component: ResetPassword,
+      children: [
+        {
+          path: '/:pathMatch(.*)*',
+          name: 'ResetPassword',
+          component: ResetPassword,
+          meta: {
+            title: 'ResetPassword'
+          }
+        }
+      ],
       meta: {
         title: 'ResetPassword'
       }

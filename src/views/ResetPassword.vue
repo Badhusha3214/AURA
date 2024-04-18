@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { resetpassword } from '@/api/index.js'
+
 export default {
     data() {
         return {
@@ -48,10 +50,9 @@ export default {
             try {
                 await resetpassword({ newPassword: this.newPassword }).then((response) => {
                     console.log(response);
-                    if (response.status === 201) {
-                        
-                        console.log(this.user.email);
+                    if (response.status === 200) {
                         console.log(this.user);
+                        this.$router.push('/enroll')
                     } else if (response.response.status === 400) {
                         // this.error = response.response.data.message;
                         console.log(this.error);
@@ -68,7 +69,7 @@ export default {
             } finally {
                 this.loading = false
             }
-        }
+        }   
     }
 }
 </script>
