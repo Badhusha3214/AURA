@@ -61,15 +61,10 @@
      name: 'Navbar',
      methods: {
        logout() {
-         if (confirm("Are you sure you want to logout?")) {
-           // Delete token from cookie
-           document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-           // Perform logout actions
-           // For example, redirect to login page
-           window.location.href = "/login";
+           document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+           window.location.href = "/enroll";
          }
        }
      }
-   }
    </script>
    

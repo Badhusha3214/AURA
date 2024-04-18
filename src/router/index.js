@@ -5,6 +5,7 @@ import HomeView from '@/views/HomeView.vue'
 import AppoinmentView from '@/views/AppoinmentView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import ResetPassword from '@/views/ResetPassword.vue'
 
 import StepsView from '@/views/StepsView.vue'
 import EnrollView from '@/views/EnrollView.vue'
@@ -64,6 +65,23 @@ const router = createRouter({
       component: StepsView,
       meta: {
         title: 'Steps'
+      }
+    }, {
+      path: '/resetpassword',
+      name: 'ResetPassword',
+      component: ResetPassword,
+      children: [
+        {
+          path: '/:pathMatch(.*)*',
+          name: 'ResetPassword',
+          component: ResetPassword,
+          meta: {
+            title: 'ResetPassword'
+          }
+        }
+      ],
+      meta: {
+        title: 'ResetPassword'
       }
     },
 

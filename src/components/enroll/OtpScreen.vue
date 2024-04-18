@@ -65,8 +65,8 @@ export default {
                 otp: this.otp,
             }).then((response) => {
                 if (response.status === 200) {
-
-                    document.cookie = `aura-token=${response.data.token}; max-age=864000`;
+                    console.log(response.data.Token);
+                    document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
                     this.user.email = response.data.email;
                     router.push('/steps');
 
