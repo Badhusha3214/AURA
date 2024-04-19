@@ -184,7 +184,7 @@ export const deleteAccount = async (user) => {
         });
         // console.log(res.headers);
         // console.log(res.data);
-        return res.data;
+        return res;
     } catch (error) {
         // console.log(error);
         return error;
