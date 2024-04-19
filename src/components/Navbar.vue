@@ -104,6 +104,7 @@
             </div>
             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                  <p v-if="error"></p>
                   <button type="button"
                      class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-red-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                      @click="deleteAccount">
@@ -130,7 +131,8 @@ export default {
    data() {
       return {
          showDeleteAccountConfirmation: false,
-         confirmationEmail: ''
+         confirmationEmail: '',
+         error: null,
       }
    },
    methods: {
@@ -139,18 +141,24 @@ export default {
          window.location.href = "/enroll";
       },
       async deleteAccount() {
-         try { const response = await deleteAccount({
-          email: this.confirmationEmail
-        });
+        await deleteAccount({
+          email: this.confirmationEmail,
+        }).then((response) => {
         console.log(response);
         if(response.status == 200) {
-         this.$router.push({name: 'enroll'})
+         window.location.href = "/enroll";
          document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }else if(response.response.status === 400) {
+         console.log("nilllllllllll");
+          this.error = "enter a valid email address"
         }
-      } catch (error) {
-        console.error(error);
-        error = "try again"
-      }
+      }).catch((error) => {
+         console.log("error");
+          this.error = error;
+        })
+
+
+
          // // Perform account deletion logic here
          // // Check if the entered email matches the user's account
          // if (this.confirmationEmail === 'user@example.com') {
