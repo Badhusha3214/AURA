@@ -3,10 +3,40 @@
     @click="showAddNote = true"
     class="text-black w-64 bg-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
     type="button"
-  >
+    >
     ADD DATA
   </button>
   <div class="container mx-auto z-50 p-4">
+    <ul class="mt-4">
+      <li
+        v-for="(note, index) in notes"
+        :key="index"
+        class="bg-white border border-gray-300 rounded-md p-4  z-0 mb-4 shadow-md relative"
+      >
+        <div class="flex justify-between items-center mb-2">
+          <div class="text-lg font-semibold">
+            {{ note.title }} 
+          </div>
+          <div v-if="note.showContent" class="absolute top-2 right-2">
+            <button
+              class="bg-green-500 text-white px-2 py-1 rounded-md mr-2 hover:bg-green-600 transition-colors"
+              @click="editNote(index)"
+            >
+              Edit
+            </button>
+            <button
+              class="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 transition-colors"
+              @click="deleteNote(index)"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+        <div v-if="note.showContent" class="note-content">
+          <p>{{ note.content }}</p>
+        </div>
+      </li>
+    </ul>
     <div
       v-if="showAddNote"
       class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
@@ -73,36 +103,6 @@
         ></textarea>
       </div>
     </div>
-    <ul class="mt-4">
-      <li
-        v-for="(note, index) in notes"
-        :key="index"
-        class="bg-white border border-gray-300 rounded-md p-4  z-0 mb-4 shadow-md relative"
-      >
-        <div class="flex justify-between items-center mb-2">
-          <div class="text-lg font-semibold">
-            {{ note.title }} 
-          </div>
-          <div v-if="note.showContent" class="absolute top-2 right-2">
-            <button
-              class="bg-green-500 text-white px-2 py-1 rounded-md mr-2 hover:bg-green-600 transition-colors"
-              @click="editNote(index)"
-            >
-              Edit
-            </button>
-            <button
-              class="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 transition-colors"
-              @click="deleteNote(index)"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-        <div v-if="note.showContent" class="note-content">
-          <p>{{ note.content }}</p>
-        </div>
-      </li>
-    </ul>
   </div>
 </template>
 
