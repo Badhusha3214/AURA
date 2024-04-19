@@ -6,11 +6,15 @@ export const counter = (state) => {
 
 
 export const user = (state) => {
-    return state.user;
+    return state.user.email;
 };
 
 
 export const enrollData = (state) => {
     return state.enrollData;
+};
+
+export const conceive = (state) => {
+    return state.conceive;
 };
 

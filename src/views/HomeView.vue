@@ -1,6 +1,7 @@
 
 <template>
-    
+
+    <IsMobile />
     <navbar />
 
     <popup />
@@ -27,6 +28,7 @@
     import Popup from '@/components/CompleteProfile.vue'
     import Calender from '@/components/Home/Calender.vue'
     import navbar from '@/components/Navbar.vue'
+    import IsMobile from "@/components/IsMobile.vue";
 
     import { calculateMenstrualCycles, findClosestDate, getMessage } from '@/utils/helpers.js'
     import { getBasicData } from '@/api/index.js'
@@ -38,6 +40,7 @@
             Calender,
             CentralCircle,
             navbar,
+            IsMobile,
             Popup
         },
         data() {
@@ -91,11 +94,11 @@
             
         },
         async mounted() {
-            // if (!document.cookie.includes('aura-token')) {
-            //     this.$router.push('/enroll')
-            // }
-            // await this.getBasicData()
-            // await this.getDates(this.lastMenstrualPeriod, this.cycleLength, this.periodLength)
+            if (!document.cookie.includes('aura-token')) {
+                this.$router.push('/enroll')
+            }
+            await this.getBasicData()
+            await this.getDates(this.lastMenstrualPeriod, this.cycleLength, this.periodLength)
         },
         watch: {
             messages: {

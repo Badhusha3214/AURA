@@ -2,7 +2,7 @@
 <template>
 
     <DashboardLayout />
-
+    <IsMobile />
     <div class="flex items-center justify-center h-24 bg-primary">
         <h1 class="text-4xl font-bold text-white">Analytics</h1>
     </div>
@@ -14,16 +14,18 @@
             <button @click="updateCounter(3, '--')" class="font-semibold text-xl bg-primary text-white px-4 py-2 rounded">-</button>
         </div>
     </div>
-    
+    <h1>{{ conceive }}</h1>
 </template>
 
 <script>
     import DashboardLayout from '@/layouts/DashboardLayout.vue'
-    
+    import IsMobile from "@/components/IsMobile.vue";
+
     export default {
         name: 'AnalyticsView',
         components: {
-            DashboardLayout
+            DashboardLayout,
+            IsMobile
         },
         computed: {
             counter: {
@@ -32,6 +34,15 @@
                 },
                 set(value) {
                     this.$store.dispatch('setCounter', value)
+                }
+            },
+            conceive: {
+                get() {
+                    return this.$store.state.conceive
+                    
+                },
+                set(value) {
+                  this.saveEmail(v)
                 }
             }
         },

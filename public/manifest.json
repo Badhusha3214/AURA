@@ -1,0 +1,84 @@
+{
+  "name": "AURA",
+  "short_name": "AURA",
+  "theme_color": "#4DBA87",
+  "background_color": "#000000",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "assets/404.svg",
+      "sizes": "150x150",
+      "type": "image/svg",
+      "purpose": "any"  
+    },
+    {
+      "src": "assets/logo.svg",
+      "sizes": "262x262",
+      "type": "image/svg",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/logo_name.svg",
+      "sizes": "652x752",
+      "type": "image/svg",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/ControlPanel/add.svg",
+      "sizes": "25x26",
+      "type": "image/svg",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/ControlPanel/analytics.svg",
+      "sizes": "20x16",
+      "type": "image/svg",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/ControlPanel/appoinment.svg",
+      "sizes": "20x20",
+      "type": "image/svg",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/ControlPanel/home.svg",
+      "sizes": "22x20",
+      "type": "image/svg",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/ControlPanel/profile.svg",
+      "sizes": "16x18",
+      "type": "image/svg",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/Profile/profile.png",
+      "sizes": "640x640",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/Icons/Group 59.png",
+      "sizes": "60x60",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/Icons/Group 60.png",
+      "sizes": "60x60",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/Icons/Group 61.png",
+      "sizes": "60x60",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "splash_pages": null
+}
