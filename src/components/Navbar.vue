@@ -143,9 +143,13 @@ export default {
           email: this.confirmationEmail
         });
         console.log(response);
-        if(response.status)
+        if(response.status == 200) {
+         this.$router.push({name: 'enroll'})
+         document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
       } catch (error) {
         console.error(error);
+        error = "try again"
       }
          // // Perform account deletion logic here
          // // Check if the entered email matches the user's account
