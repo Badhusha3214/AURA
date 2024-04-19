@@ -10,10 +10,8 @@
         <span class="text-xs font-semibold">{{ control.name }}</span>
       </router-link>
     </div>
-
-    <div class="control-panel__plus-btn ml-2 -mt-12 z-auto">
-      <button class="bg-primary text-white rounded-full w-14 h-14 transition-transform duration-300 ease-in-out"
-        @click="togglePopup" :class="{ 'rotate-45': showPopup }">
+    <div class="control-panel__plus-btn ml-2 -mt-12">
+      <button class="bg-primary text-white rounded-full  w-14 h-14" @click="togglePopup">
         <span class="text-2xl icon-ic-add"></span>
       </button>
     </div>

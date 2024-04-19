@@ -17,17 +17,17 @@
             </div>
 
             <!-- drop down button -->
-            <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
+            <!-- <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
                 class="text-black w-64 bg-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
                 type="button">Monthly analytics downloads<svg class="ml-20 w-2.5 h-2.5 ms-3" aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="m1 1 4 4 4-4" />
                 </svg>
-            </button>
+            </button> -->
 
             <!-- Dropdown menu -->
-            <div id="dropdown"
+            <!-- <div id="dropdown"
                 class="z-10 hidden bg-gray-2 divide-y divide-gray-100 rounded-lg shadow w-64 dark:bg-gray-400">
                 <ul class="py-2 text-sm text-black " aria-labelledby="dropdownDefaultButton">
                     <li>
@@ -43,7 +43,7 @@
                             class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">January-2023 Analytics</a>
                     </li>
                 </ul>
-            </div>
+            </div> -->
 
             <notepad />
         </div>
