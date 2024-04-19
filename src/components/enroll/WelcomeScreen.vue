@@ -186,7 +186,7 @@ export default {
             this.$router.push('/');
           } else if (response.status === 400) {
             this.error = response.data["message"];
-            console.log(this.error);
+            // console.log(this.error);
           }
         }).catch((error) => {
           this.error = error;
@@ -194,19 +194,16 @@ export default {
       }
     },
     async resetPassword() {
-      this.getUserLogin = false;
-      this.mode = null;
-      try {
-        const response = await forgotPassword({
+      await forgotPassword({
           email: this.email
-        });
+        }).then((response) => {
         console.log(response);
         this.showForgotPasswordModal = false;
         // Show a success message to the user
-      } catch (error) {
-        console.error(error);
-        // Show an error message to the user
-      }
+      }).catch((error) => {
+          this.error = error;
+        })
+
     }
   },
   watch: {
