@@ -18,3 +18,7 @@ export const conceive = (state) => {
     return state.conceive;
 };
 
+export const passkey = (state) => {
+    return state.passkey;
+};
+

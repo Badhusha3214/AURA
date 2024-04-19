@@ -57,6 +57,7 @@ export default {
                 console.log(response);
                 if (response.status === 201) {
                     this.user.email = response.data.email;
+                    localStorage.setItem('userdata', JSON.stringify(response.UserData));  
                 } else if (response.response.status === 400) {
                     this.error = response.response.data[message];
                     console.log(this.error);

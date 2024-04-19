@@ -12,7 +12,7 @@
         <button @click="updateCounter(1, '--')" class="font-semibold text-xl bg-primary text-white px-4 py-2 rounded">-</button>
       </div>
     </div>
-    <h1>{{ conceive }}</h1>
+    <h1>{{ passkey }}</h1>
     <div class="flex items-center justify-center mt-5">
       <label for="email" class="font-semibold text-xl mr-4">Email:</label>
       <input
@@ -59,27 +59,31 @@
           this.saveEmail(v)
         }
       },
-      conceive: {
-                get() {
-                    return this.$store.state.conceive
-                    
-                },
-                set(value) {
-                  this.saveEmail(v)
-                }
-            }
+      passkey: {
+        get() {
+          return this.$store.state.passkey      
+        },
+        set(v) {
+          this.savepass(v)
+        }
+      },
+
     },
     methods: {
       saveEmail(value) {
         // console.log(localStorage.getItem('email'))
         // this.$store.commit("SET_USER", localStorage.getItem('email'))
-        this.$store.commit("SET_CONCEIVE", value)
+        this.$store.commit("SET_PASSKEY", value)
         this.email = value
         
       },
       updateCounter(value, action) {
         action === '++' ? this.counter += value : this.counter -= value
       }
-    }
+    },async mounted() {
+            if (!document.cookie.includes('aura-token')) {
+                this.$router.push('/enroll')
+            }
+        }
   }
   </script>

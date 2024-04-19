@@ -16,3 +16,7 @@ export const SET_ENROLL_DATA = (state, payload) => {
 export const SET_CONCEIVE = (state, payload) => {
     state.conceive = payload;
 };
+
+export const SET_PASSKEY = (state, payload) => {
+    state.passkey = payload;
+};

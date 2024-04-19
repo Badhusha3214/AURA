@@ -21,7 +21,8 @@
                 placeholder="Enter OTP" required>
 
             <p v-if="message" class="text-xs mt-1 text-red-500">{{ message }}</p>
-            <button @click="otpresend" class="text-red-500 font-semibold  text-lg p-3 bg-white" type="button">Resend Otp</button>
+            <button @click="otpresend" class="text-red-500 font-semibold  text-lg p-3 bg-white" type="button">Resend
+                Otp</button>
         </div>
 
     </div>
@@ -35,7 +36,7 @@
 </template>
 
 <script>
-import { userVerify , resendotp } from '@/api/index.js'
+import { userVerify, resendotp } from '@/api/index.js'
 import router from '@/router';
 
 export default {
@@ -44,7 +45,7 @@ export default {
         return {
             otp: null,
             message: null,
-            gmail: localStorage.getItem('email'),
+            email: localStorage.getItem('email'),
             error: null,
             enableButton: false,
         }
@@ -57,15 +58,24 @@ export default {
             set(value) {
                 this.$store.dispatch('setUser', value)
             }
-        }
+        }, passkey: {
+            get() {
+                return this.$store.state.passkey
+            },
+            set(v) {
+                this.savepass(v)
+            }
+        },
     },
     methods: {
         async usersverify() {
             await userVerify({
                 otp: this.otp,
+                email: this.email,
+                password: this.passkey
             }).then((response) => {
                 if (response.status === 200) {
-                    console.log(response.data.Token);
+                    // console.log(response.data.Token);
                     document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
                     this.user.email = response.data.email;
                     router.push('/steps');
@@ -79,24 +89,24 @@ export default {
         },
         async otpresend() {
             await resendotp({
-                email: this.gmail,
+                email: this.email,
             }).then((response) => {
                 if (response.status === 200) {
-                    console.log(this.gmail);
+                    // console.log(this.email);
                     this.user.email = response.data.email;
-                    console.log(this.user.email);
+                    // console.log(this.user.email);
                     this.message = "Opt send successfully"
                     // console.log(response.data[message]);
                     console.log(response);
                 } else {
                     this.message = response.data.message;
                     this.message = "try again"
-                    console.log(this.gmail);
+                    console.log(this.email);
 
                 }
             }).catch((error) => {
                 this.error = error;
-                console.log(this.gmail);
+                console.log(this.email);
             });
         }
     },
