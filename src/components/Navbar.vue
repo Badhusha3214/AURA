@@ -145,7 +145,7 @@ export default {
           email: this.confirmationEmail,
         }).then((response) => {
         console.log(response);
-        if(response.response.status == 200) {
+        if(response.status == 200) {
          this.$router.push('/enroll') 
          document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         }else if(response.response.status === 400) {
