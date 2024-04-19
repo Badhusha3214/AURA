@@ -1,4 +1,5 @@
 <template>
+    <IsMobile />
     <EnrollLayout>
 
 
@@ -52,6 +53,7 @@
     import StepThree from '@/components/enroll/steps/_StepThree.vue'
     import StepFour from '@/components/enroll/steps/_StepFour.vue'
     import LoadScreen from '@/components/enroll/LoadScreen.vue'
+    import IsMobile from "@/components/IsMobile.vue";
 
 
 
@@ -61,6 +63,7 @@
             EnrollLayout,
             StepOne,
             StepTwo,
+            IsMobile,
             StepThree,
             StepFour,
             LoadScreen
@@ -81,11 +84,11 @@
                 }
             }
         },
-        // mounted() {
-        //     if (!document.cookie.includes('aura-token')) {
-        //         this.$router.push('/enroll')
-        //     }
-        // },
+        mounted() {
+            if (!document.cookie.includes('aura-token')) {
+                this.$router.push('/enroll')
+            }
+        },
 
         methods: {
             updateEnrollData(data) {

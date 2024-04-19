@@ -23,6 +23,7 @@
 <script>
 import EnrollProgress from '@/components/partials/EnrollProgress.vue';
 import Calendar from '@/components/Calender.vue';
+import { userdetail } from '@/api/index.js'
 
 export default {
     emits: ['updateEnrollData', 'triggerNext'],
@@ -40,11 +41,31 @@ export default {
     methods: {
         handleDateSelected(date) {
             this.selected = date;
-            console.log('Selected dateaaa:', date);
+            console.log('Selected date:', date);
         },
-        triggerNext() {
+        async triggerNext() {
             this.$emit('updateEnrollData', { lastperiod: this.selected });
             this.$emit('triggerNext', 'Splash');
+            await userdetail({
+                conceive: localStorage.getItem('conceive'),
+                duration_period: localStorage.getItem('periodLength'),
+                last_cycle_regular: localStorage.getItem('cycleLength'),
+                last_cycle_irregular_start: localStorage.getItem('cycleLength_start'),
+                last_cycle_irregular_last: localStorage.getItem('cycleLength_end'),
+                last_period_start: localStorage.getItem('selectedDate'),
+            }).then((response) => {
+                console.log(response);
+                if (response.status === 201) {
+                    this.user.email = response.data.email;
+                } else if (response.response.status === 400) {
+                    this.error = response.response.data[message];
+                    console.log(this.error);
+                }
+            }).catch((error) => {
+                this.error = error;
+
+
+            })
         },
     },
 };
