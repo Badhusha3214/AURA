@@ -3,6 +3,7 @@ export const initialState = () => {
     return {
 
         counter: 0,
+        passkey: null,
         user: {
             email: null,
         },
