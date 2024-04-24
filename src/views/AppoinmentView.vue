@@ -1,7 +1,8 @@
 <template>
     <DashboardLayout />
     <IsMobile />
-    <div class="flex items-center justify-center h-24 bg-primary">
+    <navbar />
+    <!-- <div class="flex items-center justify-center h-24 bg-primary">
       <h1 class="text-4xl font-bold text-white">Appointment</h1>
     </div>
   
@@ -11,8 +12,14 @@
         <button @click="updateCounter(1, '++')" class="font-semibold text-xl bg-primary text-white px-4 py-2 rounded">+</button>
         <button @click="updateCounter(1, '--')" class="font-semibold text-xl bg-primary text-white px-4 py-2 rounded">-</button>
       </div>
+    </div> -->
+
+    <div class="flex items-center justify-center">
+      <AppoinmentCard />
     </div>
-    <h1>{{ passkey }}</h1>
+
+     
+    <!-- <h1>{{ passkey }}</h1>
     <div class="flex items-center justify-center mt-5">
       <label for="email" class="font-semibold text-xl mr-4">Email:</label>
       <input
@@ -23,18 +30,23 @@
         placeholder="Enter email"
       />
       <button @click="saveEmail(email)" class="font-semibold bg-primary text-white px-4 py-2 rounded ml-4">Save</button>
-    </div>
+    </div> -->
   </template>
   
   <script>
   import DashboardLayout from '@/layouts/DashboardLayout.vue'
   import IsMobile from "@/components/IsMobile.vue";
+  import AppoinmentCard from '@/components/AppoinmentCard.vue'
+  import navbar from '@/components/Navbar.vue'
+
 
   export default {
     name: 'AppoinmentView',
     components: {
       DashboardLayout,
-      IsMobile
+      IsMobile,
+      AppoinmentCard,
+      navbar
     },
     data() {
       return {
@@ -81,9 +93,9 @@
         action === '++' ? this.counter += value : this.counter -= value
       }
     },async mounted() {
-            if (!document.cookie.includes('aura-token')) {
-                this.$router.push('/enroll')
-            }
+            // if (!document.cookie.includes('aura-token')) {
+            //     this.$router.push('/enroll')
+            // }
         }
   }
   </script>
