@@ -14,7 +14,10 @@
       </div>
     </div> -->
 
-    <div class="flex items-center justify-center">
+    <div v-if="Doctor" class="flex items-center justify-center">
+      <DrAppoinment />
+    </div>
+    <div v-else class="flex items-center justify-center">
       <AppoinmentCard />
     </div>
 
@@ -38,6 +41,7 @@
   import IsMobile from "@/components/IsMobile.vue";
   import AppoinmentCard from '@/components/AppoinmentCard.vue'
   import navbar from '@/components/Navbar.vue'
+  import DrAppoinment from '@/components/DrAppoinment.vue'
 
 
   export default {
@@ -46,11 +50,13 @@
       DashboardLayout,
       IsMobile,
       AppoinmentCard,
-      navbar
+      navbar,
+      DrAppoinment
     },
     data() {
       return {
         email: null,
+        Doctor: true
       }
     },
     computed: {
