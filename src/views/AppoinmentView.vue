@@ -18,7 +18,11 @@
       <DrAppoinment />
     </div>
     <div v-else class="flex items-center justify-center">
-      <AppoinmentCard />
+      <template v-for="doctor in doctors" :key="doctors.Name">
+        <div>
+          <AppoinmentCard :doctor="doctor"/>
+        </div>
+      </template>
     </div>
 
      
@@ -42,6 +46,7 @@
   import AppoinmentCard from '@/components/AppoinmentCard.vue'
   import navbar from '@/components/Navbar.vue'
   import DrAppoinment from '@/components/DrAppoinment.vue'
+  import { getDoctorsList } from '@/api/index.js'
 
 
   export default {
@@ -56,7 +61,9 @@
     data() {
       return {
         email: null,
-        Doctor: true
+        Doctor: false,
+        doctors: [],
+
       }
     },
     computed: {
@@ -99,9 +106,11 @@
         action === '++' ? this.counter += value : this.counter -= value
       }
     },async mounted() {
-            // if (!document.cookie.includes('aura-token')) {
-            //     this.$router.push('/enroll')
-            // }
+            if (!document.cookie.includes('aura-token')) {
+                this.$router.push('/enroll')
+            }
+            this.doctors = getDoctorsList();
+            console.log(doctors.name)
         }
   }
   </script>
