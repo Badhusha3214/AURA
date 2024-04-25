@@ -190,3 +190,30 @@ export const deleteAccount = async (user) => {
         return error;
     }
 };
+
+export const getDoctorsList = async()=>{
+    let data = [
+        {
+            Name: 'Dr. Shemmy raj',
+            Department:  'Gynaecologist',
+            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+        },
+        {
+            Name: 'Dr. Thankappan raj',
+            Department:  'Gynaecologist',
+            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+        },
+        {
+            Name: 'Dr. Rajesh raj',
+            Department:  'Gynaecologist',
+            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+        },
+        {
+            Name: 'Dr. Shashikala',
+            Department:  'General surgeon',
+            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+        },
+    ]
+
+    return data;
+};
