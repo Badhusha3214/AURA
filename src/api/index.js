@@ -4,13 +4,7 @@ import { useRoute } from 'vue-router';
 
 let token;
 
-// Retrieve data from local storage
-const jsonDataString = localStorage.getItem('userdata'); // Replace 'key' with the key you used to store the data
 
-// Parse JSON string to JavaScript object
-// const userdata = JSON.parse(jsonDataString);    
-
-// console.log(userdata.last_period_start );
 
 export const getBasicData = () => {
     return {

@@ -91,6 +91,10 @@ export default {
         updateCounter(value, action) {
             action === "++" ? (this.counter += value) : (this.counter -= value);
         },
-    },
+    },async mounted() {
+            if (!document.cookie.includes('aura-token')) {
+                this.$router.push('/enroll')
+            }
+        }
 };
 </script>
