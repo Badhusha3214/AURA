@@ -213,6 +213,11 @@ export const getDoctorsList = async()=>{
             Department:  'General surgeon',
             Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
         },
+        {
+            Name: 'Dr. Sushamma',
+            Department:  'General surgeon',
+            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+        },
     ]
 
     return data;

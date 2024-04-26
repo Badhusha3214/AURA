@@ -1,5 +1,5 @@
 <template>
-    <DashboardLayout />
+    <DashboardLayout /> 
     <IsMobile />
     <navbar />
     <!-- <div class="flex items-center justify-center h-24 bg-primary">
@@ -17,9 +17,9 @@
     <div v-if="Doctor" class="flex items-center justify-center">
       <DrAppoinment />
     </div>
-    <div v-else class="flex items-center justify-center">
+    <div v-else class="">
       <template v-for="doctor in doctors" :key="doctors.Name">
-        <div>
+        <div class="mt-2 flex items-center justify-center">
           <AppoinmentCard :doctor="doctor"/>
         </div>
       </template>
@@ -106,11 +106,11 @@
         action === '++' ? this.counter += value : this.counter -= value
       }
     },async mounted() {
-            if (!document.cookie.includes('aura-token')) {
-                this.$router.push('/enroll')
-            }
-            this.doctors = getDoctorsList();
-            console.log(doctors.name)
+            // if (!document.cookie.includes('aura-token')) {
+            //     this.$router.push('/enroll')
+            // }
+            this.doctors = await getDoctorsList();
+            console.log(doctors)
         }
   }
   </script>
