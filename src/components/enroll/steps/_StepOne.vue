@@ -56,7 +56,7 @@ export default {
           description: 'Lorem ipsum dolor sit amet consectetur. Euismod lacus proin curabitur dignissim tellus blandit massa. Amet fusce semper convallis interdum.',
         },
       ],
-      selected: null,
+      selected: null, 
     };
   },
   computed: {

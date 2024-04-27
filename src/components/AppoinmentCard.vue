@@ -15,14 +15,21 @@
 
 </template>
 <script>
-export default{
-    name: 'AppoinmentCard',
-    props: {
-      doctor: {
-        type: Object,
-        required: true,
-      }
-    },
+
+export default {
+  name: 'AppoinmentCard',
+  props: {
+    doctor: {
+      type: Object,
+      required: true,
+      default: () => ({
+        Name: '',
+        Department: '',
+        Hospital: ''
+      })
+    }
+  }
+
 }
 
 </script>

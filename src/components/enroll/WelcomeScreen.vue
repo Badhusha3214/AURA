@@ -183,6 +183,7 @@ export default {
             document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
             // this.user.email = response.data.UserData.email;
             localStorage.setItem('userdata', JSON.stringify(response.data.UserData));
+            
             this.$router.push('/');
           } else if (response.status === 400) {
             this.error = response.data["message"];
