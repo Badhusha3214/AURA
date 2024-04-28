@@ -7,9 +7,9 @@
   <div v-if="Doctor" class="flex items-center justify-center ">
     <DrAppoinment />
   </div>
-  <div v-else class="">
+  <div v-else class="bg-gradient-to-b from-white via-pink-100 to-pink-100">
     <template v-for="doctor in doctors" :key="doctor.Name">
-  <div class="mt-2 flex items-center justify-center">
+  <div class="mt-2 flex items-center justify-center ">
     <AppoinmentCard :doctor="doctor" />
   </div>
 </template>
