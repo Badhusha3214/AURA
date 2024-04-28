@@ -1,5 +1,5 @@
 <template>
-  <div class="control-panel absolute bottom-0 w-full bg-white">
+  <div class="control-panel fixed bottom-0 left-0 right-0 w-full bg-white">
     <div class="control-panel__items">
       <router-link v-for="control in controls" :key="control.name" :to="control.route" class="control-panel__item"
         :class="{
@@ -86,6 +86,7 @@ export default {
 <style scoped>
 .control-panel {
   box-shadow: 0px -2px 3px 0px rgba(0, 0, 0, 0.2);
+  z-index: 10;
 }
 
 .control-panel__items {
