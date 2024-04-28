@@ -15,6 +15,7 @@
 
 </template>
 <script>
+
 export default {
   name: 'AppoinmentCard',
   props: {
@@ -28,6 +29,7 @@ export default {
       })
     }
   }
+
 }
 
 </script>

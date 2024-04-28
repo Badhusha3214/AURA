@@ -1,4 +1,5 @@
 <template>
+
   <DashboardLayout /> 
   <IsMobile />
   <navbar />
@@ -13,6 +14,7 @@
   </div>
 </template>
   </div>
+
 
    
 </template>
@@ -41,6 +43,7 @@ export default {
       Doctor: false,
       doctors: [],
 
+
     }
   },
   methods: {
@@ -52,3 +55,4 @@ export default {
 }
 }
 </script>
+
