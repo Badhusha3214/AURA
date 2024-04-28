@@ -4,7 +4,7 @@
   <IsMobile />
   <navbar />
 
-  <div v-if="Doctor" class="flex items-center justify-center">
+  <div v-if="Doctor" class="flex items-center justify-center ">
     <DrAppoinment />
   </div>
   <div v-else class="">
@@ -14,7 +14,7 @@
   </div>
 </template>
   </div>
-
+<div class="mb-20"></div>
 
    
 </template>
