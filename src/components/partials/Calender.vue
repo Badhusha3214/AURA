@@ -84,9 +84,9 @@ export default {
       const formattedDay = day < 10 ? '0' + day : day;
       const formattedMonth = month < 10 ? '0' + month : month;
       const formattedDate = `${formattedDay}-${formattedMonth}-${year}`;
-      console.log("Selected date:", formattedDate);
+      console.log(" last_period_start:", formattedDate);
       // Store selected date in local storage
-      localStorage.setItem('selectedDate', formattedDate);
+      localStorage.setItem('last_period_start', formattedDate);
     }
   },
   methods: {

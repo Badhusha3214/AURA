@@ -8,7 +8,7 @@
         </div>
     </div>
     <div v-if="getdata()"></div>
-    <div  class="absolute w-full flex justify-center mb-12">
+    <div  class="bg-gradient-to-b from-white via-pink-100 to-pink-100absolute w-full flex justify-center mb-12">
         <div class="relative flex flex-col items-center gap-5 justify-center my-3">
             <div>
                 <p class="font-medium text-22 w-72 text-center">{{ userName }}</p>

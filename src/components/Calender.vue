@@ -82,10 +82,10 @@ export default {
   },
   watch: {
     selectedDate(newVal) {
-      const formattedDate = `${newVal}-${this.currentDate.getMonth() + 1}-${this.currentDate.getFullYear()}`;
+      const formattedDate = `${this.currentDate.getFullYear()}-${this.currentDate.getMonth() + 1}-${newVal}`;
       console.log("Selected date:", formattedDate);
       // Store selected date in local storage
-      localStorage.setItem('selectedDate', formattedDate);
+      localStorage.setItem('last_period_start', formattedDate);
       // Emit the selected date to the parent component
       this.$emit('dateSelected', formattedDate);
     },

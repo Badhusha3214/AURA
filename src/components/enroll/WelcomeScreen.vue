@@ -182,8 +182,14 @@ export default {
             localStorage.setItem('email', this.email);
             document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
             // this.user.email = response.data.UserData.email;
-            localStorage.setItem('userdata', JSON.stringify(response.data.UserData));
-            
+            // localStorage.setItem('userdata', JSON.stringify(response.data.UserData));
+            localStorage.setItem('conceive', response.data.UserData.conceive);
+            localStorage.setItem('duration_period', response.data.UserData.duration_period);
+            localStorage.setItem('email', response.data.UserData.email);
+            localStorage.setItem('last_cycle_irregular_last', response.data.UserData.last_cycle_irregular_last);
+            localStorage.setItem('last_cycle_irregular_start', response.data.UserData.last_cycle_irregular_start);
+            localStorage.setItem('last_cycle_regular', response.data.UserData.last_cycle_regular);
+            localStorage.setItem('last_period_start', response.data.UserData.last_period_start);
             this.$router.push('/');
           } else if (response.status === 400) {
             this.error = response.data["message"];

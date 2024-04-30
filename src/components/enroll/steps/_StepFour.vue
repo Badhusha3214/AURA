@@ -52,7 +52,7 @@ export default {
                 last_cycle_regular: localStorage.getItem('cycleLength'),
                 last_cycle_irregular_start: localStorage.getItem('cycleLength_start'),
                 last_cycle_irregular_last: localStorage.getItem('cycleLength_end'),
-                last_period_start: localStorage.getItem('selectedDate'),
+                last_period_start: localStorage.getItem('last_period_start'),
             }).then((response) => {
                 console.log(response);
                 if (response.status === 201) {

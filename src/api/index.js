@@ -4,8 +4,6 @@ import { useRoute } from 'vue-router';
 
 let token;
 
-
-
 export const getBasicData = () => {
     return {
         data: {
@@ -15,9 +13,9 @@ export const getBasicData = () => {
             email: localStorage.getItem('email'),
             dob: '1990-01-01',
 
-            cycleLength: 31,                    // Length of menstrual cycle in days
-            periodLength: 8,                    // Length of period in days (bleeding days)
-            lastMenstrualPeriod: '2024-04-02',  // Start date of last period
+            cycleLength: Number(localStorage.getItem('last_cycle_regular')),                    // Length of menstrual cycle in days
+            periodLength: Number(localStorage.getItem('duration_period')),                    // Length of period in days (bleeding days)
+            lastMenstrualPeriod: localStorage.getItem('last_period_start'),  // Start date of last period
             frequency: 'regular',               // 'regular' | 'irregular'
 
             createdAt: '2020-01-01',
@@ -25,15 +23,15 @@ export const getBasicData = () => {
         }
     }
     //     data: {
-    //         id: userdata.id,
+    //         id: '1',
     //         firstName: 'Jane',
     //         lastName: 'Doe',
-    //         email: userdata.email,
+    //         email: localStorage.getItem('email'),
     //         dob: '1990-01-01',
 
-    //         cycleLength: 31,                    // Length of menstrual cycle in days
-    //         periodLength: 8,                    // Length of period in days (bleeding days)
-    //         lastMenstrualPeriod: '2024-04-02',  // Start date of last period
+    //         cycleLength: 28,                    // Length of menstrual cycle in days
+    //         periodLength: 6,                    // Length of period in days (bleeding days)
+    //         lastMenstrualPeriod: 2024-5-9,  // Start date of last period
     //         frequency: 'regular',               // 'regular' | 'irregular'
 
     //         createdAt: '2020-01-01',

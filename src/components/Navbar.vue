@@ -2,7 +2,7 @@
 
    <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar"
       type="button"
-      class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+      class=" inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
       <span class="sr-only">Open sidebar</span>
       <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
          xmlns="http://www.w3.org/2000/svg">
@@ -96,7 +96,7 @@
                         <p class="text-sm leading-5 text-gray-500">
                            To confirm account deletion, please enter your Gmail ID.
                         </p>
-                        <input type="email" v-model="confirmationEmail" class="mt-2 form-input"
+                        <input type="email" v-model="confirmationEmail" size="34" class="mt-2 form-input"
                            placeholder="Enter your Gmail ID" />
                      </div>
                   </div>
@@ -151,7 +151,6 @@ export default {
                document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                localStorage.clear();
             } else if (response.response.status === 400) {
-               console.log("nilllllllllll");
                this.error = "enter a valid email address"
             }
          }).catch((error) => {

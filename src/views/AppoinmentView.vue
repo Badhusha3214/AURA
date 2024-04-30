@@ -4,17 +4,26 @@
   <IsMobile />
   <navbar />
 
-  <div v-if="Doctor" class="flex items-center justify-center">
-    <DrAppoinment />
-  </div>
-  <div v-else class="">
-    <template v-for="doctor in doctors" :key="doctor.Name">
-  <div class="mt-2 flex items-center justify-center">
-    <AppoinmentCard :doctor="doctor" />
-  </div>
-</template>
-  </div>
 
+
+  <div v-if="Doctor" class="bg-gradient-to-b from-white via-pink-100 to-pink-100">
+  <template v-for="doctor in doctors" :key="doctor.Name">
+    <div class="mt-2 flex items-center justify-center ">
+      <DrAppoinment :doctor="doctor" />
+    </div>
+  </template>
+  </div>
+  
+
+
+  <div v-else class="bg-gradient-to-b from-white via-pink-100 to-pink-100">
+  <template v-for="doctor in doctors" :key="doctor.Name">
+    <div class="mt-2 flex items-center justify-center ">
+      <AppoinmentCard :doctor="doctor" />
+    </div>
+  </template>
+  </div>
+<div class="mb-20"></div>
 
    
 </template>
@@ -40,7 +49,7 @@ export default {
   data() {
     return {
       email: null,
-      Doctor: false,
+      Doctor: true,
       doctors: [],
 
 
