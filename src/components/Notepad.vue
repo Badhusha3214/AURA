@@ -1,37 +1,39 @@
 <template>
   <button @click="showAddNote = true"
-    class="text-black w-64 bg-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
+    class="text-black w-64 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
     type="button">
     ADD DATA
   </button>
   <div class="container mx-auto z-10 p-4">
     <ul class="mt-4">
       <li v-for="(note, index) in notes" :key="index"
-        class="bg-white border border-gray-300 rounded-md p-4  z-0 mb-4 shadow-md relative">
-        <div class="flex justify-between items-center mb-2">
-          <div class="text-lg font-semibold">
+        class="mb-6 text-black w-64 bg-white hover:bg-tertiary focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5  items-center"
+        @click="toggleNoteContent(index)">
+        <div class="flex justify-between items-center mb-2 ">
+          <div class="text-sm font-semibold">
             {{ note.title }}
           </div>
-          <div v-if="note.showContent" class="absolute top-2 right-2">
-            <button class="bg-green-500 text-white px-2 py-1 rounded-md mr-2 hover:bg-green-600 transition-colors"
-              @click="editNote(index)">
-              Edit
-            </button>
-            <button class="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 transition-colors"
-              @click="deleteNote(index)">
-              Delete
-            </button>
-          </div>
+          <div class="text-xs">{{ formatDate(note.createdAt) }}</div>
         </div>
         <div v-if="note.showContent" class="note-content">
           <p>{{ note.content }}</p>
+          <div class="flex justify-between  mt-2">
+            <button class=" text-black px-2 py-1 rounded-md mr-2 hover:bg-green-600 transition-colors"
+              @click.stop="editNote(index)">
+              Edit
+            </button>
+            <button class=" text-black px-2 py-1 rounded-md hover:bg-red-600 transition-colors"
+              @click.stop="deleteNote(index)">
+              Delete
+            </button>
+          </div>
         </div>
       </li>
     </ul>
     <div v-if="showAddNote" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
       @click.self="showAddNote = false">
       <div class="bg-white z-auto rounded-md shadow-md" @click.stop style="max-width: 600px; width: 90%">
-        <div class="flex justify-between items-center p-4 border-b">
+        <div class="flex justify-between items-center pl-5 border-b">
           <button class="text-gray-500 hover:text-gray-700 transition-colors" @click="showAddNote = false">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg">
@@ -40,8 +42,8 @@
             </svg>
           </button>
 
-          <h3 class="text-xl font-semibold">Add Note</h3>
-          <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors"
+          <h3 class="text-xl font-semibold"></h3>
+          <button class=" text-black pr-4 py-2 rounded-md text-opacity-60 transition-colors"
             @click="addNote">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg">
@@ -51,11 +53,11 @@
         </div>
         <div class="p-4">
           <input v-model="newNoteTitle"
-            class="w-full border-b border-gray-300 pb-1 placeholder-gray-400 focus:outline-none text-lg"
-            placeholder="Title" />
+            class="w-full border-b bg-white border-gray-500 pb-1 rounded placeholder-gray-400 focus:outline-none text-lg"
+            placeholder="  Title" />
         </div>
-        <textarea v-model="newNoteContent"
-          class="w-full border border-gray-300 rounded-md px-4 py-2 placeholder-gray-400 focus:outline-none text-base h-48"
+        <textarea v-model="newNoteContent" row="10" cols="38"
+          class="  border border-gray-300 rounded-md px-4 py-2 mb-2 mx-4 placeholder-gray-400 focus:outline-none text-base h-48"
           placeholder="Content"></textarea>
       </div>
     </div>
@@ -84,7 +86,7 @@
           this.notes.unshift({
             title: this.newNoteTitle,
             content: this.newNoteContent,
-            showContent: false,
+            showContent: true,
             createdAt: new Date().toISOString(),
           });
           this.newNoteTitle = "";
@@ -113,7 +115,7 @@
       },
       formatDate(dateString) {
         const date = new Date(dateString);
-        return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+        return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
       },
     },
   };

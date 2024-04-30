@@ -110,7 +110,7 @@
     },
     data() {
       return {
-        Book_appoinment: true,
+    Book_appoinment: true,
     name: '',
     error: '',
     selectedDate: null
