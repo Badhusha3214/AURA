@@ -14,6 +14,7 @@
           <div class="text-xs">{{ formatDate(note.createdAt) }}</div>
         </div>
         <div v-if="note.showContent" class="note-content">
+          <hr>
           <p>{{ note.content }}</p>
           <div class="flex justify-between  mt-2">
             <button class=" text-green-500 px-1 py-1 rounded-md mr-3 hover:bg-green-600 transition-colors"
@@ -41,8 +42,7 @@
           </button>
 
           <h3 class="text-xl font-semibold"></h3>
-          <button class=" text-black pr-4 py-2 rounded-md text-opacity-60 transition-colors"
-            @click="addNote">
+          <button class=" text-black pr-4 py-2 rounded-md text-opacity-60 transition-colors" @click="addNote">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -63,65 +63,65 @@
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      showAddNote: false,
-      newNoteTitle: "",
-      newNoteContent: "",
-      notes: [],
-    };
-  },
-  created() {
-    const savedNotes = localStorage.getItem("notes");
-    if (savedNotes) {
-      this.notes = JSON.parse(savedNotes);
-    }
-  },
-  methods: {
-    addNote() {
-      if (this.newNoteTitle.trim() !== "" && this.newNoteContent.trim() !== "") {
-        this.notes.unshift({
-          title: this.newNoteTitle,
-          content: this.newNoteContent,
-          showContent: true,
-          createdAt: new Date().toISOString(),
-        });
-        this.newNoteTitle = "";
-        this.newNoteContent = "";
-        this.showAddNote = false;
+  export default {
+    data() {
+      return {
+        showAddNote: false,
+        newNoteTitle: "",
+        newNoteContent: "",
+        notes: [],
+      };
+    },
+    created() {
+      const savedNotes = localStorage.getItem("notes");
+      if (savedNotes) {
+        this.notes = JSON.parse(savedNotes);
+      }
+    },
+    methods: {
+      addNote() {
+        if (this.newNoteTitle.trim() !== "" && this.newNoteContent.trim() !== "") {
+          this.notes.unshift({
+            title: this.newNoteTitle,
+            content: this.newNoteContent,
+            showContent: true,
+            createdAt: new Date().toISOString(),
+          });
+          this.newNoteTitle = "";
+          this.newNoteContent = "";
+          this.showAddNote = false;
+          this.saveNotes();
+        }
+      },
+      toggleNoteContent(index) {
+        this.notes[index].showContent = !this.notes[index].showContent;
         this.saveNotes();
-      }
+      },
+      editNote(index) {
+        this.showAddNote = true;
+        this.newNoteTitle = this.notes[index].title;
+        this.newNoteContent = this.notes[index].content;
+        this.notes.splice(index, 1);
+        this.saveNotes();
+      },
+      deleteNote(index) {
+        this.notes.splice(index, 1);
+        this.saveNotes();
+      },
+      saveNotes() {
+        localStorage.setItem("notes", JSON.stringify(this.notes));
+      },
+      formatDate(dateString) {
+        const date = new Date(dateString);
+        return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+      },
+      truncateTitle(title) {
+        const maxLength = 14; // Set the desired maximum length for the title
+        if (title.length > maxLength) {
+          return `${title.slice(0, maxLength)}...`;
+        }
+        return title;
+      },
     },
-    toggleNoteContent(index) {
-      this.notes[index].showContent = !this.notes[index].showContent;
-      this.saveNotes();
-    },
-    editNote(index) {
-      this.showAddNote = true;
-      this.newNoteTitle = this.notes[index].title;
-      this.newNoteContent = this.notes[index].content;
-      this.notes.splice(index, 1);
-      this.saveNotes();
-    },
-    deleteNote(index) {
-      this.notes.splice(index, 1);
-      this.saveNotes();
-    },
-    saveNotes() {
-      localStorage.setItem("notes", JSON.stringify(this.notes));
-    },
-    formatDate(dateString) {
-      const date = new Date(dateString);
-      return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-    },
-    truncateTitle(title) {
-      const maxLength = 14; // Set the desired maximum length for the title
-      if (title.length > maxLength) {
-        return `${title.slice(0, maxLength)}...`;
-      }
-      return title;
-    },
-  },
-};
+  };
 </script>
