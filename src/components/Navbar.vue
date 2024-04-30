@@ -96,7 +96,7 @@
                         <p class="text-sm leading-5 text-gray-500">
                            To confirm account deletion, please enter your Gmail ID.
                         </p>
-                        <input type="email" v-model="confirmationEmail" class="mt-2 form-input"
+                        <input type="email" v-model="confirmationEmail" size="34" class="mt-2 form-input"
                            placeholder="Enter your Gmail ID" />
                      </div>
                   </div>

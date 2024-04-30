@@ -4,8 +4,6 @@ import { useRoute } from 'vue-router';
 
 let token;
 
-console.log(Number(localStorage.getItem('duration_period')));
-
 export const getBasicData = () => {
     return {
         data: {
