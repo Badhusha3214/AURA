@@ -14,7 +14,7 @@
           <div class="text-xs">{{ formatDate(note.createdAt) }}</div>
         </div>
         <div v-if="note.showContent" class="note-content">
-          <hr>
+          <hr class="h-px my-1 bg-gray-500 border-0 dark:bg-gray-700">
           <p>{{ note.content }}</p>
           <div class="flex justify-between  mt-2">
             <button class=" text-green-500 px-1 py-1 rounded-md mr-3 hover:bg-green-600 transition-colors"
@@ -51,11 +51,12 @@
         </div>
         <div class="p-4">
           <input v-model="newNoteTitle"
-            class="w-full border-b bg-white border-gray-500 pb-1 rounded placeholder-gray-400 focus:outline-none text-lg"
+            class="w-full bg-white border-gray-500 pb-1 rounded placeholder-gray-400 focus:outline-none text-lg"
             placeholder="  Title" />
         </div>
+        <hr class="h-px my-1 bg-gray-500 border-1 mx-7 dark:bg-gray-700">
         <textarea v-model="newNoteContent" row="10" cols="38"
-          class="  border border-gray-300 rounded-md px-4 py-2 mb-2 mx-4 placeholder-gray-400 focus:outline-none text-base h-48"
+          class=" border-white rounded-md px-4 py-2 mb-2 mx-4 placeholder-gray-400 focus:outline-white  text-base h-48"
           placeholder="Content"></textarea>
       </div>
     </div>
