@@ -54,14 +54,18 @@
         </div>
       </div>
     </div>
+    <DashboardLayout />
   </template>
   
   <script>
   import Navbar from "@/components/Navbar.vue";
+  import DashboardLayout from '@/layouts/DashboardLayout.vue';
+
   
   export default {
     components: {
       Navbar,
+      DashboardLayout
     },
     data() {
       return {
