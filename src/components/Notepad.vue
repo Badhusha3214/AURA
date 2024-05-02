@@ -55,8 +55,8 @@
             placeholder="  Title" />
         </div>
         <hr class="h-px my-1 bg-gray-500 border-1 mx-7 dark:bg-gray-700">
-        <textarea v-model="newNoteContent" row="10" cols="38"
-          class=" border-white rounded-md px-4 py-2 mb-2 mx-4 placeholder-gray-400 focus:outline-white  text-base h-48"
+        <textarea v-model="newNoteContent" 
+          class=" border-white w-full rounded-md px-4 py-2  placeholder-gray-400 focus:outline-white  text-base h-48"
           placeholder="Content"></textarea>
       </div>
     </div>

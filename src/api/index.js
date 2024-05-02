@@ -214,3 +214,34 @@ export const getDoctorsList = async()=>{
 
     return data;
 };
+export const getpatientList = async()=>{
+    let data = [
+        {
+            Name: 'Saabu',
+            Department:  'Gynaecologist',
+            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+        },
+        {
+            Name: 'taakol karan',
+            Department:  'Gynaecologist',
+            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+        },
+        {
+            Name: 'pappuraajan',
+            Department:  'Gynaecologist',
+            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+        },
+        {
+            Name: 'Shashikala',
+            Department:  'General surgeon',
+            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+        },
+        {
+            Name: 'shikari shambu',
+            Department:  'General surgeon',
+            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+        },
+    ]
+
+    return data;
+};
