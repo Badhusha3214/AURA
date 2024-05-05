@@ -56,7 +56,7 @@
         </div>
         <hr class="h-px my-1 bg-gray-500 border-1 mx-7 dark:bg-gray-700">
         <textarea v-model="newNoteContent" 
-          class=" border-white w-full rounded-md px-4 py-2  placeholder-gray-400 focus:outline-white  text-base h-48"
+          class=" border-white w-full rounded-md px-4 py-2  placeholder-gray-400  text-base h-48"
           placeholder="Content"></textarea>
       </div>
     </div>
@@ -126,3 +126,18 @@
     },
   };
 </script>
+
+<style>
+textarea {
+    border: none;
+    overflow: none;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+    resize: none; /*remove the resize handle on the bottom right*/
+}
+
+</style>
