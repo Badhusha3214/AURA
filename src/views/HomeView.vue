@@ -2,7 +2,7 @@
 <template>
 
     <IsMobile />
-    <navbar />
+
 
     <popup />
         
@@ -27,7 +27,6 @@
     import CentralCircle from '@/components/Home/CentralCircle.vue'
     import Popup from '@/components/CompleteProfile.vue'
     import Calender from '@/components/Home/Calender.vue'
-    import navbar from '@/components/Navbar.vue'
     import IsMobile from "@/components/IsMobile.vue";
 
     import { calculateMenstrualCycles, findClosestDate, getMessage } from '@/utils/helpers.js'
@@ -39,7 +38,7 @@
             DashboardLayout,
             Calender,
             CentralCircle,
-            navbar,
+
             IsMobile,
             Popup
         },

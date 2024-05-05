@@ -1,7 +1,7 @@
 <template>
   <DashboardLayout />
   <IsMobile />
-  <navbar />
+
   <div v-if="Doctor" class="bg-gradient-to-b from-white via-pink-100 to-pink-100">
     <template v-for="patient in patients" :key="patient.Name">
       <div class="mt-2 flex items-center justify-center">
@@ -23,7 +23,7 @@
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import IsMobile from "@/components/IsMobile.vue";
 import AppoinmentCard from '@/components/AppoinmentCard.vue'
-import navbar from '@/components/Navbar.vue'
+
 import DrAppoinment from '@/components/DrAppoinment.vue'
 import { getDoctorsList, getpatientList } from '@/api/index.js'
 
@@ -33,7 +33,7 @@ export default {
     DashboardLayout,
     IsMobile,
     AppoinmentCard,
-    navbar,
+
     DrAppoinment
   },
   data() {
