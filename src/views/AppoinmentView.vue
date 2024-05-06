@@ -34,7 +34,7 @@ import IsMobile from "@/components/IsMobile.vue";
 import AppoinmentCard from '@/components/AppoinmentCard.vue'
 import navbar from '@/components/Navbar.vue'
 import DrAppoinment from '@/components/DrAppoinment.vue'
-import { getDoctorsList } from '@/api/index.js'
+import { getDoctorsList , getpatientList } from '@/api/index.js'
 
 
 export default {
@@ -51,6 +51,7 @@ export default {
       email: null,
       Doctor: false,
       doctors: [],
+      patient: [],
 
 
     }
@@ -61,6 +62,8 @@ export default {
   },async mounted() {
   this.doctors = await getDoctorsList();
   console.log(this.doctors); // Check if the array is not empty
+  this.patient = await getpatientList();
+  console.log(this.patient); // Check if the array is not empty
 }
 }
 </script>

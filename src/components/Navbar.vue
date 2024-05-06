@@ -1,22 +1,39 @@
+
 <template>
+  <button
+    data-drawer-target="default-sidebar"
+    data-drawer-toggle="default-sidebar"
+    aria-controls="default-sidebar"
+    type="button"
+    class="inline-flex items-center p-2 mt-2 ml-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+    @click="toggleSidebar"
+  >
+    <span class="sr-only">Open sidebar</span>
+    <svg
+      class="w-6 h-6"
+      aria-hidden="true"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clip-rule="evenodd"
+        fill-rule="evenodd"
+        d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+      ></path>
+    </svg>
+  </button>
 
-   <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar"
-      type="button"
-      class=" inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
-      <span class="sr-only">Open sidebar</span>
-      <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
-         xmlns="http://www.w3.org/2000/svg">
-         <path clip-rule="evenodd" fill-rule="evenodd"
-            d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
-         </path>
-      </svg>
-   </button>
-
-   <aside id="default-sidebar"
-      class="fixed top-0 left-0 z-40 w-56 h-screen transition-transform -translate-x-full sm:translate-x-0"
-      aria-label="Sidebar" :class="{ '-translate-x-full': showDeleteAccountConfirmation }">
-      <div class="h-full px-3 py-4 overflow-y-auto backdrop-blur-md">
-         <ul class="space-y-2 font-medium mb-1">
+  <aside
+    id="default-sidebar"
+    class="fixed top-0 left-0 z-40 w-56 h-screen transition-transform -translate-x-full sm:translate-x-0"
+    aria-label="Sidebar"
+    :class="{ '-translate-x-full': !sidebarOpen }"
+    @click.outside="closeSidebar"
+  >
+    <div class="h-full px-3 py-4 overflow-y-auto backdrop-blur-md">
+       <!-- Sidebar content -->
+       <ul class="space-y-2 font-medium mb-1">
             <li>
                <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg">
 
@@ -74,8 +91,9 @@
 
 
          </ul>
-      </div>
+     </div>
    </aside>
+ 
    <div v-if="showDeleteAccountConfirmation" class="fixed z-10 inset-0 overflow-y-auto">
       <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
          <div class="fixed inset-0 transition-opacity">
@@ -122,55 +140,53 @@
          </div>
       </div>
    </div>
-</template>
-
-<script>
-import { deleteAccount } from '@/api/index.js'
-export default {
+ </template>
+ 
+ <script>
+ import { deleteAccount } from '@/api/index.js';
+ 
+ export default {
    name: 'Navbar',
    data() {
-      return {
-         showDeleteAccountConfirmation: false,
-         confirmationEmail: '',
-         error: null,
-      }
+     return {
+       showDeleteAccountConfirmation: false,
+       confirmationEmail: '',
+       error: null,
+       sidebarOpen: false,
+     };
    },
    methods: {
-      logout() {
-         document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-         window.location.href = "/enroll";
-         localStorage.clear();
-      },
-      async deleteAccount() {
-         await deleteAccount({
-            email: this.confirmationEmail,
-         }).then((response) => {
-            console.log(response);
-            if (response.status == 200) {
-               this.$router.push('/enroll')
-               document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-               localStorage.clear();
-            } else if (response.response.status === 400) {
-               this.error = "enter a valid email address"
-            }
-         }).catch((error) => {
-            console.log("error");
-            this.error = error;
+     logout() {
+       document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+       window.location.href = "/enroll";
+       localStorage.clear();
+     },
+     async deleteAccount() {
+       await deleteAccount({
+         email: this.confirmationEmail,
+       })
+         .then((response) => {
+           console.log(response);
+           if (response.status === 200) {
+             this.$router.push('/enroll');
+             document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+             localStorage.clear();
+           } else if (response.response.status === 400) {
+             this.error = "enter a valid email address";
+           }
          })
+         .catch((error) => {
+           console.log("error");
+           this.error = error;
+         });
+     },
+     toggleSidebar() {
+       this.sidebarOpen = !this.sidebarOpen;
+     },
+     closeSidebar() {
+       this.sidebarOpen = false;
+     },
+   },
+ };
+ </script>
 
-
-
-         // // Perform account deletion logic here
-         // // Check if the entered email matches the user's account
-         // if (this.confirmationEmail === 'user@example.com') {
-         //    // Account deletion successful
-         //    // Redirect to the /enroll page
-         //    window.location.href = "/enroll";
-         // } else {
-         //    // Invalid email, display an error message
-         //    alert('Invalid Gmail ID. Please try again.');
-         // }
-      }
-   }
-}
-</script>

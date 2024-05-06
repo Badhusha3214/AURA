@@ -73,8 +73,13 @@ export default {
     }
   },
   mounted() {
-    this.activeControl = this.$route.path.split('/')[1]
-  },
+  const currentPath = this.$route.path;
+  if (currentPath === '/') {
+    this.activeControl = 'home';
+  } else {
+    this.activeControl = currentPath.split('/')[1];
+  }
+},
   methods: {
     togglePopup() {
       this.showPopup = !this.showPopup
