@@ -219,27 +219,33 @@ export const getpatientList = async()=>{
         {
             Name: 'Saabu',
             Department:  'Gynaecologist',
-            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+            mode: 'audio call',
+            time: '30/04/2024 12:30 PM'
         },
         {
             Name: 'taakol karan',
             Department:  'Gynaecologist',
-            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+            mode: 'audio call',
+            time: '30/04/2024 12:00 PM'
+
         },
         {
             Name: 'pappuraajan',
             Department:  'Gynaecologist',
-            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+            mode: 'audio call',
+            time: '30/04/2024 12:40 PM'
         },
         {
             Name: 'Shashikala',
             Department:  'General surgeon',
-            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+            mode: 'vedio call',
+            time: '30/04/2024 12:00 PM'
         },
         {
             Name: 'shikari shambu',
             Department:  'General surgeon',
-            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+            mode: 'vedio call',
+            time: '30/04/2024 12:00 PM'
         },
     ]
 
