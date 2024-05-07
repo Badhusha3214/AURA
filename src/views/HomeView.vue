@@ -38,7 +38,6 @@
             DashboardLayout,
             Calender,
             CentralCircle,
-
             IsMobile,
             Popup
         },
@@ -81,7 +80,6 @@
                     let closestItem = findClosestDate(this.dates.currentCycle, this.dates.nextCycle)
                     let msg = getMessage(closestItem)
                     // console.log(msg);
-
                     this.info = msg.description
                     this.comment = msg.comments[0]
                     this.days = msg.days

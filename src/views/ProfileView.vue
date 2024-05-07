@@ -1,6 +1,6 @@
 <template>
 <IsMobile />
-
+<DashboardLayout />
 
     <div class="justify-center flex items-center">
         <div class="h-auto w-20">
@@ -52,7 +52,7 @@
 
 
 
-    <DashboardLayout />
+    
 </template>
 
 <script>

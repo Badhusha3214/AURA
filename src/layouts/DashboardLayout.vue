@@ -12,7 +12,7 @@
 
 <script>
     import ControlPanel from '@/components/ControlPanel.vue'
-    import Navbar from '@/components/Navbar.vue'
+    import Navbar from '@/layouts/Navbar.vue'
 
     export default {
         components: {
