@@ -50,7 +50,7 @@
         </div>
 
         <p class="ml-5 mb-2 leading-5 font-bold text-black ">
-          Enter your name
+          Select option
         </p>
 
         <div class="flex my-4">
