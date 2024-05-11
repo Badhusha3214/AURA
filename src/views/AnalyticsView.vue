@@ -12,11 +12,11 @@
           @click="toggleAllNotes()">
           {{ showAllNotes ? 'Hide Notes' : 'Show Notes' }}
         </button> -->
-        <button
+        <!-- <button
           class="bg-white text-pink-500 px-4 py-2 rounded-md shadow-md hover:bg-pink-500 hover:text-white"
           @click="showGraphModal = true">
           See Graph Analytics
-        </button>
+        </button> -->
       </div>
     </div>
     <div class="calendar">
