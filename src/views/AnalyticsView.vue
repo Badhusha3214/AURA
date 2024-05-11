@@ -11,11 +11,12 @@
           class="bg-white text-pink-500 px-4 py-2 rounded-md shadow-md hover:bg-pink-500 hover:text-white"
           @click="toggleAllNotes()">
           {{ showAllNotes ? 'Hide Notes' : 'Show Notes' }}
-        </button>
-        <button
-          class="bg-white text-pink-500 px-4 py-2 rounded-md shadow-md hover:bg-pink-500 hover:text-white">
-          See Graph Analytics
         </button> -->
+        <button
+          class="bg-white text-pink-500 px-4 py-2 rounded-md shadow-md hover:bg-pink-500 hover:text-white"
+          @click="showGraphModal = true">
+          See Graph Analytics
+        </button>
       </div>
     </div>
     <div class="calendar">
@@ -53,135 +54,157 @@
         </div>
       </div>
     </div>
-  
+  </div>
+
+  <!-- Graph Modal -->
+  <div v-if="showGraphModal" class="fixed inset-0 flex items-center justify-center z-50">
+    <div class="modal-overlay absolute inset-0 bg-gray-800 opacity-75"></div>
+    <div class="modal-container bg-white rounded-lg shadow-lg p-8 z-10">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl text-pink-500 font-bold">Cycle Length Analytics</h2>
+        <button
+          class="text-gray-500 hover:text-gray-700"
+          @click="showGraphModal = false">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="graph-container">
+        <!-- Add your chart or graph component here -->
+        <p class="text-gray-500">Chart or graph component will be rendered here.</p>
+      </div>
+    </div>
   </div>
 </template>
+
 <script>
-  import DashboardLayout from '@/layouts/DashboardLayout.vue'
+ import DashboardLayout from '@/layouts/DashboardLayout.vue'
 
-  function fetchData() {
-    const backendData = {
-      userName: 'Jane Doe',
-      DOB: '1990-05-15',
-      last_period_start: '2024-04-18',
-      last_cycle_regular: 28,
-      duration_period: 5,
-      conceiveTrue: true,
-      last_cycle_irregular: null,
-      periods: [
-        {
-          month: 'January',
-          days: [12, 13, 14, 15, 16, 17]
-        },
-        {
-          month: 'February',
-          days: [12, 13, 14, 15, 16, 17]
-        },
-        {
-          month: 'April',
-          days: [8, 9, 10, 11, 12, 13]
-        }
-      ],
-      ovulationDays: [
-        {
-          month: 'January',
-          day: 26
-        }
-      ]
-    };
+ function fetchData() {
+   const backendData = {
+     userName: 'Jane Doe',
+     DOB: '1990-05-15',
+     last_period_start: '2024-04-18',
+     last_cycle_regular: 28,
+     duration_period: 5,
+     conceiveTrue: true,
+     last_cycle_irregular: null,
+     periods: [
+       {
+         month: 'January',
+         days: [12, 13, 14, 15, 16, 17]
+       },
+       {
+         month: 'February',
+         days: [12, 13, 14, 15, 16, 17]
+       },
+       {
+         month: 'April',
+         days: [8, 9, 10, 11, 12, 13]
+       }
+     ],
+     ovulationDays: [
+       {
+         month: 'January',
+         day: 26
+       }
+     ]
+   };
 
-    return backendData;
-  }
+   return backendData;
+ }
 
-  export default {
-    data() {
-      return {
-        months: [
-          { name: 'January', dates: [...Array(31).keys()].map((x) => x + 1) },
-          { name: 'February', dates: [...Array(28).keys()].map((x) => x + 1) },
-          { name: 'March', dates: [...Array(31).keys()].map((x) => x + 1) },
-          { name: 'April', dates: [...Array(30).keys()].map((x) => x + 1) },
-          { name: 'May', dates: [...Array(31).keys()].map((x) => x + 1) },
-          { name: 'June', dates: [...Array(30).keys()].map((x) => x + 1) },
-          { name: 'July', dates: [...Array(31).keys()].map((x) => x + 1) },
-          { name: 'August', dates: [...Array(31).keys()].map((x) => x + 1) },
-          { name: 'September', dates: [...Array(30).keys()].map((x) => x + 1) },
-          { name: 'October', dates: [...Array(31).keys()].map((x) => x + 1) },
-          { name: 'November', dates: [...Array(30).keys()].map((x) => x + 1) },
-          { name: 'December', dates: [...Array(31).keys()].map((x) => x + 1) }
-        ],
+ export default {
+   data() {
+     return {
+       months: [
+         { name: 'January', dates: [...Array(31).keys()].map((x) => x + 1) },
+         { name: 'February', dates: [...Array(28).keys()].map((x) => x + 1) },
+         { name: 'March', dates: [...Array(31).keys()].map((x) => x + 1) },
+         { name: 'April', dates: [...Array(30).keys()].map((x) => x + 1) },
+         { name: 'May', dates: [...Array(31).keys()].map((x) => x + 1) },
+         { name: 'June', dates: [...Array(30).keys()].map((x) => x + 1) },
+         { name: 'July', dates: [...Array(31).keys()].map((x) => x + 1) },
+         { name: 'August', dates: [...Array(31).keys()].map((x) => x + 1) },
+         { name: 'September', dates: [...Array(30).keys()].map((x) => x + 1) },
+         { name: 'October', dates: [...Array(31).keys()].map((x) => x + 1) },
+         { name: 'November', dates: [...Array(30).keys()].map((x) => x + 1) },
+         { name: 'December', dates: [...Array(31).keys()].map((x) => x + 1) }
+       ],
 
-        showDates: {
-          January: false,
-          February: false,
-          March: false,
-          April: false,
-          May: false,
-          June: false,
-          July: false,
-          August: false,
-          September: false,
-          October: false,
-          November: false,
-          December: false
-        },
+       showDates: {
+         January: false,
+         February: false,
+         March: false,
+         April: false,
+         May: false,
+         June: false,
+         July: false,
+         August: false,
+         September: false,
+         October: false,
+         November: false,
+         December: false
+       },
 
-        showAllNotes: false,
+       showAllNotes: false,
+       showGraphModal: false,
 
-        markedDates: [],
-        userData: fetchData(),
-      };
-    },
-    components: {
-      DashboardLayout
-    },
-    methods: {
-      toggleDates(monthName) {
-        this.showDates[monthName] = !this.showDates[monthName];
-        // If the clicked month is now visible, hide all other months
-        if (this.showDates[monthName]) {
-          Object.keys(this.showDates).forEach(month => {
-            if (month !== monthName) {
-              this.showDates[month] = false;
-            }
-          });
-        }
-      },
-      toggleAllNotes() {
-        this.showAllNotes = !this.showAllNotes;
-      },
-      markDate(date) {
-        if (this.markedDates.includes(date)) {
-          this.markedDates = this.markedDates.filter((d) => d !== date);
-        } else {
-          this.markedDates.push(date);
-        }
-      },
-      formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString();
-      },
-      isLastPeriodStart(date) {
-        const lastPeriodStart = new Date(this.userData.last_period_start);
-        return (
-          date === lastPeriodStart.getDate() &&
-          lastPeriodStart.getMonth() === new Date().getMonth()
-        );
-      },
-      isPeriodDay(date, monthName) {
-        const periodData = this.userData.periods.find(item => item.month === monthName);
-        if (periodData) {
-          return periodData.days.includes(date);
-        }
-        return false;
-      },
-      isOvulationDay(date, monthName) {
-        const ovulationData = this.userData.ovulationDays.find(item => item.month === monthName);
-        if (ovulationData) {
-          return date === ovulationData.day;
-        }
-        return false;
-      },
-    },
-  };
+       markedDates: [],
+       userData: fetchData(),
+     };
+   },
+   components: {
+     DashboardLayout
+   },
+   methods: {
+     toggleDates(monthName) {
+       this.showDates[monthName] = !this.showDates[monthName];
+       // If the clicked month is now visible, hide all other months
+       if (this.showDates[monthName]) {
+         Object.keys(this.showDates).forEach(month => {
+           if (month !== monthName) {
+             this.showDates[month] = false;
+           }
+         });
+       }
+     },
+     toggleAllNotes() {
+       this.showAllNotes = !this.showAllNotes;
+     },
+     markDate(date) {
+       if (this.markedDates.includes(date)) {
+         this.markedDates = this.markedDates.filter((d) => d !== date);
+       } else {
+         this.markedDates.push(date);
+       }
+     },
+     formatDate(dateString) {
+       const date = new Date(dateString);
+       return date.toLocaleDateString();
+     },
+     isLastPeriodStart(date) {
+       const lastPeriodStart = new Date(this.userData.last_period_start);
+       return (
+         date === lastPeriodStart.getDate() &&
+         lastPeriodStart.getMonth() === new Date().getMonth()
+       );
+     },
+     isPeriodDay(date, monthName) {
+       const periodData = this.userData.periods.find(item => item.month === monthName);
+       if (periodData) {
+         return periodData.days.includes(date);
+       }
+       return false;
+     },
+     isOvulationDay(date, monthName) {
+       const ovulationData = this.userData.ovulationDays.find(item => item.month === monthName);
+       if (ovulationData) {
+         return date === ovulationData.day;
+       }
+       return false;
+     },
+   },
+ };
 </script>
