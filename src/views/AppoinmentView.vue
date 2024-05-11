@@ -1,22 +1,21 @@
 <template>
   <DashboardLayout />
-  <IsMobile />
-
-  <div v-if="Doctor" class="bg-gradient-to-b from-white via-pink-100 to-pink-100">
-    <template v-for="patient in patients" :key="patient.Name">
-      <div class="mt-2 flex items-center justify-center">
-        <DrAppoinment :patient="patient" />
-      </div>
-    </template>
-  </div>
-  <div v-else class="bg-gradient-to-b from-white via-pink-100 to-pink-100">
-    <template v-for="doctor in doctors" :key="doctor.Name">
-      <div class="mt-2 flex items-center justify-center">
-        <AppoinmentCard :doctor="doctor" />
-      </div>
-    </template>
-  </div>
-  <div class="mb-20"></div>
+    <IsMobile />
+    <div v-if="Doctor" class="bg-gradient-to-b from-white via-pink-100 to-pink-100">
+      <template v-for="patient in patients" :key="patient.Name">
+        <div class="mt-2 flex items-center justify-center">
+          <DrAppoinment :patient="patient" />
+        </div>
+      </template>
+    </div>
+    <div v-else class="bg-gradient-to-b from-white via-pink-100 to-pink-100">
+      <template v-for="doctor in doctors" :key="doctor.Name">
+        <div class="mt-2 flex items-center justify-center">
+          <AppoinmentCard :doctor="doctor" />
+        </div>
+      </template>
+    </div>
+    <div class="mb-20"></div>
 </template>
 
 <script>
@@ -48,9 +47,9 @@ export default {
   methods: {},
   async mounted() {
     this.doctors = await getDoctorsList();
-    console.log(this.doctors);
+    // console.log(this.doctors);
     this.patients = await getpatientList();
-    console.log(this.patients);
+    // console.log(this.patients);
   }
 }
 </script>

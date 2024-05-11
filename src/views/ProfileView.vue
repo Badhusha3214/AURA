@@ -85,8 +85,8 @@ export default {
             this.email = localStorage.getItem('email');
             // this.DOB = localStorage.getItem('DOB');
 
-            console.log('Name:', this.userName);
-            console.log('Number:', this.userNumber);
+            // console.log('Name:', this.userName);
+            // console.log('Number:', this.userNumber);
         },
         updateCounter(value, action) {
             action === "++" ? (this.counter += value) : (this.counter -= value);
