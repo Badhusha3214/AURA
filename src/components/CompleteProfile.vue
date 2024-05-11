@@ -85,9 +85,35 @@ export default {
         }
     },
     computed: {
-        isFormValid() {
-            return this.name.trim() !== '' && this.number.trim() !== '' && !this.numberError && !this.dobError.day && !this.dobError.month && !this.dobError.year
+    isFormValid() {
+        return this.name.trim() !== '' && this.number.trim() !== '' && !this.numberError && this.isValidDOB;
+    },
+    isValidDOB() {
+        const { day, month, year } = this.dob;
+        if (!day || !month || !year) {
+            return false; // Return false if any part of the DOB is missing
         }
+
+        const currentYear = new Date().getFullYear();
+        const enteredYear = parseInt(year, 10);
+        const enteredMonth = parseInt(month, 10);
+        const enteredDay = parseInt(day, 10);
+
+        if (enteredYear > currentYear || enteredYear < 1900) {
+            return false; // Invalid year (future year or before 1900)
+        }
+
+        if (enteredMonth < 1 || enteredMonth > 12) {
+            return false; // Invalid month
+        }
+
+        const maxDays = new Date(enteredYear, enteredMonth, 0).getDate();
+        if (enteredDay < 1 || enteredDay > maxDays) {
+            return false; // Invalid day for the given month and year
+        }
+
+        return true; // Valid DOB
+    }
     },
     methods: {
         checkLocalStorage() {
@@ -112,7 +138,7 @@ export default {
             // For example: this.$emit('close-popup');
         },
         validateNumber() {
-            const numberRegex = /^[0-9]+$/;
+            const numberRegex = /^(\+?91|0)[-\s]?(\d{10}|\d{3}[-\s]?\d{3}[-\s]?\d{4})$/;
             if (!numberRegex.test(this.number)) {
                 this.numberError = 'Please enter a valid number';
             } else {
