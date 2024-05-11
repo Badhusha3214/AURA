@@ -1,7 +1,7 @@
 <template>
    <div>
      <!-- Sidebar toggle button -->
-     <button class="ml-4 mt-2 sidebar-toggle-btn bg-gray-100 hover:bg-gray-300 text-black px-3 py-2 rounded" aria-label="Toggle Sidebar" @click="toggleSidebar">
+     <button class="ml-4 mt-2 sidebar-toggle-btn text-black px-3 py-2 rounded" aria-label="Toggle Sidebar" @click="toggleSidebar">
        <span class="sr-only">Toggle Sidebar</span>
        <svg class="w-6  h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
          <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
@@ -38,7 +38,7 @@
      <div v-if="showDeleteAccountConfirmation" class="modal fixed inset-0 z-50 overflow-y-auto">
           <div class="modal-overlay absolute inset-0 bg-gray-900 opacity-75"></div>
           <div class="modal-content relative mx-auto my-16 max-w-md bg-white rounded-lg shadow-lg">
-            <div class="modal-header px-6 py-4 bg-indigo-600 text-white rounded-t-lg">
+            <div class="modal-header px-6 py-4 bg-pink-100 text-black rounded-t-lg">
               <h3 class="modal-title font-semibold">Delete Account Confirmation</h3>
             </div>
             <div class="modal-body px-6 py-4">
