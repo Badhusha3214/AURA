@@ -33,7 +33,6 @@ export default {
     DashboardLayout,
     IsMobile,
     AppoinmentCard,
-
     DrAppoinment
   },
   data() {
