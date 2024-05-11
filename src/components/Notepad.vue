@@ -52,7 +52,7 @@
         <div class="p-4">
           <input v-model="newNoteTitle"
             class="w-full bg-white border-gray-500 pb-1 rounded placeholder-gray-400 focus:outline-none text-lg"
-            placeholder="  Title" />
+            placeholder="Title" />
         </div>
         <hr class="h-px my-1 bg-gray-500 border-1 mx-7 dark:bg-gray-700">
         <textarea v-model="newNoteContent" 
@@ -137,7 +137,12 @@ textarea {
     -moz-box-shadow: none;
     box-shadow: none;
 
-    resize: none; /*remove the resize handle on the bottom right*/
+    resize: none; 
+}
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0);
+
 }
 
 </style>
