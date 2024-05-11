@@ -4,10 +4,10 @@
     type="button">
     ADD DATA
   </button>
-  <div class="container mx-auto z-10 p-4">
+  <div class="container mx-auto z-0 p-4">
     <ul class="mt-4">
       <li v-for="(note, index) in notes" :key="index"
-        class="mb-6 text-black w-64 z-0 bg-white hover:bg-tertiary focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5  items-center"
+        class="mb-6 text-black w-64 z-0 bg-white focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5  items-center"
         @click="toggleNoteContent(index)">
         <div class="flex justify-between items-center mb-2 ">
           <div class="text-sm font-semibold truncate">{{ truncateTitle(note.title) }}</div>
@@ -17,11 +17,11 @@
           <hr class="h-px my-1 bg-gray-500 border-0 dark:bg-gray-700">
           <p>{{ note.content }}</p>
           <div class="flex justify-between  mt-2">
-            <button class=" text-green-500 px-1 py-1 rounded-md mr-3 hover:bg-green-600 transition-colors"
+            <button class=" text-green-500 px-1 py-1 rounded-md mr-3  transition-colors"
               @click.stop="editNote(index)">
               Edit
             </button>
-            <button class=" text-red-500 px-2 py-1 rounded-md hover:bg-red-600 transition-colors"
+            <button class=" text-red-500 px-2 py-1 rounded-md  transition-colors"
               @click.stop="deleteNote(index)">
               Delete
             </button>

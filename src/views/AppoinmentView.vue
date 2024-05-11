@@ -1,6 +1,7 @@
 <template>
+  <IsMobile />
   <DashboardLayout />
-    <IsMobile />
+
     <div v-if="Doctor" class="bg-gradient-to-b from-white via-pink-100 to-pink-100">
       <template v-for="patient in patients" :key="patient.Name">
         <div class="mt-2 flex items-center justify-center">
@@ -8,6 +9,7 @@
         </div>
       </template>
     </div>
+
     <div v-else class="bg-gradient-to-b from-white via-pink-100 to-pink-100">
       <template v-for="doctor in doctors" :key="doctor.Name">
         <div class="mt-2 flex items-center justify-center">
@@ -15,6 +17,7 @@
         </div>
       </template>
     </div>
+
     <div class="mb-20"></div>
 </template>
 
