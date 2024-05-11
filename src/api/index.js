@@ -183,6 +183,29 @@ export const deleteAccount = async (user) => {
     }
 };
 
+export const addnote = async (user) => {
+    try {
+        const cookies = document.cookie.split(';');
+        const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+        if (!tokenCookie) {
+            throw new Error('No token found in cookie');
+        }
+        const token = tokenCookie.split('=')[1];
+
+        const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/notes/add`, user, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        // console.log(res.headers);
+        // console.log(res.data);
+        return res;
+    } catch (error) {
+        // console.log(error);
+        return error;
+    }
+};
+
 export const getDoctorsList = async()=>{
     let data = [
         {

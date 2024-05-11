@@ -89,10 +89,8 @@
      },
      async deleteAccount() {
        try {
-         // Call API to delete account
          const response = await deleteAccount({ email: this.confirmationEmail });
          if (response.status === 200) {
-           // Successful deletion
            this.$router.push('/enroll');
            document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
            localStorage.clear();
