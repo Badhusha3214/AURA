@@ -31,21 +31,36 @@
         <hr class="h-px mb-2 bg-gray-500 border-0 dark:bg-gray-700">
 
         <div class="grid grid-cols-4 gap-8">
-          <router-link v-for="icon in icons" :key="icon.name" :to="icon.route" class="flex flex-col items-center">
+          <div v-for="icon in icons" :key="icon.name" class="flex flex-col items-center" @click="handleIconClick(icon)">
             <div class="w-10 h-10 rounded-full overflow-hidden">
               <img :src="icon.iconSrc" :alt="icon.name" class="w-full h-full object-cover" />
             </div>
             <span class="text-sm text-center mt-2">{{ icon.name }}</span>
-          </router-link>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Date Picker -->
+    <div v-if="showDatePicker" class="fixed inset-0 z-50 flex justify-center items-center">
+      <div class="absolute inset-0 bg-black opacity-50" @click="showDatePicker = false"></div>
+      <div class="bg-white rounded-lg p-6 relative z-10">
+        <h2 class="text-xl font-bold mb-4">Select Date</h2>
+        <date-picker v-model="selectedDate"></date-picker>
+        <button class="mt-4 bg-primary text-white rounded-md px-4 py-2" @click="submitDate">Submit</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+
+
 export default {
   name: 'ControlPanel',
+  components: {
+    
+  },
   data() {
     return {
       controls: [
@@ -56,33 +71,45 @@ export default {
       ],
       activeControl: null,
       showPopup: false,
+      showDatePicker: false,
+      selectedDate: null,
       icons: [
-        { name: 'Protected Sex', iconSrc: '/assets/Icons/Group 59.png', route: '/icon1' },
-        { name: 'Very Heavy', iconSrc: '/assets/Icons/Group 60.png', route: '/icon2' },
-        { name: 'Your Mood', iconSrc: '/assets/Icons/Group 61.png', route: '/icon3' },
-        { name: 'Drink Water', iconSrc: '/assets/Icons/Group 62.png', route: '/icon4' },
-        { name: 'Icon 5', iconSrc: '/assets/Icons/Group 59.png', route: '/icon5' },
-        { name: 'Icon 6', iconSrc: '/assets/Icons/Group 60.png', route: '/icon6' },
-        { name: 'Icon 7', iconSrc: '/assets/Icons/Group 61.png', route: '/icon7' },
-        { name: 'Icon 8', iconSrc: '/assets/Icons/Group 62.png', route: '/icon8' },
-        { name: 'Icon 9', iconSrc: '/assets/Icons/Group 59.png', route: '/icon9' },
-        { name: 'Icon 10', iconSrc: '/assets/Icons/Group 60.png', route: '/icon10' },
-        { name: 'Icon 11', iconSrc: '/assets/Icons/Group 61.png', route: '/icon11' },
-        { name: 'Icon 12', iconSrc: '/assets/Icons/Group 62.png', route: '/icon12' }
+        { name: 'Add starting date', iconSrc: '/assets/Icons/Group 59.png' },
+        { name: 'Add ending date', iconSrc: '/assets/Icons/Group 60.png' },
+        { name: 'Your Mood', iconSrc: '/assets/Icons/Group 61.png' },
+        { name: 'Bleeding status', iconSrc: '/assets/Icons/Group 62.png' },
+        // { name: 'Icon 5', iconSrc: '/assets/Icons/Group 59.png' },
+        // { name: 'Icon 6', iconSrc: '/assets/Icons/Group 60.png' },
+        // { name: 'Icon 7', iconSrc: '/assets/Icons/Group 61.png' },
+        // { name: 'Icon 8', iconSrc: '/assets/Icons/Group 62.png' },
+        // { name: 'Icon 9', iconSrc: '/assets/Icons/Group 59.png' },
+        // { name: 'Icon 10', iconSrc: '/assets/Icons/Group 60.png' },
+        // { name: 'Icon 11', iconSrc: '/assets/Icons/Group 61.png' },
+        // { name: 'Icon 12', iconSrc: '/assets/Icons/Group 62.png' }
       ]
     }
   },
   mounted() {
-  const currentPath = this.$route.path;
-  if (currentPath === '/') {
-    this.activeControl = 'home';
-  } else {
-    this.activeControl = currentPath.split('/')[1];
-  }
-},
+    const currentPath = this.$route.path;
+    if (currentPath === '/') {
+      this.activeControl = 'home';
+    } else {
+      this.activeControl = currentPath.split('/')[1];
+    }
+  },
   methods: {
     togglePopup() {
       this.showPopup = !this.showPopup
+    },
+    handleIconClick(icon) {
+      if (icon.name === 'Add starting date') {
+        this.showDatePicker = true;
+      }
+    },
+    submitDate() {
+      // Handle the selected date here
+      console.log('Selected Date:', this.selectedDate);
+      this.showDatePicker = false;
     }
   }
 }
