@@ -35,7 +35,7 @@
      </aside>
  
      <!-- Delete Account Confirmation Modal -->
-     <div v-if="showDeleteAccountConfirmation" class="modal fixed inset-0 z-50 overflow-y-auto">
+     <div v-if="showDeleteAccountConfirmation" class="modal fixed inset-0 z-50 overflow-y-auto mx-4">
           <div class="modal-overlay absolute inset-0 bg-gray-900 opacity-75"></div>
           <div class="modal-content relative mx-auto my-16 max-w-md bg-white rounded-lg shadow-lg">
             <div class="modal-header px-6 py-4 bg-pink-100 text-black rounded-t-lg">
