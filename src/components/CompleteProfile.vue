@@ -127,7 +127,7 @@ export default {
             // For example: this.$emit('close-popup');
         },
         validateNumber() {
-            const numberRegex = /^[0-9]+$/;
+            const numberRegex = /^[-\s]?(\d{10}|\d{3}[-\s]?\d{3}[-\s]?\d{4})$/;
             if (!numberRegex.test(this.number)) {
                 this.numberError = 'Please enter a valid number';
             } else {
