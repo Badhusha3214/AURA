@@ -1,4 +1,11 @@
 <template>
+
+
+<div v-if="isLoading" class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="loader animate-spin rounded-full border-4 border-blue-600 h-12 w-12"></div>
+</div>
+
+
   <div class=" w-full flex justify-center">
     <div class="relative flex flex-col items-center justify-center mt-40">
       <div class="w-full lg:w-1/3 lg:py-20 ">
@@ -130,6 +137,7 @@ export default {
       error: null,
       email: null,
       showForgotPasswordModal: false,
+      isLoading: false,
     }
   },
   props: {
@@ -157,6 +165,7 @@ export default {
   },
   methods: {
     async getUserLogin() {
+      this.isLoading = true;
       if (this.mode === 'enroll') {
         await userRegister({
           email: this.email,
@@ -173,6 +182,9 @@ export default {
         }).catch((error) => {
           this.error = error;
         })
+        .finally(() => {
+        this.isLoading = false; // Set isLoading to false after the API call is completed
+      });
       } else {
         await userLogin({
           email: this.email,
@@ -199,6 +211,9 @@ export default {
         }).catch((error) => {
           this.error = error;
         })
+        .finally(() => {
+        this.isLoading = false; // Set isLoading to false after the API call is completed
+      });
       }
     },
     async resetPassword() {
