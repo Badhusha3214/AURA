@@ -1,15 +1,13 @@
 <template>
-
     <div class=" w-full flex justify-center">
         <div class="relative flex flex-col items-center justify-center mt-40">
-            <div class="w-full lg:w-1/3 lg:py-20 ">
+            <div class="w-full lg:w-1/3 lg:py-20">
                 <img class="w-full h-full" src="/assets/illustration/pin.svg" alt="welcome" />
             </div>
         </div>
     </div>
 
     <div class="absolute w-full flex justify-center mb-12">
-
         <div class="relative flex flex-col items-center gap-5 justify-center my-3">
             <div>
                 <p class="font-semibold text-2xl w-72 text-center">OTP Verification</p>
@@ -21,10 +19,11 @@
                 placeholder="Enter OTP" required>
 
             <p v-if="message" class="text-xs mt-1 text-red-500">{{ message }}</p>
-            <button @click="otpresend" class="text-red-500 font-semibold  text-lg p-3 bg-white" type="button">Resend
-                Otp</button>
+            <button @click="resendOtp" :disabled="resendButtonDisabled" class="text-red-500 font-semibold text-lg p-3 bg-white" type="button">
+                {{ resendButtonText }}
+            </button>
+            <div v-if="showTimer" class="text-sm text-gray-500">Resend OTP in {{ timer }} seconds</div>
         </div>
-
     </div>
 
     <div class="absolute bottom-0 w-screen flex justify-center p-5 mb-12">
@@ -32,7 +31,6 @@
             :class="enableButton ? 'bg-primary' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
             :disabled="!enableButton" type="button">Next</button>
     </div>
-
 </template>
 
 <script>
@@ -48,6 +46,11 @@ export default {
             email: localStorage.getItem('email'),
             error: null,
             enableButton: false,
+            timer: 30, // Initial timer value (30 seconds)
+            showTimer: true, // Flag to control the timer visibility
+            timerInterval: null, // Interval reference for the timer
+            resendButtonDisabled: true, // Flag to disable the "Resend Otp" button
+            resendButtonText: 'Resending...', // Text for the "Resend Otp" button
         }
     },
     computed: {
@@ -75,11 +78,9 @@ export default {
                 password: this.passkey
             }).then((response) => {
                 if (response.status === 200) {
-                    // console.log(response.data.Token);
                     document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
                     this.user.email = response.data.email;
                     router.push('/steps');
-
                 } else {
                     this.message = response.data.message;
                 }
@@ -87,28 +88,44 @@ export default {
                 this.error = error;
             });
         },
-        async otpresend() {
+        async resendOtp() {
+            this.resendButtonDisabled = true; // Disable the "Resend Otp" button
+            this.resendButtonText = 'Resending...'; // Change the button text
+            this.showTimer = true; // Show the timer
+            this.startTimer(); // Start the timer
+
             await resendotp({
                 email: this.email,
             }).then((response) => {
                 if (response.status === 200) {
-                    // console.log(this.email);
                     this.user.email = response.data.email;
-                    // console.log(this.user.email);
-                    this.message = "Opt send successfully"
-                    // console.log(response.data[message]);
+                    this.message = "OTP sent successfully";
                     console.log(response);
                 } else {
                     this.message = response.data.message;
-                    this.message = "try again"
+                    this.message = "Try again";
                     console.log(this.email);
-
                 }
             }).catch((error) => {
                 this.error = error;
                 console.log(this.email);
             });
-        }
+        },
+        startTimer() {
+            this.timerInterval = setInterval(() => {
+                this.timer--;
+                if (this.timer === 0) {
+                    this.stopTimer();
+                }
+            }, 1000); // Update the timer every second
+        },
+        stopTimer() {
+            clearInterval(this.timerInterval);
+            this.timer = 30; // Reset the timer to 30 seconds
+            this.showTimer = false; // Hide the timer
+            this.resendButtonDisabled = false; // Enable the "Resend Otp" button
+            this.resendButtonText = 'Resend Otp'; // Reset the button text
+        },
     },
     watch: {
         otp() {
@@ -121,6 +138,12 @@ export default {
                 this.message = null;
             }
         }
-    }
+    },
+    mounted() {
+        this.startTimer(); // Start the timer when the component is mounted
+    },
+    beforeUnmount() {
+        this.stopTimer(); // Stop the timer when the component is unmounted
+    },
 }
 </script>

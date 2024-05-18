@@ -1,6 +1,6 @@
 <template>
-    <div class="flex justify-center items-center h-screen bg-gradient-to-r from-pink-500 to-purple-500">
-        <div class="password-change-page bg-pink-50 p-8 rounded-lg shadow-lg">
+    <div class="flex justify-center items-center h-screen bg-gradient-to-b from-white via-pink-100 to-pink-100absolute">
+        <div class="password-change-page bg-white p-8 rounded-lg shadow-lg">
             <h1 class="text-3xl font-bold text-pink-600 mb-6">Change Password</h1>
             <form @submit.prevent="changePassword" class="space-y-6">
                 <div class="form-group">

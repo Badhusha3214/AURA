@@ -1,8 +1,8 @@
 <template>
-  <!-- Loader -->
+  <!-- Loader
   <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center z-50 hidden">
     <div class="loader animate-spin rounded-full border-4 border-blue-600 h-12 w-12"></div>
-  </div>
+  </div> -->
 
   <div class=" w-full flex justify-center">
     <div class="relative flex flex-col items-center justify-center mt-40">
@@ -34,7 +34,7 @@
     v-if="!showForgotPasswordModal">
     <div class="relative w-full max-w-md mx-auto">
       <!-- Modal content -->
-      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+      <div class="relative bg-white mx-4 rounded-lg shadow dark:bg-gray-700">
         <!-- Modal header -->
         <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
           <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
