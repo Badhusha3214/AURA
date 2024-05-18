@@ -104,8 +104,8 @@ export default {
         async submitForm() {
             try {
                 await personaldetails({
-                    name: this.name,
-                    number: this.number,
+                    full_name: this.name,
+                    phone_number: this.number,
                     dob: `${this.dob.year}-${this.dob.month}-${this.dob.day}`
                 });
                 localStorage.setItem('userName', this.name);

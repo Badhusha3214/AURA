@@ -8,8 +8,8 @@ export const getBasicData = () => {
     return {
         data: {
             id: '1',
-            firstName: 'Jane',
-            lastName: 'Doe',
+            firstName: localStorage.getItem('userName'),
+            lastName: '',
             email: localStorage.getItem('email'),
             dob: '1990-01-01',
 
