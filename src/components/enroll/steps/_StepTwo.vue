@@ -83,9 +83,8 @@ export default {
         // console.log(this.regular_days);
         // console.log(this.selectedType);
         localStorage.setItem('mode', this.selectedType );
-        localStorage.setItem('periodLength', this.regular_days );
-        localStorage.setItem('periodLength_start', null);
-        localStorage.setItem('periodLength_end', null);
+        localStorage.setItem('duration_period', this.regular_days );
+ 
     },
     logAndStoreIrregularData() {
       
@@ -93,7 +92,7 @@ export default {
       console.log(this.irregular_start);
       console.log(this.irregular_end);
       localStorage.setItem('mode', this.selectedType );
-      localStorage.setItem('periodLength', null );
+
       localStorage.setItem('periodLength_start', this.irregular_start);
       localStorage.setItem('periodLength_end', this.irregular_end);
     },

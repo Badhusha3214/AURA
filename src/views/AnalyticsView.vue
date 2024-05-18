@@ -83,11 +83,11 @@
 
  function fetchData() {
    const backendData = {
-     userName: 'Jane Doe',
-     DOB: '1990-05-15',
-     last_period_start: '2024-04-18',
-     last_cycle_regular: 28,
-     duration_period: 5,
+     userName: localStorage.getItem('userName'),
+     DOB: localStorage.getItem('DOB'),
+     last_period_start: localStorage.getItem('last_period_start'),
+     last_cycle_regular: Number(localStorage.getItem('last_cycle_regular')),
+     duration_period: Number(localStorage.getItem('duration_period')),
      conceiveTrue: true,
      last_cycle_irregular: null,
      periods: [

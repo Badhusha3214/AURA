@@ -1,4 +1,13 @@
 <template>
+
+  
+<template v-if="loading">
+    <div class="splash-screen">
+      <img src="/assets/logo.svg" alt="logo" />
+    </div>
+  </template>
+
+  
   <button @click="showAddNote = true"
     class="text-black w-64 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
     type="button">
@@ -19,7 +28,7 @@
       </div>
       <div class="flex justify-between mt-2">
         <button class=" text-green-500 px-1 py-1 rounded-md mr-3 transition-colors" @click.stop="editNote(index)">Edit</button>
-        <button class=" text-red-500 px-2 py-1 rounded-md transition-colors" @click.stop="deleteNote(index)">Delete</button>
+        <button class=" text-red-500 px-2 py-1 rounded-md transition-colors"  @click.stop="deleteNote(index)">Delete</button>
       </div>
     </div>
   </li>
@@ -37,7 +46,7 @@
           </button>
 
           <h3 class="text-xl font-semibold"></h3>
-          <button class=" text-black pr-4 py-2 rounded-md text-opacity-60 transition-colors" @click="addNote">
+          <button class=" text-black pr-4 py-2 rounded-md text-opacity-60 transition-colors" @click="addNote ">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -57,10 +66,7 @@
     </div>
   </div>
 
-  <div v-if="loading">
-    <h3>hahahahah </h3>
 
-  </div>
 </template>
 
 <script>
@@ -92,11 +98,6 @@
         console.error(error);
       }
     },
-    mounted() {
-      setTimeout(() => {
-        this.loading = false
-      }, 2000)
-    },
     methods: {
       async addNote() {
         const newNote = {
@@ -105,6 +106,7 @@
         };
 
         try {
+          this.loading=true;
           const response = await Newnote(newNote);
           this.notess.push(response.data);
           this.notes.unshift({
@@ -117,6 +119,7 @@
           this.newNoteTitle = "";
           this.newNoteContent = "";
           this.showAddNote = false;
+          this.loading = false;
           this.saveNotes();
         } catch (error) {
           console.error(error);
