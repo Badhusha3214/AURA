@@ -65,6 +65,8 @@
 </template>
 
 <script>
+import dayjs from 'dayjs';
+
 export default {
     name: 'CompleteProfile',
     data() {
@@ -120,23 +122,33 @@ export default {
             }
         },
         validateDOB(field) {
-            const value = this.dob[field];
-            const numericRegex = /^[0-9]+$/;
+    const value = this.dob[field];
+    const numericRegex = /^[0-9]+$/;
 
-            if (!numericRegex.test(value)) {
-                this.dobError[field] = 'Please enter a valid number';
-            } else {
-                this.dobError[field] = '';
+    if (!numericRegex.test(value)) {
+        this.dobError[field] = 'Please enter a valid number';
+    } else {
+        this.dobError[field] = '';
 
-                if (field === 'day' && (value < 1 || value > 31)) {
-                    this.dobError[field] = 'Please enter a valid day';
-                }
+        if (field === 'day' && (value < 1 || value > 31)) {
+            this.dobError[field] = 'Please enter a valid day';
+        }
 
-                if (field === 'month' && (value < 1 || value > 12)) {
-                    this.dobError[field] = 'Please enter a valid month';
-                }
+        if (field === 'month' && (value < 1 || value > 12)) {
+            this.dobError[field] = 'Please enter a valid month';
+        }
+
+        if (field === 'year') {
+            const currentYear = dayjs().year();
+            const enteredYear = parseInt(value, 10);
+
+            // Check if the user is between 10 and 150 years old
+            if (currentYear - enteredYear < 10 || currentYear - enteredYear > 150) {
+                this.dobError[field] = 'Please enter a valid year (must be between 10 and 150 years old)';
             }
         }
+    }
+}
     },
     watch: {
         number(newValue) {

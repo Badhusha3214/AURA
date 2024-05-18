@@ -92,16 +92,16 @@
         <h2 class="text-xl font-bold mb-4">How was your bleeding</h2>
         <div class="flex flex-col items-start mb-4">
           <div class="flex items-center mb-2">
-            <input id="heavy" class="peer/draft" type="radio" name="status" value="heavy" v-model="bleedingLevel" />
-            <label for="heavy" class="peer-checked/draft:text-sky-500 ml-2">Heavy</label>
+            <input id="heavy" class="peer/draft text-red-600 focus:ring-red-500 dark:focus:ring-red-600" type="radio" name="status" value="heavy" v-model="bleedingLevel" />
+            <label for="heavy" class="peer-checked/draft:text-pink-500 ml-2">Heavy</label>
           </div>
           <div class="flex items-center mb-2">
-            <input id="medium" class="peer/draft" type="radio" name="status" value="medium" v-model="bleedingLevel" />
-            <label for="medium" class="peer-checked/draft:text-sky-500 ml-2">Medium</label>
+            <input id="medium" class="peer/draft text-pink-600 focus:ring-pink-500" type="radio" name="status" value="medium" v-model="bleedingLevel" />
+            <label for="medium" class="peer-checked/draft:text-pink-500 ml-2">Medium</label>
           </div>
           <div class="flex items-center">
-            <input id="low" class="peer/draft" type="radio" name="status" value="low" v-model="bleedingLevel" />
-            <label for="low" class="peer-checked/draft:text-sky-500 ml-2">Low</label>
+            <input id="low" class="peer/draft text-pink-600 focus:ring-pink-500" type="radio" name="status" value="low" v-model="bleedingLevel" />
+            <label for="low" class="peer-checked/draft:text-pink-500 ml-2">Low</label>
           </div>
         </div>
         <button class="mt-4 bg-primary text-white rounded-md px-4 py-2" @click="submitBleedingLevel">Submit</button>
@@ -110,7 +110,6 @@
 
   </div>
 </template>
-
 <script>
 
 
@@ -233,9 +232,16 @@ export default {
 </script>
 
 <style scoped>
+body {
+  overflow-x: hidden;
+}
 .control-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   box-shadow: 0px -2px 3px 0px rgba(0, 0, 0, 0.2);
-  z-index: 10;
+  z-index: 10; /* Increase this value if needed */
 }
 
 .control-panel__items {
