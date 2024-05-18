@@ -70,7 +70,7 @@ export default {
   methods: {
     storeRegularCycle() {
       localStorage.setItem('mode', "regular")  
-      localStorage.setItem('cycleLength', this.regular_days)
+      localStorage.setItem('last_cycle_regular', this.regular_days)
     },
     storeIrregularCycle() {
       localStorage.setItem('mode', "irregular")  
