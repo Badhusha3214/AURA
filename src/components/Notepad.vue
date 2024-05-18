@@ -147,12 +147,12 @@ export default {
       this.saveNotes();
     },
     editNote(index) {
-      this.showLoader = true;
+      // this.showLoader = true;
       this.showAddNote = true;
       this.newNoteTitle = this.notes[index].title;
       this.newNoteContent = this.notes[index].content;
       this.noteToEdit = this.notes[index];
-      this.showLoader = false;
+      // this.showLoader = false;
     },
     async deleteNote(index) {
       try {
