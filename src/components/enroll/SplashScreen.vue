@@ -8,8 +8,8 @@
 
   <template v-else>
 
-    <div class="splash-screen">
-      <img src="/assets/logo_name.svg" alt="logo" />
+    <div class="splash-screen ">
+      <img src="/assets/logo_name.svg" alt="logo" class="pb-20"/>
     </div>
 
     <div class="absolute bottom-0 w-full flex justify-center mb-12">

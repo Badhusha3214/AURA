@@ -9,7 +9,7 @@
     <DashboardLayout>
 
  
-        <Calender />
+        <Calender  class="w-full"/>
         
         <CentralCircle
             :dates="dates"

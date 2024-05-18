@@ -4,33 +4,26 @@
     type="button">
     ADD DATA
   </button>
+
   <div class="container mx-auto z-0 p-4">
     <ul class="mt-4">
-
-      <li v-for="(note, index) in notes" :key="note.note_id"
-        class="mb-6 text-black w-64 z-0 bg-white hover:bg-tertiary focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5  items-center"
-
-        @click="toggleNoteContent(index)">
-        <div class="flex justify-between items-center mb-2 ">
-          <div class="text-sm font-semibold truncate">{{ truncateTitle(note.title) }}</div>
-          <div class="text-xs">{{ formatDate(note.created_at) }}</div>
-        </div>
-        <div v-if="note.showContent" class="note-content">
-          <hr class="h-px my-1 bg-gray-500 border-0 dark:bg-gray-700">
-          <p>{{ note.content }}</p>
-          <div class="flex justify-between  mt-2">
-            <button class=" text-green-500 px-1 py-1 rounded-md mr-3  transition-colors"
-              @click.stop="editNote(index)">
-              Edit
-            </button>
-            <button class=" text-red-500 px-2 py-1 rounded-md  transition-colors"
-              @click.stop="deleteNote(index)">
-              Delete
-            </button>
-          </div>
-        </div>
-      </li>
-    </ul>
+  <li v-for="(note, index) in notes" :key="note.note_id" class="mb-6 text-black w-64 z-0 bg-white hover:bg-tertiary focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 items-center" @click="toggleNoteContent(index)">
+    <div class="flex justify-between items-center mb-2">
+      <div class="text-sm font-semibold truncate">{{ truncateTitle(note.title) }}</div>
+      <div class="text-xs">{{ formatDate(note.created_at) }}</div>
+    </div>
+    <div v-if="note.showContent" class="note-content">
+      <hr class="h-px my-1 bg-gray-500 w-48 border-0 dark:bg-gray-700">
+      <div class="w-48 max-h-20 overflow-auto">
+        <p>{{ note.content }}</p>
+      </div>
+      <div class="flex justify-between mt-2">
+        <button class=" text-green-500 px-1 py-1 rounded-md mr-3 transition-colors" @click.stop="editNote(index)">Edit</button>
+        <button class=" text-red-500 px-2 py-1 rounded-md transition-colors" @click.stop="deleteNote(index)">Delete</button>
+      </div>
+    </div>
+  </li>
+</ul>
     <div v-if="showAddNote" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
       @click.self="showAddNote = false">
       <div class="bg-white z-auto rounded-md shadow-md" @click.stop style="max-width: 600px; width: 90%">
@@ -63,6 +56,11 @@
       </div>
     </div>
   </div>
+
+  <div v-if="loading">
+    <h3>hahahahah </h3>
+
+  </div>
 </template>
 
 <script>
@@ -75,7 +73,8 @@
         newNoteTitle: "",
         newNoteContent: "",
         notes: [],
-        notess: []
+        notess: [],
+        loading: false,
       };
     },
     async mounted() {
@@ -92,6 +91,11 @@
       } catch (error) {
         console.error(error);
       }
+    },
+    mounted() {
+      setTimeout(() => {
+        this.loading = false
+      }, 2000)
     },
     methods: {
       async addNote() {

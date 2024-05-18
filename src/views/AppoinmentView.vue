@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       email: null,
-      Doctor: true,
+      Doctor: false,
       patient: true,
       doctors: [],
       patients: [],

@@ -7,7 +7,7 @@
       <template v-for="(choice, index) in choices" :key="index">
         <div class="w-80 bg-tertiary rounded-xl border border-bgPrimary">
           <h2 :id="'accordion-collapse-heading-' + index">
-            <button type="button" class="flex items-center justify-between text-sm w-80 p-5 font-semibold bg-bgPrimary border border-bgPrimary gap-3 rounded-xl" :data-accordion-target="'#accordion-collapse-body-' + index" aria-expanded="false" :aria-controls="'accordion-collapse-body-' + index" @click="selectChoice(choice.value)">
+            <button type="button" class="flex items-center justify-between hover:bg-tertiary text-sm w-80 p-5 font-semibold bg-bgPrimary border border-bgPrimary gap-3 rounded-xl" :data-accordion-target="'#accordion-collapse-body-' + index" aria-expanded="false" :aria-controls="'accordion-collapse-body-' + index" @click="selectChoice(choice.value)">
               <span class="text-black">{{ choice.option }}</span>
               <!-- <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5" />
