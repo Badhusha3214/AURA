@@ -64,6 +64,7 @@
     </div>
 </template>
 
+
 <script>
 export default {
     name: 'CompleteProfile',
@@ -90,6 +91,13 @@ export default {
         }
     },
     methods: {
+        personaldetails() {
+            return {
+                name: this.name,
+                number: this.number,
+                dob: `${this.dob.year}-${this.dob.month}-${this.dob.day}`
+            };
+        },
         checkLocalStorage() {
             const userName = localStorage.getItem('userName');
             const userNumber = localStorage.getItem('userNumber');
@@ -97,7 +105,14 @@ export default {
 
             return userName && userNumber && DOB;
         },
-        submitForm() {
+        async submitForm() {
+            try {
+                const personalDetails = await this.personaldetails();
+                console.log(personalDetails);
+            } catch (error) {
+                console.error(error);
+            }
+
             localStorage.setItem('userName', this.name);
             localStorage.setItem('userNumber', this.number);
             localStorage.setItem('DOB', `${this.dob.day}/${this.dob.month}/${this.dob.year}`);
@@ -106,7 +121,7 @@ export default {
             console.log('Name:', this.name);
             console.log('Number:', this.number);
             console.log('DOB:', `${this.dob.day}/${this.dob.month}/${this.dob.year}`);
-                this.$router.push('/profile')  
+            this.$router.push('/profile')
 
             // Close the popup or navigate to the next page
             // For example: this.$emit('close-popup');
