@@ -25,39 +25,42 @@
     </div>
 </template>
 
-
-<script>    
-    export default {
-        name: 'CentralCircle',
-        data() {
-            return {
-                nextPeriodStartDate: null,
-                ovulationDate: null,
-                fertileWindowStartDate: null,
-                fertileWindowEndDate: null,
-                pmsStartDate: null,
-                pmsEndDate: null
-            }
-        },
-        props: {
-            dates: {
-                type: Object,
-                required: true
-            },
-            comment: {
-                type: String,
-                required: true
-            },
-            info: {
-                type: String,
-                required: true
-            },
-            days: {
-                type: Number,
-                required: true
-            }
-        }
+<script>
+export default {
+  name: 'CentralCircle',
+  data() {
+    return {
+      nextPeriodStartDate: null,
+      ovulationDate: null,
+      fertileWindowStartDate: null,
+      fertileWindowEndDate: null,
+      pmsStartDate: null,
+      pmsEndDate: null,
     }
+  },
+  props: {
+    dates: {
+      type: Object,
+      required: true
+    },
+    comment: {
+      type: String,
+      required: true
+    },
+    info: {
+      type: String,
+      required: true
+    },
+    days: {
+      type: Number,
+      required: true
+    }
+  },
+  mounted() {
+    console.log(this.comment);
+    console.log(this.info);
+  }
+}
 </script>
 
 
