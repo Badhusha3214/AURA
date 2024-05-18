@@ -1,4 +1,10 @@
 <template>
+
+<!-- Loader -->
+<div v-if="isLoading" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+  <div class="loader animate-spin rounded-full border-4 border-blue-600 h-12 w-12"></div>
+</div>
+
   <div class=" w-full flex justify-center">
     <div class="relative flex flex-col items-center justify-center mt-40">
       <div class="w-full lg:w-1/3 lg:py-20 ">
@@ -133,7 +139,7 @@
         error: null,
         email: null,
         showForgotPasswordModal: false,
-        loading: false,
+        isLoading: false,
       }
     },
     props: {
@@ -161,73 +167,57 @@
     },
     methods: {
       async getUserLogin() {
-        
-        this.loading = true;
-
-        if (this.mode === 'enroll') {
-          await userRegister({
-            email: this.email,
-          }).then((response) => {
-            // console.log(response);
-            this.$store.commit("SET_PASSKEY", this.password)
-            if (response.status === 201) {
-              localStorage.setItem('email', this.email);
-              this.$emit('triggerNext', 'otp')
-            } else if (response.response.status === 400) {
-              this.error = response.response.data["message"];
-              console.log(this.error);
-            }
-          }).catch((error) => {
-            this.error = error;
-          }).finally(() => {
-        this.loading = false; 
-      });
-        } else {
-          await userLogin({
-            email: this.email,
-            password: this.password
-          }).then((response) => {
-            // console.log(response);
-            if (response.status === 200) {
-              localStorage.setItem('email', this.email);
-              document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
-              // this.user.email = response.data.UserData.email;
-              // localStorage.setItem('userdata', JSON.stringify(response.data.UserData));
-              localStorage.setItem('conceive', response.data.UserData.conceive);
-              localStorage.setItem('duration_period', response.data.UserData.duration_period);
-              localStorage.setItem('email', response.data.UserData.email);
-              localStorage.setItem('last_cycle_irregular_last', response.data.UserData.last_cycle_irregular_last);
-              localStorage.setItem('last_cycle_irregular_start', response.data.UserData.last_cycle_irregular_start);
-              localStorage.setItem('last_cycle_regular', response.data.UserData.last_cycle_regular);
-              localStorage.setItem('last_period_start', response.data.UserData.last_period_start);
-              this.$router.push('/');
-            } else if (response.status === 400) {
-              this.error = response.data["message"];
-              // console.log(this.error);
-            }
-          }).catch((error) => {
-            this.error = error;
-          }).finally(() => {
-        this.loading = false; // Set loading to false after the async operation is complete
-      });
-        }
-      },
-      async resetPassword() {
-        this.loading = true;
-        await forgotPassword({
-          email: this.email
-        }).then((response) => {
-          console.log(response);
-          this.showForgotPasswordModal = false;
-          // Show a success message to the user
-        }).catch((error) => {
-          this.error = error;
-        }).finally(() => {
-      this.loading = false; // Set loading to false after the async operation is complete
-    });
-
+        this.isLoading= true;
+  if (this.mode === 'enroll') {
+    await userRegister({
+      email: this.email,
+    }).then((response) => {
+      // console.log(response);
+      this.$store.commit("SET_PASSKEY", this.password)
+      if (response.status === 201) {
+        this.isLoading = true; // Show loader when going to the next page
+        localStorage.setItem('email', this.email);
+        this.$emit('triggerNext', 'otp')
+      } else if (response.response.status === 400) {
+        this.error = response.response.data["message"];
+        console.log(this.error);
       }
-    },
+    }).catch((error) => {
+      this.error = error;
+    }).finally(() => {
+      this.isLoading = false; // Hide loader after the async operation is complete
+    });
+  } else {
+    await userLogin({
+      email: this.email,
+      password: this.password
+    }).then((response) => {
+      // console.log(response);
+      if (response.status === 200) {
+        this.isLoading = true; // Show loader when going to the next page
+        localStorage.setItem('email', this.email);
+        document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
+        // this.user.email = response.data.UserData.email;
+        // localStorage.setItem('userdata', JSON.stringify(response.data.UserData));
+        localStorage.setItem('conceive', response.data.UserData.conceive);
+        localStorage.setItem('duration_period', response.data.UserData.duration_period);
+        localStorage.setItem('email', response.data.UserData.email);
+        localStorage.setItem('last_cycle_irregular_last', response.data.UserData.last_cycle_irregular_last);
+        localStorage.setItem('last_cycle_irregular_start', response.data.UserData.last_cycle_irregular_start);
+        localStorage.setItem('last_cycle_regular', response.data.UserData.last_cycle_regular);
+        localStorage.setItem('last_period_start', response.data.UserData.last_period_start);
+        this.$router.push('/');
+      } else if (response.status === 400) {
+        this.error = response.data["message"];
+        // console.log(this.error);
+      }
+    }).catch((error) => {
+      this.error = error;
+    }).finally(() => {
+      this.isLoading = false; // Hide loader after the async operation is complete
+    });
+  }
+}    },
     watch: {
       email: function () {
         let emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
