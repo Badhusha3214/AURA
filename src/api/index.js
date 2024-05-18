@@ -53,12 +53,34 @@ export const userRegister = async (user) => {
     }
 };
 
+export const Getnote = async () => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.get(`${import.meta.env.VITE_APP_AURA_API_URL}/notes`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
 
 
 export const userLogin = async (user) => {
     try {
+        
         const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/users/login`, user);
-        // console.log(res);
+        console.log(res);
         token = res.data.Token
         return res;
     } catch (error) {
@@ -66,6 +88,27 @@ export const userLogin = async (user) => {
         return error.response;
     }
 };
+
+
+export const deleteNote = async (noteId) => {
+    try {
+        const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.delete(`${import.meta.env.VITE_APP_AURA_API_URL}/notes/${noteId}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      return error;
+    }
+  };
 
 
 
@@ -183,7 +226,7 @@ export const deleteAccount = async (user) => {
     }
 };
 
-export const addnote = async (user) => {
+export const Newnote = async (user) => {
     try {
         const cookies = document.cookie.split(';');
         const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
@@ -197,11 +240,11 @@ export const addnote = async (user) => {
                 Authorization: `Bearer ${token}`,
             },
         });
-        // console.log(res.headers);
-        // console.log(res.data);
+        console.log(res.headers);
+        console.log(res.data);
         return res;
     } catch (error) {
-        // console.log(error);
+        console.log(error);
         return error;
     }
 };
@@ -274,3 +317,4 @@ export const getpatientList = async()=>{
 
     return data;
 };
+
