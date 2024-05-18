@@ -1,6 +1,6 @@
 <template>
-<IsMobile />
-<DashboardLayout />
+    <IsMobile />
+    <DashboardLayout />
 
     <div class="justify-center flex items-center">
         <div class="h-auto w-20">
@@ -8,11 +8,11 @@
         </div>
     </div>
     <div v-if="getdata()"></div>
-    <div  class="bg-gradient-to-b from-white via-pink-100 to-pink-100absolute w-full flex justify-center mb-12">
+    <div class="bg-gradient-to-b from-white via-pink-100 to-pink-100absolute w-full flex justify-center mb-12">
         <div class="relative flex flex-col items-center gap-5 justify-center my-3">
             <div>
                 <p class="font-medium text-22 w-72 text-center">{{ userName }}</p>
-                <p class="font-extralight text-center text-sm">{{email}}</p>
+                <p class="font-extralight text-center text-sm">{{ email }}</p>
                 <p class="font-extralight text-center text-sm">{{ userNumber }}</p>
                 <hr class="h-px my-8 bg-gray-500 border-0 dark:bg-gray-700">
             </div>
@@ -52,49 +52,53 @@
 
 
 
-    
+
 </template>
 
 <script>
-import DashboardLayout from "@/layouts/DashboardLayout.vue";
+    import DashboardLayout from "@/layouts/DashboardLayout.vue";
+    import { Getnote} from "@/api/index"
+    import notepad from "@/components/Notepad.vue";
+    import IsMobile from "@/components/IsMobile.vue";
 
-import notepad from "@/components/Notepad.vue";
-import IsMobile from "@/components/IsMobile.vue";
 
+    export default {
+        name: "ProfileView",
+        components: {
+            DashboardLayout,
 
-export default {
-    name: "ProfileView",
-    components: {
-        DashboardLayout,
+            IsMobile,
+            notepad
 
-        IsMobile,
-        notepad                 
-        
-    },data() {
-      return {
-        userName: null,
-        userNumber: null,
-        email: null,
-      };
-    },
-   
-    methods: {
-        getdata(){
-            this.userName = localStorage.getItem('userName');
-            this.userNumber = localStorage.getItem('userNumber');
-            this.email = localStorage.getItem('email');
-            // this.DOB = localStorage.getItem('DOB');
-
-            // console.log('Name:', this.userName);
-            // console.log('Number:', this.userNumber);
+        }, data() {
+            return {
+                userName: null,
+                userNumber: null,
+                email: null,
+            };
         },
-        updateCounter(value, action) {
-            action === "++" ? (this.counter += value) : (this.counter -= value);
+
+        async mounted() {
+            this.notess = await Getnote()
+            console.log(this.notess);
         },
-    },async mounted() {
+        methods: {
+            getdata() {
+                this.userName = localStorage.getItem('userName');
+                this.userNumber = localStorage.getItem('userNumber');
+                this.email = localStorage.getItem('email');
+                // this.DOB = localStorage.getItem('DOB');
+
+                // console.log('Name:', this.userName);
+                // console.log('Number:', this.userNumber);
+            },
+            updateCounter(value, action) {
+                action === "++" ? (this.counter += value) : (this.counter -= value);
+            },
+        }, async mounted() {
             if (!document.cookie.includes('aura-token')) {
                 this.$router.push('/enroll')
             }
         }
-};
+    };
 </script>
