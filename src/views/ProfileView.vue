@@ -57,7 +57,7 @@
 
 <script>
     import DashboardLayout from "@/layouts/DashboardLayout.vue";
-    import { Getnote} from "@/api/index"
+
     import notepad from "@/components/Notepad.vue";
     import IsMobile from "@/components/IsMobile.vue";
 
@@ -78,11 +78,8 @@
             };
         },
 
-        async mounted() {
-            this.notess = await Getnote()
-            console.log(this.notess);
-        },
         methods: {
+            
             getdata() {
                 this.userName = localStorage.getItem('userName');
                 this.userNumber = localStorage.getItem('userNumber');
