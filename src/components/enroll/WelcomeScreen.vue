@@ -200,6 +200,9 @@
         // this.user.email = response.data.UserData.email;
         // localStorage.setItem('userdata', JSON.stringify(response.data.UserData));
         localStorage.setItem('conceive', response.data.UserData.conceive);
+        localStorage.setItem('userName', response.data.UserData.full_name);
+        localStorage.setItem('userNumber', response.data.UserData.phone_number);
+        localStorage.setItem('DOB', response.data.UserData.dob);
         localStorage.setItem('duration_period', response.data.UserData.duration_period);
         localStorage.setItem('email', response.data.UserData.email);
         localStorage.setItem('last_cycle_irregular_last', response.data.UserData.last_cycle_irregular_last);

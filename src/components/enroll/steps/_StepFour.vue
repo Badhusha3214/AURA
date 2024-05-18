@@ -48,8 +48,8 @@ export default {
             this.$emit('triggerNext', 'Splash');
             await userdetail({
                 conceive: localStorage.getItem('conceive'),
-                duration_period: localStorage.getItem('periodLength'),
-                last_cycle_regular: localStorage.getItem('cycleLength'),
+                duration_period: localStorage.getItem('duration_period'),
+                last_cycle_regular: localStorage.getItem('last_cycle_regular'),
                 last_cycle_irregular_start: localStorage.getItem('cycleLength_start'),
                 last_cycle_irregular_last: localStorage.getItem('cycleLength_end'),
                 last_period_start: localStorage.getItem('last_period_start'),
