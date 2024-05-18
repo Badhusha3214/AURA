@@ -11,6 +11,7 @@ import StepsView from '@/views/StepsView.vue'
 import EnrollView from '@/views/EnrollView.vue'
 
 import NotFoundView from '@/views/404.vue'
+import AdminView from '@/views/AdminView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +47,14 @@ const router = createRouter({
       component: ProfileView,
       meta: {
         title: 'Profile'
+      }
+    },
+    {
+      path: '/admin',
+      name: 'AdminView',
+      component: AdminView,
+      meta: {
+        title: 'Admin'
       }
     },
 
