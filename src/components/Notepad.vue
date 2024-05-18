@@ -6,12 +6,14 @@
   </button>
   <div class="container mx-auto z-0 p-4">
     <ul class="mt-4">
-      <li v-for="(note, index) in notes" :key="index"
-        class="mb-6 text-black w-64 z-0 bg-white focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5  items-center"
+
+      <li v-for="(note, index) in notes" :key="note.note_id"
+        class="mb-6 text-black w-64 z-0 bg-white hover:bg-tertiary focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5  items-center"
+
         @click="toggleNoteContent(index)">
         <div class="flex justify-between items-center mb-2 ">
           <div class="text-sm font-semibold truncate">{{ truncateTitle(note.title) }}</div>
-          <div class="text-xs">{{ formatDate(note.createdAt) }}</div>
+          <div class="text-xs">{{ formatDate(note.created_at) }}</div>
         </div>
         <div v-if="note.showContent" class="note-content">
           <hr class="h-px my-1 bg-gray-500 border-0 dark:bg-gray-700">
@@ -55,7 +57,7 @@
             placeholder="Title" />
         </div>
         <hr class="h-px my-1 bg-gray-500 border-1 mx-7 dark:bg-gray-700">
-        <textarea v-model="newNoteContent" 
+        <textarea v-model="newNoteContent"
           class=" border-white w-full rounded-md px-4 py-2  placeholder-gray-400  text-base h-48"
           placeholder="Content"></textarea>
       </div>
@@ -64,6 +66,8 @@
 </template>
 
 <script>
+  import { Newnote, Getnote ,deleteNote } from "@/api/index"
+
   export default {
     data() {
       return {
@@ -71,27 +75,47 @@
         newNoteTitle: "",
         newNoteContent: "",
         notes: [],
+        notess: []
       };
     },
-    created() {
-      const savedNotes = localStorage.getItem("notes");
-      if (savedNotes) {
-        this.notes = JSON.parse(savedNotes);
+    async mounted() {
+      try {
+        const response = await Getnote();
+        this.notess = response.data.Note;
+        this.notes = response.data.Note.map(note => ({
+          note_id: note.note_id,
+          title: note.title,
+          content: note.content,
+          showContent: false,
+          created_at: note.created_at
+        }));
+      } catch (error) {
+        console.error(error);
       }
     },
     methods: {
-      addNote() {
-        if (this.newNoteTitle.trim() !== "" && this.newNoteContent.trim() !== "") {
+      async addNote() {
+        const newNote = {
+          title: this.newNoteTitle,
+          content: this.newNoteContent
+        };
+
+        try {
+          const response = await Newnote(newNote);
+          this.notess.push(response.data);
           this.notes.unshift({
+            note_id: response.data.note_id,
             title: this.newNoteTitle,
             content: this.newNoteContent,
             showContent: true,
-            createdAt: new Date().toISOString(),
+            created_at: new Date().toISOString()
           });
           this.newNoteTitle = "";
           this.newNoteContent = "";
           this.showAddNote = false;
           this.saveNotes();
+        } catch (error) {
+          console.error(error);
         }
       },
       toggleNoteContent(index) {
@@ -105,9 +129,16 @@
         this.notes.splice(index, 1);
         this.saveNotes();
       },
-      deleteNote(index) {
-        this.notes.splice(index, 1);
-        this.saveNotes();
+      async deleteNote(index) {
+        try {
+          const noteId = this.notes[index].note_id;
+          await deleteNote(noteId); 
+          this.notess = this.notess.filter(note => note.note_id !== noteId);
+          this.notes.splice(index, 1);
+          this.saveNotes();
+        } catch (error) {
+          console.error(error);
+        }
       },
       saveNotes() {
         localStorage.setItem("notes", JSON.stringify(this.notes));
@@ -117,7 +148,7 @@
         return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
       },
       truncateTitle(title) {
-        const maxLength = 14; // Set the desired maximum length for the title
+        const maxLength = 14;
         if (title.length > maxLength) {
           return `${title.slice(0, maxLength)}...`;
         }
@@ -129,20 +160,19 @@
 
 <style>
 textarea {
-    border: none;
-    overflow: none;
-    outline: none;
+  border: none;
+  overflow: none;
+  outline: none;
 
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 
-    resize: none; 
+  resize: none;
 }
+
 textarea:focus {
   outline: none;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0);
-
 }
-
 </style>
