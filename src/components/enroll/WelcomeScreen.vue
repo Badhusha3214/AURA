@@ -32,10 +32,10 @@
 
         <!-- Modal header -->
         <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ mode === 'enroll' ? 'CreateAccount' : 'SignIn' }}</h3>
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ mode === 'enroll' ? 'CreateAccount' :
+      'SignIn' }}</h3>
 
           <button type="button"
-          
             class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
             data-modal-hide="authentication-modal">
             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -82,7 +82,10 @@
           <div class="flex flex-col gap-2">
             <button @click="getUserLogin" type="button" data-modal-hide="authentication-modal"
               class="w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-pink-500 hover:bg-red-400"
-              :disabled="!enableButton"> {{ mode === 'enroll' ? 'Create Account' : 'Sign In' }}</button>
+              :disabled="!enableButton">
+              {{ mode === 'enroll' ? 'Create Account' : 'Sign In' }}
+              <span v-if="loading" class="ml-2 loader"></span>
+            </button>
             <button v-if="mode === 'login'" @click="showForgotPasswordModal = true; $emit('modal-hide')" type="button"
               class="text-blue-600 hover:underline font-medium text-sm px-5 py-2.5 text-center">Forgot Password</button>
           </div>
@@ -100,8 +103,8 @@
           <p class="text-gray-600">Enter your email to reset your password.</p>
         </div>
         <div>
-          <input type="email" v-model="email"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4" placeholder="Enter your email" />
+          <input type="email" v-model="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4"
+            placeholder="Enter your email" />
           <button @click="resetPassword" class="w-full bg-pink-500 text-white font-bold py-2 rounded-lg">Reset
             Password</button>
         </div>
@@ -115,125 +118,120 @@
 </template>
 
 <script>
-import { forgotPassword, userLogin, userRegister } from '@/api/index.js'
+  import { forgotPassword, userLogin, userRegister } from '@/api/index.js'
 
-export default {
-  emits: ['triggerNext', 'modal-hide'],
-  name: "WelcomeScreen",
-  data() {
-    return {
-      email: null,
-      password: null,
-      confirm_password: null,
-      enableButton: false,
-      errors: null,
-      error: null,
-      email: null,
-      showForgotPasswordModal: false,
-    }
-  },
-  props: {
-    mode: {
-      type: String,
-      required: true
-    }
-  },
-  computed: {
-    user: {
-      get() {
-        return this.$store.state.user
-      },
-      set(value) {
-        this.$store.dispatch('setUser', value)
-      }
-    }, passkey: {
-      get() {
-        return this.$store.state.passkey
-      },
-      set(v) {
-        this.savepass(v)
+  export default {
+    emits: ['triggerNext', 'modal-hide'],
+    name: "WelcomeScreen",
+    data() {
+      return {
+        email: null,
+        password: null,
+        confirm_password: null,
+        enableButton: false,
+        errors: null,
+        error: null,
+        email: null,
+        showForgotPasswordModal: false,
+        loading: false,
       }
     },
-  },
-  methods: {
-    async getUserLogin() {
-      if (this.mode === 'enroll') {
-        await userRegister({
-          email: this.email,
-        }).then((response) => {
-          // console.log(response);
-          this.$store.commit("SET_PASSKEY", this.password)
-          if (response.status === 201) {
-            localStorage.setItem('email', this.email);
-            this.$emit('triggerNext', 'otp')
-          } else if (response.response.status === 400) {
-            this.error = response.response.data["message"];
-            console.log(this.error);
-          }
-        }).catch((error) => {
-          this.error = error;
-        })
-      } else {
-        await userLogin({
-          email: this.email,
-          password: this.password
-        }).then((response) => {
-          // console.log(response);
-          if (response.status === 200) {
-            localStorage.setItem('email', this.email);
-            document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
-            // this.user.email = response.data.UserData.email;
-            // localStorage.setItem('userdata', JSON.stringify(response.data.UserData));
-            localStorage.setItem('conceive', response.data.UserData.conceive);
-            localStorage.setItem('duration_period', response.data.UserData.duration_period);
-            localStorage.setItem('email', response.data.UserData.email);
-            localStorage.setItem('last_cycle_irregular_last', response.data.UserData.last_cycle_irregular_last);
-            localStorage.setItem('last_cycle_irregular_start', response.data.UserData.last_cycle_irregular_start);
-            localStorage.setItem('last_cycle_regular', response.data.UserData.last_cycle_regular);
-            localStorage.setItem('last_period_start', response.data.UserData.last_period_start);
-            this.$router.push('/');
-          } else if (response.status === 400) {
-            this.error = response.data["message"];
-            // console.log(this.error);
-          }
-        }).catch((error) => {
-          this.error = error;
-        })
+    props: {
+      mode: {
+        type: String,
+        required: true
       }
     },
-    async resetPassword() {
-      await forgotPassword({
-          email: this.email
-        }).then((response) => {
-        console.log(response);
-        this.showForgotPasswordModal = false;
-        // Show a success message to the user
-      }).catch((error) => {
-          this.error = error;
-        })
-
-    }
-  },
-  watch: {
-    email: function () {
-      let emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
-      if (emailRegex.test(this.email)) {
-        this.errors = null
+    computed: {
+      user: {
+        get() {
+          return this.$store.state.user
+        },
+        set(value) {
+          this.$store.dispatch('setUser', value)
+        }
+      }, passkey: {
+        get() {
+          return this.$store.state.passkey
+        },
+        set(v) {
+          this.savepass(v)
+        }
+      },
+    },
+    methods: {
+      async getUserLogin() {
+        
+        this.loading = true;
 
         if (this.mode === 'enroll') {
-          this.enableButton = this.email && this.password && this.confirm_password
+          await userRegister({
+            email: this.email,
+          }).then((response) => {
+            // console.log(response);
+            this.$store.commit("SET_PASSKEY", this.password)
+            if (response.status === 201) {
+              localStorage.setItem('email', this.email);
+              this.$emit('triggerNext', 'otp')
+            } else if (response.response.status === 400) {
+              this.error = response.response.data["message"];
+              console.log(this.error);
+            }
+          }).catch((error) => {
+            this.error = error;
+          }).finally(() => {
+        this.loading = false; 
+      });
         } else {
-          this.enableButton = this.email && this.password
+          await userLogin({
+            email: this.email,
+            password: this.password
+          }).then((response) => {
+            // console.log(response);
+            if (response.status === 200) {
+              localStorage.setItem('email', this.email);
+              document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
+              // this.user.email = response.data.UserData.email;
+              // localStorage.setItem('userdata', JSON.stringify(response.data.UserData));
+              localStorage.setItem('conceive', response.data.UserData.conceive);
+              localStorage.setItem('duration_period', response.data.UserData.duration_period);
+              localStorage.setItem('email', response.data.UserData.email);
+              localStorage.setItem('last_cycle_irregular_last', response.data.UserData.last_cycle_irregular_last);
+              localStorage.setItem('last_cycle_irregular_start', response.data.UserData.last_cycle_irregular_start);
+              localStorage.setItem('last_cycle_regular', response.data.UserData.last_cycle_regular);
+              localStorage.setItem('last_period_start', response.data.UserData.last_period_start);
+              this.$router.push('/');
+            } else if (response.status === 400) {
+              this.error = response.data["message"];
+              // console.log(this.error);
+            }
+          }).catch((error) => {
+            this.error = error;
+          }).finally(() => {
+        this.loading = false; // Set loading to false after the async operation is complete
+      });
         }
+      },
+      async resetPassword() {
+        this.loading = true;
+        await forgotPassword({
+          email: this.email
+        }).then((response) => {
+          console.log(response);
+          this.showForgotPasswordModal = false;
+          // Show a success message to the user
+        }).catch((error) => {
+          this.error = error;
+        }).finally(() => {
+      this.loading = false; // Set loading to false after the async operation is complete
+    });
 
-      } else {
-        this.errors = 'Invalid email'
       }
     },
-    password: function () {
-      let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/   //
-      if (this.password.length >= 8) {
-        if (passwordRegex.test(this.password)) {
+    watch: {
+      email: function () {
+        let emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
+        if (emailRegex.test(this.email)) {
           this.errors = null
 
           if (this.mode === 'enroll') {
@@ -243,22 +241,55 @@ export default {
           }
 
         } else {
-          this.errors = 'Not valid password'
+          this.errors = 'Invalid email'
         }
-      } else {
-        this.errors = 'Password must be at least 8 characters'
-      }
-    },
-    confirm_password: function () {
-      if (this.mode !== 'enroll') return
+      },
+      password: function () {
+        let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/   //
+        if (this.password.length >= 8) {
+          if (passwordRegex.test(this.password)) {
+            this.errors = null
 
-      if (this.confirm_password === this.password) {
-        this.errors = null
-        this.enableButton = this.email && this.password && this.confirm_password
-      } else {
-        this.errors = 'Passwords do not match'
+            if (this.mode === 'enroll') {
+              this.enableButton = this.email && this.password && this.confirm_password
+            } else {
+              this.enableButton = this.email && this.password
+            }
+
+          } else {
+            this.errors = 'Not valid password'
+          }
+        } else {
+          this.errors = 'Password must be at least 8 characters'
+        }
+      },
+      confirm_password: function () {
+        if (this.mode !== 'enroll') return
+
+        if (this.confirm_password === this.password) {
+          this.errors = null
+          this.enableButton = this.email && this.password && this.confirm_password
+        } else {
+          this.errors = 'Passwords do not match'
+        }
       }
     }
   }
-}
 </script>
+
+
+<style>
+.loader {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
