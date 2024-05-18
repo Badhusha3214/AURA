@@ -144,7 +144,7 @@ export default {
 
             // Check if the user is between 10 and 150 years old
             if (currentYear - enteredYear < 10 || currentYear - enteredYear > 150) {
-                this.dobError[field] = 'Please enter a valid year (must be between 10 and 150 years old)';
+                this.dobError[field] = 'Please enter a valid year (you must be atlest 10 years old)';
             }
         }
     }
