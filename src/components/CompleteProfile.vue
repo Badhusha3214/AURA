@@ -28,7 +28,7 @@
                                 placeholder="Mobile Number" required @input="validateNumber" />
                             <p v-if="numberError" class="text-red-500 text-sm mt-1">{{ numberError }}</p>
                         </div>
-                        <label for="number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
+                        <label for="dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
                             your date of birth</label>
                         <div class="flex justify-between">
                             <div class="flex items-start">
@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="relative max-w-sm">
                                     <input type="text" v-model="dob.year" maxlength="4" placeholder="YYYY"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-tertiary focus:border-tertiary block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray -400 dark:text-white"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-tertiary focus:border-tertiary block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                                         @input="validateDOB('year')" />
                                     <p v-if="dobError.year" class="text-red-500 text-sm mt-1">{{ dobError.year }}</p>
                                 </div>
@@ -63,9 +63,10 @@
         </div>
     </div>
 </template>
-
-
 <script>
+
+import { personaldetails } from '@/api/index'
+
 import dayjs from 'dayjs';
 
 export default {
@@ -84,49 +85,37 @@ export default {
                 day: '',
                 month: '',
                 year: ''
-            }
+            },
+            error: null
         }
     },
     computed: {
         isFormValid() {
-            return this.name.trim() !== '' && this.number.trim() !== '' && !this.numberError && !this.dobError.day && !this.dobError.month && !this.dobError.year
+            return this.name.trim() !== '' && this.number.trim() !== '' && !this.numberError && !this.dobError.day && !this.dobError.month && !this.dobError.year && this.dob.year.length === 4
         }
     },
     methods: {
-        personaldetails() {
-            return {
-                name: this.name,
-                number: this.number,
-                dob: `${this.dob.year}-${this.dob.month}-${this.dob.day}`
-            };
-        },
         checkLocalStorage() {
             const userName = localStorage.getItem('userName');
             const userNumber = localStorage.getItem('userNumber');
             const DOB = localStorage.getItem('DOB');
-
             return userName && userNumber && DOB;
         },
         async submitForm() {
             try {
-                const personalDetails = await this.personaldetails();
-                console.log(personalDetails);
+                await personaldetails({
+                    name: this.name,
+                    number: this.number,
+                    dob: `${this.dob.year}-${this.dob.month}-${this.dob.day}`
+                });
+                localStorage.setItem('userName', this.name);
+                localStorage.setItem('userNumber', this.number);
+                localStorage.setItem('DOB', `${this.dob.day}/${this.dob.month}/${this.dob.year}`);
+                this.$router.push('/profile');
             } catch (error) {
-                console.error(error);
+                this.error = error;
+                console.error('Error submitting form:', error);
             }
-
-            localStorage.setItem('userName', this.name);
-            localStorage.setItem('userNumber', this.number);
-            localStorage.setItem('DOB', `${this.dob.day}/${this.dob.month}/${this.dob.year}`);
-
-            // Handle form submission logic here
-            console.log('Name:', this.name);
-            console.log('Number:', this.number);
-            console.log('DOB:', `${this.dob.day}/${this.dob.month}/${this.dob.year}`);
-            this.$router.push('/profile')
-
-            // Close the popup or navigate to the next page
-            // For example: this.$emit('close-popup');
         },
         validateNumber() {
             const numberRegex = /^[-\s]?(\d{10}|\d{3}[-\s]?\d{3}[-\s]?\d{4})$/;

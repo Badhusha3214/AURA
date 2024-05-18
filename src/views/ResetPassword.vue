@@ -46,7 +46,7 @@ export default {
 
             this.loading = true
             this.error = ''
-
+            
             try {
                 await resetpassword({ newPassword: this.newPassword }).then((response) => {
                     console.log(response);
