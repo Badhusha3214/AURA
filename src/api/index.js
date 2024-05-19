@@ -189,7 +189,7 @@ export const amdoctor = async (data) => {
         throw new Error('No token found in cookie');
       }
       const token = tokenCookie.split('=')[1];
-      const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/admin/permissionToggle`, {
+      const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/admin/permissionToggle`, data ,{
         headers: {
           Authorization: `Bearer ${token}`,
         },

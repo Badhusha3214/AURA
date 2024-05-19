@@ -152,35 +152,42 @@
         })
       }
     }, methods: {
-      async bookNow() {
-        try {
-          // Format the date and time into a single string
-          const dateObj = new Date(this.selectedDate);
-          const timeValue = document.getElementById('time').value;
-          const [hours, minutes] = timeValue.split(':');
-          dateObj.setHours(parseInt(hours));
-          dateObj.setMinutes(parseInt(minutes));
-          this.formattedDateTime = dateObj.toISOString();
-          console.log(this.formattedDateTime);
-          // Send the formatted date and time in the appointment_time field
-          await takeappoinment({
-            doctor_name: "badhushashaji0@gmail.com",
-            appointment_time: this.formattedDateTime,
-          });
-        } catch (error) {
-          console.log(error);
-        }
+  async bookNow() {
+    try {
+      // Format the date and time into a single string
+      const dateObj = new Date(this.selectedDate);
+      const timeValue = document.getElementById('time').value;
+      const [hours, minutes] = timeValue.split(':');
+      dateObj.setHours(parseInt(hours));
+      dateObj.setMinutes(parseInt(minutes));
+      this.formattedDateTime = dateObj.toISOString();
+      console.log(this.formattedDateTime);
+
+      // Send the formatted date and time in the appointment_time field
+      const response = await takeappoinment({
+        doctor_user: this.doctor.email,
+        appointment_time: this.formattedDateTime,
+      });
+
+      // Check the response status
+      if (response.status === 200) {
         this.showSuccessMessage = true;
         setTimeout(() => {
           this.showSuccessMessage = false;
           this.Book_appoinment = false;
         }, 1000);
+      } else {
+        // console.log(response.response.data.message);
+        // Handle error
+        this.error = response.response.data.message || 'An error occurred. Please try again later.';
       }
-    },
-    mounted()
-    {
-      console.log(this.doctor.email);
+    } catch (error) {
+      console.log(error.response.data);
+      
     }
+  }
+    },
+
   }
 
 </script>

@@ -98,12 +98,8 @@
               </div>
             </div>
             <a href="#" class="flex items-center text-blue-500 hover:text-blue-700transition duration-300">
-              <span class="mr-2">Users Report</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
-                </path>
-              </svg>
+
+
             </a>
           </div>
         </div>
@@ -124,19 +120,22 @@
       </div>
 
       <div v-if="currentView === 'users'">
-        <div v-for="user in users" :key="user.id" class="bg-white p-6 rounded-md shadow-md flex items-center justify-between mb-4">
+        <div v-for="(user, index) in users" :key="index"
+          class="bg-white p-6 rounded-md shadow-md flex items-center justify-between mb-4">
           <div>
             <h2 class="text-2xl font-bold text-gray-800" :class="{ 'mb-1': user.isDoctor }">
-              {{ user.isDoctor ? 'Dr. ' + user.name : user.name }}
+              {{ user.isDoctor ? 'Dr. ' + user.full_name : user.name }}
             </h2>
             <p class="text-gray-600">{{ user.email }}</p>
           </div>
           <div class="flex items-center">
             <span v-if="user.isDoctor" class="mr-2 text-sm font-medium text-gray-500">Doctor</span>
-            <label :for="`doctorToggle-${user.id}`" class="flex items-center cursor-pointer">
+            <label :for="`doctorToggle-${index}`" class="flex items-center cursor-pointer">
               <div class="relative">
-                <input :id="`doctorToggle-${user.id}`" type="checkbox" v-model="user.isDoctor" class="sr-only" />
-                <div class="w-10 h-6 bg-gray-400 rounded-full shadow-inner" :class="{ 'bg-green-500': user.isDoctor }"></div>
+                <input :id="`doctorToggle-${index}`" type="checkbox" v-model="user.isDoctor" class="sr-only"
+                  @change="toggleDoctor(user)" />
+                <div class="w-10 h-6 bg-gray-400 rounded-full shadow-inner" :class="{ 'bg-green-500': user.isDoctor }">
+                </div>
                 <div
                   class="absolute inset-y-0 left-0 w-4 h-4 m-1 bg-white rounded-full shadow transition-transform duration-300 ease-in-out transform"
                   :class="{ 'translate-x-4': user.isDoctor }"></div>
@@ -149,7 +148,7 @@
   </div>
 </template>
 <script>
-  import { admindata, alluser } from '@/api/index'
+  import { admindata, alluser, amdoctor } from '@/api/index'
   import Chart from 'chart.js/auto';
 
   export default {
@@ -172,6 +171,7 @@
           { date: '2023-05-18', users: 16 },
           { date: '2023-05-19', users: 13 },
         ],
+        error: null,
       };
     },
     computed: {
@@ -209,7 +209,7 @@
         window.location.href = "/enroll";
         localStorage.clear();
       },
-      toggleView(view) {
+      async toggleView(view) {
         this.currentView = view;
         console.log('Toggle View:', view);
       },
@@ -249,6 +249,18 @@
           }
         } else {
           console.error('Error: Canvas element with ID "area-chart" does not exist.');
+        }
+      },
+      async toggleDoctor() {
+        try {
+          const response = await amdoctor({
+            user_email:"this.user.email"
+          });
+          console.log(response);
+          // Handle the response here, e.g., show a success message or update the user data
+        } catch (error) {
+          this.error = error;
+          // Handle the error here, e.g., show an error message
         }
       },
     },
