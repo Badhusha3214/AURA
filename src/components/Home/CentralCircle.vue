@@ -57,8 +57,8 @@ export default {
     }
   },
   mounted() {
-    console.log(this.comment);
-    console.log(this.info);
+    // console.log(this.comment);
+    // console.log(this.info);
   }
 }
 </script>
