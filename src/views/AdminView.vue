@@ -214,6 +214,7 @@
        </div>
      </div>
 
+
      <div v-if="currentView === 'users'">
         <div
           v-for="(user, index) in users"
@@ -296,6 +297,7 @@ export default {
   computed: {
     totalUsers() {
       return this.users.length;
+
     },
     totalDoctors() {
       return this.users.filter((user) => user.isDoctor).length;

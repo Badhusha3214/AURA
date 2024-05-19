@@ -44,16 +44,16 @@ export default {
     return {
       choices: [
         {
-          option: 'Yes, I\'m trying to conceive',
+          option: 'Yes, I am',
           key: 'accordion-collapse-heading-0',
           value: true,
-          description: 'Lorem ipsum dolor sit amet consectetur. Euismod lacus proin curabitur dignissim tellus blandit massa. Amet fusce semper convallis interdum.',
+          // description: 'Lorem ipsum dolor sit amet consectetur. Euismod lacus proin curabitur dignissim tellus blandit massa. Amet fusce semper convallis interdum.',
         },
         {
           option: 'No, I just wanna track my cycle',
           key: 'accordion-collapse-heading-1',
           value: false,
-          description: 'Lorem ipsum dolor sit amet consectetur. Euismod lacus proin curabitur dignissim tellus blandit massa. Amet fusce semper convallis interdum.',
+          // description: 'Lorem ipsum dolor sit amet consectetur. Euismod lacus proin curabitur dignissim tellus blandit massa. Amet fusce semper convallis interdum.',
         },
       ],
       selected: null, 

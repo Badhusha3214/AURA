@@ -218,24 +218,31 @@ export default {
       console.log('Bleeding Level:', this.bleedingLevel);
       // Reset or close the modal as needed
       this.bleedingStatus = false;
-    }
+    },
+    isSameDay(date1, date2) {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  },
   },
   watch: {
     selectedDate(newDate) {
-      if (newDate) {
-        const selectedDateObj = new Date(newDate);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Set time to 00:00:00 to ensure fair comparison
+    if (newDate) {
+      const selectedDateObj = new Date(newDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Set time to 00:00:00 to ensure fair comparison
 
         // Check if the selected date is after today
-        if (selectedDateObj > today) {
-          this.selectedDate = null; // Reset the selected date
-          this.showError = true; // Show an error message or notification
-        } else {
-          this.showError = false; // Hide the error message or notification
-        }
+        if (selectedDateObj > today && !this.isSameDay(selectedDateObj, today)) {
+        this.selectedDate = null; // Reset the selected date
+        this.showError = true; // Show an error message or notification
+      } else {
+        this.showError = false; // Hide the error message or notification
       }
     }
+  }
   },
   computed: {
     maxDate() {
