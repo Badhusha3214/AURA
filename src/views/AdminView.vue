@@ -197,19 +197,19 @@
            class="bg-white p-6 rounded-md shadow-md flex flex-col items-center justify-center"
          >
            <h3 class="text-sm font-medium text-gray-500 mb-2">Total Users</h3>
-           <span class="text-2xl font-bold text-gray-800">{{ totalUsers }}</span>
+           <span class="text-2xl font-bold text-gray-800">{{ totaluser }}</span>
          </div>
          <div
            class="bg-white p-6 rounded-md shadow-md flex flex-col items-center justify-center"
          >
            <h3 class="text-sm font-medium text-gray-500 mb-2">Doctors</h3>
-           <span class="text-2xl font-bold text-gray-800">{{ totalDoctors }}</span>
+           <span class="text-2xl font-bold text-gray-800">{{ total_dr }}</span>
          </div>
          <div
            class="bg-white p-6 rounded-md shadow-md flex flex-col items-center justify-center"
          >
            <h3 class="text-sm font-medium text-gray-500 mb-2">Users</h3>
-           <span class="text-2xl font-bold text-gray-800">{{ totalUsers - totalDoctors }}</span>
+           <span class="text-2xl font-bold text-gray-800">{{ user }}</span>
          </div>
        </div>
      </div>
@@ -263,7 +263,9 @@ export default {
   data() {
     return {
       data: null,
-      
+      totaluser: null,
+      total_dr: null,
+      user: null,
       showSidebar: false,
       currentView: 'home',
       showDateDropdown: false,
@@ -304,7 +306,10 @@ export default {
   },
   async mounted() {
     this.data = await admindata()
-    console.log(this.data.data.total_users_count);
+    console.log(this.data.data);
+    this.totaluser = this.data.data.total_users_count
+    this.total_dr = this.data.data.doctors_users_count
+    this.user = this.data.data.normal_users_count
   },
   methods: {
     toggleView(view) {
