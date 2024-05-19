@@ -181,6 +181,27 @@ export const takeappoinment = async (data) => {
     }
   };
 
+export const amdoctor = async (data) => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/admin/permissionToggle`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
   export const appoinment = async (data) => {
     try {
       const cookies = document.cookie.split(';');
@@ -425,7 +446,7 @@ export const getDoctorsList = async()=>{
             Name: 'Dr. Shemmy raj',
             Department:  'Gynaecologist',
             Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
-            email: 'badhusha.shaji22@gmail.com'
+            email: 'badhushashaji0@gmail.com'
         },
         {
             Name: 'Dr. Thankappan raj',

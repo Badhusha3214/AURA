@@ -161,10 +161,10 @@
           dateObj.setHours(parseInt(hours));
           dateObj.setMinutes(parseInt(minutes));
           this.formattedDateTime = dateObj.toISOString();
-
+          console.log(this.formattedDateTime);
           // Send the formatted date and time in the appointment_time field
           await takeappoinment({
-            doctor_user: this.doctor.email,
+            doctor_name: "badhushashaji0@gmail.com",
             appointment_time: this.formattedDateTime,
           });
         } catch (error) {
@@ -176,6 +176,10 @@
           this.Book_appoinment = false;
         }, 1000);
       }
+    },
+    mounted()
+    {
+      console.log(this.doctor.email);
     }
   }
 
