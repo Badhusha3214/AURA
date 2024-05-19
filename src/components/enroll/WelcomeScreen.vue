@@ -7,30 +7,34 @@
   <div class=" w-full flex justify-center">
     <div class="relative flex flex-col items-center justify-center mt-40">
       <div class="w-full lg:w-1/3 lg:py-20 ">
-        <img class="w-full h-full" src="/assets/illustration/welcome.svg" alt="welcome" />
+        <img v-if="mode === 'login'" class="w-full h-full" src="/assets/illustration/welcome.svg" alt="welcome" />
+        <img v-else class="w-full h-full" src="/assets/illustration/Hello-cuate 1.svg" alt="welcome" />
       </div>
     </div>
   </div>
 
   <div class="absolute w-full flex justify-center mb-12">
     <div class="relative flex flex-col items-center gap-2 justify-center my-3">
-      <div class="font-semibold text-2xl w-72 rounded-full text-center">Welcome</div>
+      <div v-if="mode === 'login'" class="font-semibold text-2xl w-72 rounded-full text-center">Welcome Back</div>
+      <div v-else class="font-semibold text-2xl w-72 rounded-full text-center">Welcome</div>
     </div>
   </div>
 
   <p class="absolute bottom-0 w-screen flex justify-center mb-6 text-red-800 text-sm font-medium dark:text-red-500"
     v-if="error">{{ error }}</p>
 
-  <div class="absolute bottom-0 w-screen flex justify-center p-5 mb-12">
-    <button @click="showModal" class="text-white font-semibold w-full text-lg p-3 rounded-full bg-primary"
-      type="button">
-      SignIn with Gmail
+    <div class="absolute bottom-0 w-screen flex justify-center p-5 mb-12">
+    <button v-if="mode === 'login'" @click="showModal" class="text-white font-semibold w-full text-lg p-3 rounded-full bg-primary" type="button">
+      Sign in with Gmail
+    </button>
+    <button v-else @click="showModal" class="text-white font-semibold w-full text-lg p-3 rounded-full bg-primary" type="button">
+      Sign up with Gmail
     </button>
   </div>
 
   <!-- Main modal -->
   <div id="authentication-modal" tabindex="-1" aria-hidden="true"
-    class="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto overflow-x-hidden outline-none focus:outline-none"
+    class="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto overflow-x-hidden outline-none focus:outline-none hidden" 
     v-if="!showForgotPasswordModal">
     <div class="relative w-full max-w-md mx-auto">
       <!-- Modal content -->
@@ -240,16 +244,16 @@
         this.showForgotPasswordModal = false;
         this.resetPasswordMessage = null;
         // Show the SignIn modal
-        document.getElementById('authentication-modal').classList.remove('hidden');
+        // document.getElementById('authentication-modal').classList.remove('hidden');
         // Refresh the page
         location.reload();
       },
       showModal() {
-        document.getElementById('authentication-modal').classList.remove('hidden');
-      },
-      hideModal() {
-        document.getElementById('authentication-modal').classList.add('hidden');
-      }
+      document.getElementById('authentication-modal').classList.remove('hidden');
+    },
+    hideModal() {
+      document.getElementById('authentication-modal').classList.add('hidden');
+    }
     },
     watch: {
       email: function () {
