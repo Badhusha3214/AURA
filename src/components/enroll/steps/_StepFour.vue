@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col items-center justify-center">
-        <EnrollProgress question="How long does your period usually last?" />
+        <EnrollProgress question="When did your last period start?" />
         <Calendar @dateSelected="handleDateSelected" />
         <div class="container">
         </div>
