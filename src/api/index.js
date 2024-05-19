@@ -96,6 +96,27 @@ export const getdata = async () => {
     }
   };
 
+export const alluser = async () => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.get(`${import.meta.env.VITE_APP_AURA_API_URL}/admin/all-users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
 
 export const admindata = async () => {
     try {
@@ -127,6 +148,27 @@ export const Newdate = async (data) => {
       }
       const token = tokenCookie.split('=')[1];
       const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/user-analytics/period-start`,data , {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
+export const takeappoinment = async (data) => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/appoinment/request`,data , {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -383,26 +425,31 @@ export const getDoctorsList = async()=>{
             Name: 'Dr. Shemmy raj',
             Department:  'Gynaecologist',
             Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+            email: 'badhusha.shaji22@gmail.com'
         },
         {
             Name: 'Dr. Thankappan raj',
             Department:  'Gynaecologist',
             Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+            email: 'badhusha.shaji22@gmail.com'
         },
         {
             Name: 'Dr. Rajesh raj',
             Department:  'Gynaecologist',
             Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+            email: 'badhusha.shaji22@gmail.com'
         },
         {
             Name: 'Dr. Shashikala',
             Department:  'General surgeon',
             Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+            email: 'badhusha.shaji22@gmail.com'
         },
         {
             Name: 'Dr. Sushamma',
             Department:  'General surgeon',
             Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
+            email: 'badhusha.shaji22@gmail.com'
         },
     ]
 
