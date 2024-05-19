@@ -1,235 +1,366 @@
 <template>
-
-    <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar"
-        type="button"
-        class="inline-flex items-center p-2 mt-2 ml-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
-        <span class="sr-only">Open sidebar</span>
-        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg">
-            <path clip-rule="evenodd" fill-rule="evenodd"
-                d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
-            </path>
-        </svg>
-    </button>
-    <div class="flex">
-
-        <aside id="default-sidebar"
-            class="fixed top-0 left-0 z-40 w-48 h-screen transition-transform -translate-x-full sm:translate-x-0"
-            aria-label="Sidenav">
-            <div
-                class="overflow-y-auto py-5 px-3 h-full bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                <div>
-                    <img src="/assets/logo.svg" alt="logo" class="mb-8" />
-                </div>
-                <ul class="space-y-2">
-                    <li @click="toggleView('isHome', 'isUsers')">
-                        <a href="#"
-                            class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                            <svg aria-hidden="true"
-                                class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="ml-3">Home</span>
-                        </a>
-                    </li>
-                    <li @click="toggleView('isUsers', 'isHome')">
-                        <a href="#"
-                            class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                            <svg aria-hidden="true"
-                                class="w-6 h-6 text-gray-400 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                            </svg>
-                            <span class="ml-3">Users</span>
-                        </a>
-                    </li>
-                    <li @click="toggleView('isUsers', 'isHome')">
-                        <a href="#"
-                            class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                            <svg aria-hidden="true"
-                                class="w-6 h-6 text-gray-400 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                            </svg>
-                            <span class="ml-3">Logout</span>
-                        </a>
-                    </li>
-                </ul>
+    <div class="flex flex-col md:flex-row h-screen">
+      <div
+        class="md:w-48 bg-gray-800 text-white p-4 transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0"
+        :class="{ '-translate-x-full': !showSidebar }"
+      >
+        <div class="mb-8">
+          <img src="/assets/logo.svg" alt="logo" class="h-8" />
+        </div>
+        <nav>
+          <ul class="space-y-2">
+            <li>
+              <a
+                href="#"
+                class="flex items-center p-2 rounded-md hover:bg-gray-700 transition duration-300"
+                @click.prevent="toggleView('home')"
+              >
+                <svg
+                  class="w-6 h-6 mr-2 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                  ></path>
+                </svg>
+                <span class="text-gray-300">Home</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center p-2 rounded-md hover:bg-gray-700 transition duration-300"
+                @click.prevent="toggleView('users')"
+              >
+                <svg
+                  class="w-6 h-6 mr-2 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                  ></path>
+                </svg>
+                <span class="text-gray-300">Users</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center p-2 rounded-md hover:bg-gray-700 transition duration-300"
+                @click="logout"
+              >
+              <svg aria-hidden="true" class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                <span class="text-gray-300">Logout</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+  
+      <main class="flex-1 p-4 bg-gray-100">
+        <div class="md:hidden mb-4">
+          <button
+            class="p-2 rounded-md bg-gray-800 text-white focus:outline-none"
+            @click="showSidebar = !showSidebar"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+        </div>
+  
+        <div v-if="currentView === 'home'">
+          <div class="bg-white p-6 rounded-md shadow-md">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-2xl font-bold text-gray-800">Users this week</h2>
+              <div class="flex items-center text-green-500">
+                <span class="mr-1">12%</span>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 11l5-5m0 0l5 5m-5-5v12"
+                  ></path>
+                </svg>
+              </div>
             </div>
-        </aside>
-
-
-        <template v-if="isHome">
-
-            <div class="flex-1 ml-48 p-4">
-                <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-6 md:p-8">
-                    <div class="flex justify-between">
-                        <div>
-                            <h5 class="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">34k</h5>
-                            <p class="text-base font-normal text-gray-500 dark:text-gray-400">Users this week</p>
-                        </div>
-                        <div
-                            class="flex items-center px-2.5 py-0.5 text-base font-semibold text-green-500 dark:text-green-500 text-center">
-                            12%
-                            <svg class="w-3 h-3 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 10 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div id="area-chart"></div>
-                    <div
-                        class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
-                        <div class="flex justify-between items-center pt-5">
-                            <!-- Button -->
-                            <button id="dropdownDefaultButton" data-dropdown-toggle="lastDaysdropdown"
-                                data-dropdown-placement="bottom"
-                                class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
-                                type="button">
-                                Last 7 days
-                                <svg class="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 1 4 4 4-4" />
-                                </svg>
-                            </button>
-                            <!-- Dropdown menu -->
-                            <div id="lastDaysdropdown"
-                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                    aria-labelledby="dropdownDefaultButton">
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Yesterday</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Today</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last
-                                            7 days</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last
-                                            30 days</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last
-                                            90 days</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <a href="#"
-                                class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500  hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2">
-                                Users Report
-                                <svg class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 9 4-4-4-4" />
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
+            <div id="area-chart" class="h-64"></div>
+            <div class="mt-4 flex justify-between items-center">
+              <div class="relative">
+                <button
+                  class="flex items-center text-gray-600 hover:text-gray-800 focus:outline-none"
+                  @click="toggleDateDropdown"
+                >
+                  <span class="mr-2">Last 7 days</span>
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </button>
+                <div
+                  v-show="showDateDropdown"
+                  class="absolute z-10 mt-2 bg-white rounded-md shadow-lg"
+                >
+                  <div
+                    class="py-1"
+                    role="menu"
+                    aria-orientation="vertical"
+                    aria-labelledby="options-menu"
+                  >
+                    <a
+                      href="#"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      role="menuitem"
+                      >Yesterday</a
+                    >
+                    <a
+                      href="#"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      role="menuitem"
+                      >Today</a
+                    >
+                    <a
+                      href="#"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      role="menuitem"
+                      >Last 7 days</a
+                    >
+                    <a
+                      href="#"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      role="menuitem"
+                      >Last 30 days</a
+                    >
+                    <a
+                      href="#"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      role="menuitem"
+                      >Last 90 days</a
+                    >
+                  </div>
                 </div>
-                <div class="flex flex-wrap gap-4 mt-4 h-full">
-                    <div
-                        class="w-full w-min p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex-1">
-                        <div class="flex flex-col items-center ">
-                            <h5 class="mb-1 text-sm font-medium text-gray-500 dark:text-white pt-3">Total Users</h5>
-                            <span class="text-xl text-black dark:text-gray-400">100+</span>
-                        </div>
-                    </div>
-                    <div
-                        class="w-full w-min p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex-1">
-                        <div class="flex flex-col items-center  ">
-                            <h5 class="mb-1 text-sm font-medium text-gray-500 dark:text-white pt-3">Doctors</h5>
-                            <span class="text-xl text-black dark:text-gray-400">10+</span>
-                        </div>
-                    </div>
-                    <div
-                        class="w-full w-min p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex-1">
-                        <div class="flex flex-col items-center">
-                            <h5 class="mb-1 text-sm font-medium text-gray-500 dark:text-white pt-3">Users</h5>
-                            <span class="text-xl text-black dark:text-gray-400">90+</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </template>
+              </div>
+              <a
+                href="#"
+                class="flex items-center text-blue-500 hover:text-blue-700transition duration-300"
+>
+ <span class="mr-2">Users Report</span>
+ <svg
+   class="w-4 h-4"
+   fill="none"
+   stroke="currentColor"
+   viewBox="0 0 24 24"
+   xmlns="http://www.w3.org/2000/svg"
+ >
+   <path
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="2"
+     d="M17 8l4 4m0 0l-4 4m4-4H3"
+   ></path>
+ </svg>
+</a>
+         </div>
+       </div>
+       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+         <div
+           class="bg-white p-6 rounded-md shadow-md flex flex-col items-center justify-center"
+         >
+           <h3 class="text-sm font-medium text-gray-500 mb-2">Total Users</h3>
+           <span class="text-2xl font-bold text-gray-800">{{ totalUsers }}</span>
+         </div>
+         <div
+           class="bg-white p-6 rounded-md shadow-md flex flex-col items-center justify-center"
+         >
+           <h3 class="text-sm font-medium text-gray-500 mb-2">Doctors</h3>
+           <span class="text-2xl font-bold text-gray-800">{{ totalDoctors }}</span>
+         </div>
+         <div
+           class="bg-white p-6 rounded-md shadow-md flex flex-col items-center justify-center"
+         >
+           <h3 class="text-sm font-medium text-gray-500 mb-2">Users</h3>
+           <span class="text-2xl font-bold text-gray-800">{{ totalUsers - totalDoctors }}</span>
+         </div>
+       </div>
+     </div>
 
-        <template v-if="isUsers">
-  <div class="flex-1 ml-48 p-4">
-    <template v-for="users in Userslist">
-    
-            
-        <div class="w-full m-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-          <div class="flex items-center justify-between p-6">
-            <div>
-              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{users.Name}}</h5>
-              <p class="font-normal text-gray-700 dark:text-gray-400">{{users.mail}}</p>
-            </div>
-            <label class="inline-flex items-center cursor-pointer">
-          <span v-if="isDoctorMap[user.id]" class="mr-3 text-sm font-medium text-gray-900 dark:text-gray-300">Doctor</span>
-          <input type="checkbox" v-model="isDoctorMap[user.id]" class="sr-only peer">
-          <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-        </label>
+
+     <div v-if="currentView === 'users'">
+        <div
+          v-for="(user, index) in users"
+          :key="index"
+          class="bg-white p-6 rounded-md shadow-md flex items-center justify-between mb-4"
+        >
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800" :class="{ 'mb-1': user.isDoctor }">
+              {{ user.isDoctor ? 'Dr. ' + user.name : user.name }}
+            </h2>
+            <p class="text-gray-600">{{ user.email }}</p>
+          </div>
+          <div class="flex items-center">
+            <span v-if="user.isDoctor" class="mr-2 text-sm font-medium text-gray-500">Doctor</span>
+            <label for="doctorToggle" class="flex items-center cursor-pointer">
+              <div class="relative">
+                <input
+                  :id="'doctorToggle-' + index"
+                  type="checkbox"
+                  v-model="user.isDoctor"
+                  class="sr-only"
+                />
+                <div
+                  class="w-10 h-6 bg-gray-400 rounded-full shadow-inner"
+                  :class="{
+                    'bg-green-500': user.isDoctor,
+                  }"
+                ></div>
+                <div
+                  class="absolute inset-y-0 left-0 w-4 h-4 m-1 bg-white rounded-full shadow transition-transform duration-300 ease-in-out transform"
+                  :class="{
+                    'translate-x-4': user.isDoctor,
+                  }"
+                ></div>
+              </div>
+            </label>
           </div>
         </div>
-        
-    </template>
+      </div>
+    </main>
   </div>
 </template>
 
-
-    </div>
-
-</template>
 <script>
-
-
+import { admindata } from '@/api/index'
 export default {
-    name: "AdminView",
-    data() {
-        return {
-            isHome: true,
-            isUsers: false,
-            isDoctor: false,
-            Userslist: [
-                {
-                    Name: "Thanakappan",
-                    mail: "example@gmail.com"
-                },
-                {
-                    Name: "ponnappan",
-                    mail: "example@gmail.com"
-                },
-                {
-                    Name: "dasappan",
-                    mail: "example@gmail.com"
-                },
-                {
-                    Name: "sankaran kutti",
-                    mail: "example@gmail.com"
-                },
-            ]
-        }
-    },
-    methods: {
-        toggleView(viewToShow, viewToHide) {
-            this[viewToShow] = true;
-            this[viewToHide] = false;
-        }
-    }
+  data() {
+    return {
+      data: null,
+      
+      showSidebar: false,
+      currentView: 'home',
+      showDateDropdown: false,
+      users: [
+        {
+          name: 'Sivan Kutty',
+          email: 'examplemail@gmail.com',
+          isDoctor: true,
+        },
+        {
+          name: 'John Doe',
+          email: 'johndoe@example.com',
+          isDoctor: false,
+        },
+        // Add more user objects here
+      ],
+      chartData: [
+        { date: '2023-05-13', users: 10 },
+        { date: '2023-05-14', users: 12 },
+        { date: '2023-05-15', users: 8 },
+        { date: '2023-05-16', users: 14 },
+        { date: '2023-05-17', users: 11 },
+        { date: '2023-05-18', users: 16 },
+        { date: '2023-05-19', users: 13 },
+      ],
+    };
+  },
+  computed: {
+    totalUsers() {
+      return this.users.length;
 
-}
+    },
+    totalDoctors() {
+      return this.users.filter((user) => user.isDoctor).length;
+    },
+  },
+  mounted() {
+    this.renderChart();
+  },
+  async mounted() {
+    this.data = await admindata()
+    console.log(this.data.data.total_users_count);
+  },
+  methods: {
+    logout() {
+       document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+       window.location.href = "/enroll";
+       localStorage.clear();
+     },
+    toggleView(view) {
+      this.currentView = view;
+    },
+    toggleDateDropdown() {
+      this.showDateDropdown = !this.showDateDropdown;
+    },
+    renderChart() {
+      const ctx = document.getElementById('area-chart').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: this.chartData.map((item) => new Date(item.date).toLocaleDateString()),
+          datasets: [
+            {
+              label: 'Users',
+              data: this.chartData.map((item) => item.users),
+              backgroundColor: 'rgba(54, 162, 235, 0.5)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1,
+              fill: true,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    },
+  },
+  async mounted() {
+            if (!document.cookie.includes('aura-token')) {
+                this.$router.push('/enroll')
+            }
+        },
+};
 </script>

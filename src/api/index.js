@@ -74,6 +74,115 @@ export const Getnote = async () => {
     }
   };
 
+
+export const getdata = async () => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.get(`${import.meta.env.VITE_APP_AURA_API_URL}/user-analytics/getdata`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
+
+export const admindata = async () => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.get(`${import.meta.env.VITE_APP_AURA_API_URL}/admin-analytics/userdata`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
+export const Newdate = async (data) => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/user-analytics/period-start`,data , {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
+  export const appoinment = async (data) => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/appoinment/request`,data , {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
+
+
+export const enddate = async (data) => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/user-analytics/period-end`,data , {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
   export const personaldetails = async (data) => {
     try {
       const cookies = document.cookie.split(';');
