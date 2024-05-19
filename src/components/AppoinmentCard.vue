@@ -112,16 +112,17 @@
           </span>
         </div>
         <div v-if="showSuccessMessage" class="fixed bg-white inset-0 flex items-center justify-center z-50">
-        <img src="/assets/illustration/confirmation.svg" alt="Success" class="w-64 h-64">
+          <img src="/assets/illustration/confirmation.svg" alt="Success" class="w-64 h-64">
+        </div>
       </div>
     </div>
-  </div>
   </div>
 
 
 </template>
 <script>
   import datepicker from '@/components/datepicker.vue'
+  import { takeappoinment } from '@/api/index'
 
   export default {
     name: 'AppoinmentCard',
@@ -134,6 +135,7 @@
         name: '',
         error: '',
         selectedDate: null,
+        formattedDateTime: '', // Add this line
         done: false,
         showSuccessMessage: false
       }
@@ -145,22 +147,40 @@
         default: () => ({
           Name: '',
           Department: '',
-          Hospital: ''
+          Hospital: '',
+          email: '',
         })
       }
-    },methods: {
-  bookNow() {
-
-    this.showSuccessMessage = true;
-
-
-    setTimeout(() => {
-      this.showSuccessMessage = false;
-      this.Book_appoinment = false;
-    }, 1000);
-  }
-}
-
+    }, methods: {
+      async bookNow() {
+        try {
+          // Format the date and time into a single string
+          const dateObj = new Date(this.selectedDate);
+          const timeValue = document.getElementById('time').value;
+          const [hours, minutes] = timeValue.split(':');
+          dateObj.setHours(parseInt(hours));
+          dateObj.setMinutes(parseInt(minutes));
+          this.formattedDateTime = dateObj.toISOString();
+          console.log(this.formattedDateTime);
+          // Send the formatted date and time in the appointment_time field
+          await takeappoinment({
+            doctor_name: "badhushashaji0@gmail.com",
+            appointment_time: this.formattedDateTime,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        this.showSuccessMessage = true;
+        setTimeout(() => {
+          this.showSuccessMessage = false;
+          this.Book_appoinment = false;
+        }, 1000);
+      }
+    },
+    mounted()
+    {
+      console.log(this.doctor.email);
+    }
   }
 
 </script>
