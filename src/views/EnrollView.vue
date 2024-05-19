@@ -1,5 +1,5 @@
 <template>
-    <IsMobile />
+    <!-- <IsMobile /> -->
     <EnrollLayout>
 
         <template v-if="showSplash">
@@ -23,7 +23,7 @@ import EnrollLayout from '@/layouts/EnrollLayout.vue'
 import SplashScreen from '@/components/enroll/SplashScreen.vue'
 import WelcomeScreen from '@/components/enroll/WelcomeScreen.vue'
 import OtpScreen from '@/components/enroll/OtpScreen.vue'
-import IsMobile from "@/components/IsMobile.vue";
+// import IsMobile from "@/components/IsMobile.vue";
 
 export default {
     name: 'EnrollView',
@@ -38,7 +38,7 @@ export default {
     components: {
         EnrollLayout,
         SplashScreen,
-        IsMobile,
+        // IsMobile,
         WelcomeScreen,
         OtpScreen
     },
