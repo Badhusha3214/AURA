@@ -124,27 +124,25 @@
       </div>
 
       <div v-if="currentView === 'users'">
-        <div v-for="user in users" :key="user.id" class="bg-white p-6 rounded-md shadow-md flex items-center justify-between mb-4">
-          <div>
-            <h2 class="text-2xl font-bold text-gray-800" :class="{ 'mb-1': user.isDoctor }">
-              {{ user.isDoctor ? 'Dr. ' + user.name : user.name }}
-            </h2>
-            <p class="text-gray-600">{{ user.email }}</p>
-          </div>
-          <div class="flex items-center">
-            <span v-if="user.isDoctor" class="mr-2 text-sm font-medium text-gray-500">Doctor</span>
-            <label :for="`doctorToggle-${user.id}`" class="flex items-center cursor-pointer">
-              <div class="relative">
-                <input :id="`doctorToggle-${user.id}`" type="checkbox" v-model="user.isDoctor" class="sr-only" />
-                <div class="w-10 h-6 bg-gray-400 rounded-full shadow-inner" :class="{ 'bg-green-500': user.isDoctor }"></div>
-                <div
-                  class="absolute inset-y-0 left-0 w-4 h-4 m-1 bg-white rounded-full shadow transition-transform duration-300 ease-in-out transform"
-                  :class="{ 'translate-x-4': user.isDoctor }"></div>
-              </div>
-            </label>
-          </div>
+  <div v-for="(user, index) in users" :key="index" class="bg-white p-6 rounded-md shadow-md flex items-center justify-between mb-4">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-800" :class="{ 'mb-1': user.isDoctor }">
+        {{ user.isDoctor ? 'Dr. ' + user.name : user.name }}
+      </h2>
+      <p class="text-gray-600">{{ user.email }}</p>
+    </div>
+    <div class="flex items-center">
+      <span v-if="user.isDoctor" class="mr-2 text-sm font-medium text-gray-500">Doctor</span>
+      <label :for="`doctorToggle-${index}`" class="flex items-center cursor-pointer">
+        <div class="relative">
+          <input :id="`doctorToggle-${index}`" type="checkbox" v-model="user.isDoctor" class="sr-only" />
+          <div class="w-10 h-6 bg-gray-400 rounded-full shadow-inner" :class="{ 'bg-green-500': user.isDoctor }"></div>
+          <div class="absolute inset-y-0 left-0 w-4 h-4 m-1 bg-white rounded-full shadow transition-transform duration-300 ease-in-out transform" :class="{ 'translate-x-4': user.isDoctor }"></div>
         </div>
-      </div>
+      </label>
+    </div>
+  </div>
+</div>
     </main>
   </div>
 </template>
