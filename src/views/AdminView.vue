@@ -239,7 +239,7 @@
           </div>
           <div class="flex items-center">
             <span v-if="user.isDoctor" class="mr-2 text-sm font-medium text-gray-500">Doctor</span>
-            <label for="doctorToggle" class="flex items-center cursor-pointer">
+            <label for="doctorToggle" class="flex items-center cursor-pointer" @click="user.isDoctor =true">
               <div class="relative">
                 <input
                   :id="'doctorToggle-' + index"
@@ -282,7 +282,7 @@ export default {
         {
           name: 'Sivan Kutty',
           email: 'examplemail@gmail.com',
-          isDoctor: true,
+          isDoctor: false,
         },
         {
           name: 'John Doe',
