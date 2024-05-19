@@ -24,8 +24,11 @@
     v-if="error">{{ error }}</p>
 
     <div class="absolute bottom-0 w-screen flex justify-center p-5 mb-12">
-    <button @click="showModal" class="text-white font-semibold w-full text-lg p-3 rounded-full bg-primary" type="button">
-      SignIn with Gmail
+    <button v-if="mode === 'login'" @click="showModal" class="text-white font-semibold w-full text-lg p-3 rounded-full bg-primary" type="button">
+      Sign in with Gmail
+    </button>
+    <button v-else @click="showModal" class="text-white font-semibold w-full text-lg p-3 rounded-full bg-primary" type="button">
+      Sign up with Gmail
     </button>
   </div>
 

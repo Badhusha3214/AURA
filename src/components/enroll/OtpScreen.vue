@@ -50,7 +50,7 @@ export default {
             showTimer: true, // Flag to control the timer visibility
             timerInterval: null, // Interval reference for the timer
             resendButtonDisabled: true, // Flag to disable the "Resend Otp" button
-            resendButtonText: 'Resending...', // Text for the "Resend Otp" button
+            resendButtonText: 'Resend OTP', // Text for the "Resend Otp" button
         }
     },
     computed: {
