@@ -14,7 +14,7 @@
 
   <div class="absolute w-full flex justify-center mb-12">
     <div class="relative flex flex-col items-center gap-2 justify-center my-3">
-      <div class="font-semibold text-2xl w-72 rounded-full text-center">Welcome y'all</div>
+      <div class="font-semibold text-2xl w-72 rounded-full text-center">Welcome</div>
     </div>
   </div>
 
