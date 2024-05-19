@@ -112,6 +112,7 @@
 </template>
 <script>
 
+import {Newdate , enddate} from '@/api/index'
 
 export default {
   name: 'ControlPanel',
@@ -177,19 +178,36 @@ export default {
         this.bleedingStatus = true;
       }
     },
-    submitDate() {
-      // Handle the selected date here
-      console.log('last_period_start:', this.selectedDate);
-      localStorage.setItem('last_period_start', this.selectedDate);
-      localStorage.setItem('last_period_end', "");
-      this.showDatePicker = false;
-    },
-    submitendDate() {
-      // Handle the selected date here
-      console.log('last_period_end', this.selectedDate);
-      localStorage.setItem('last_period_end', this.selectedDate);
-      this.showendingDatePicker = false;
-    },
+    async submitDate() {
+  try {
+    await Newdate({ start_date: this.selectedDate })
+      .then((Response) => {
+        console.log(Response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log('last_period_start:', this.selectedDate);
+    localStorage.setItem('last_period_start', this.selectedDate);
+    localStorage.setItem('last_period_end', "");
+    this.showDatePicker = false;
+  } catch (error) {
+    console.log(error);
+  }
+},
+    async submitendDate() {
+      try {
+        await enddate({ end_date:this.selectedDate })
+        .then((Response) => {
+          console.log(Response);
+        })
+        console.log('last_period_end', this.selectedDate);
+        localStorage.setItem('last_period_end', this.selectedDate);
+        this.showendingDatePicker = false;
+      } catch (error){
+        console.log(error);
+      }
+      },
     submitmood() {
       // console.log("kitti mone kiti");
       localStorage.setItem('Moods', this.newNoteContent);
