@@ -446,31 +446,36 @@ export const getDoctorsList = async()=>{
             Name: 'Dr. Shemmy raj',
             Department:  'Gynaecologist',
             Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
-            email: 'badhushashaji0@gmail.com'
+            email: 'badhushashaji0@gmail.com',
+            model: rejected,
         },
         {
             Name: 'Dr. Thankappan raj',
             Department:  'Gynaecologist',
             Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
-            email: 'badhusha.shaji22@gmail.com'
+            email: 'badhusha.shaji22@gmail.com',
+            model: rejected,
         },
         {
             Name: 'Dr. Rajesh raj',
             Department:  'Gynaecologist',
             Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
-            email: 'badhusha.shaji22@gmail.com'
+            email: 'badhusha.shaji22@gmail.com',
+            model: waiting,
         },
         {
             Name: 'Dr. Shashikala',
             Department:  'General surgeon',
             Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
-            email: 'badhusha.shaji22@gmail.com'
+            email: 'badhusha.shaji22@gmail.com',
+            model: rejected,
         },
         {
             Name: 'Dr. Sushamma',
             Department:  'General surgeon',
             Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
-            email: 'badhusha.shaji22@gmail.com'
+            email: 'badhusha.shaji22@gmail.com',
+            model: accepted,
         },
     ]
 

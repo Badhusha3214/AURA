@@ -7,20 +7,25 @@
 
   </template>
 
-  <div
-    class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between">
-    <div>
-      <a href="#">
-        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ doctor.Name }}</h5>
-      </a>
-      <p class="font-bold text-gray-700">{{ doctor.Department }}</p>
-      <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ doctor.Hospital }}</p>
-    </div>
-    <a href="#" @click="Book_appoinment = true"
-      class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-secondary focus:ring-4 focus:outline-none focus:ring-tertiary dark:bg-primary dark:hover:bg-secondary dark:focus:ring-tertiary self-end">
-      Book Appointment
-    </a>
+  <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between relative">
+  <div class="absolute top-2 right-2">
+    <!-- Add your icon here -->
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-500">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+    </svg>
+
   </div>
+  <div>
+    <a href="#">
+      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ doctor.Name }}</h5>
+    </a>
+    <p class="font-bold text-gray-700">{{ doctor.Department }}</p>
+    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ doctor.Hospital }}</p>
+  </div>
+  <a href="#" @click="Book_appoinment = true" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-secondary focus:ring-4 focus:outline-none focus:ring-tertiary dark:bg-primary dark:hover:bg-secondary dark:focus:ring-tertiary self-end">
+    Book Appointment
+  </a>
+</div>
 
   <div v-if="Book_appoinment" class="fixed z-10 inset-0 overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -39,8 +44,9 @@
                 <p class=" leading-5 font-bold text-black ">
                   Enter your name
                 </p>
-                <input type="email" v-model="name" size="34" class="mt-2 form-input"
-                  placeholder="Enter your Gmail ID" />
+                <div class="mt-2 w-full max-w-lg">
+  <input type="email" v-model="name" class="form-input w-full" placeholder="Enter your Gmail ID" />
+</div>
               </div>
             </div>
           </div>
@@ -48,26 +54,6 @@
           <!-- Date Picker -->
 
         </div>
-
-        <p class="ml-5 mb-2 leading-5 font-bold text-black ">
-          Select option
-        </p>
-
-        <div class="flex my-4">
-          <div class="flex items-center  mx-12">
-            <input id="inline-radio" type="radio" value="" name="inline-radio-group"
-              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-            <label for="inline-radio"
-              class="ms-2 text-sm font-medium text-gray-900 font-semibold dark:text-gray-300">Vedio Call</label>
-          </div>
-          <div class="flex items-center mx-10">
-            <input id="inline-2-radio" type="radio" value="" name="inline-radio-group"
-              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-            <label for="inline-2-radio"
-              class="ms-2 text-sm font-medium text-gray-900 font-semibold dark:text-gray-300">Audio Call</label>
-          </div>
-        </div>
-
         <div class="flex items-center ml-5">
           <!-- Date Picker -->
           <div class="mr-4">
@@ -100,7 +86,7 @@
             <button type="button"
               class="inline-flex justify-center w-full rounded-xl border border-transparent px-4 py-2 bg-primary text-base leading-6 font-medium text-white shadow-sm hover:bg-primary2 focus:outline-none focus:border-red-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
               @click="bookNow">
-              book now
+              Book Now
             </button>
           </span>
           <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
@@ -149,6 +135,7 @@
           Department: '',
           Hospital: '',
           email: '',
+          mode: null,
         })
       }
     }, methods: {
