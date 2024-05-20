@@ -209,7 +209,6 @@ export default {
       }
       },
     submitmood() {
-      // console.log("kitti mone kiti");
       localStorage.setItem('Moods', this.newNoteContent);
       this.yourMood = false;
     },
