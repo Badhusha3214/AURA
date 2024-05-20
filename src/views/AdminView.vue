@@ -148,135 +148,135 @@
   </div>
 </template>
 <script>
-  import { admindata, alluser, amdoctor } from '@/api/index'
-  import Chart from 'chart.js/auto';
+import { admindata, alluser, amdoctor } from '@/api/index'
+import Chart from 'chart.js/auto';
 
-  export default {
-    data() {
-      return {
-        data: null,
-        totaluser: null,
-        total_dr: null,
-        user: null,
-        showSidebar: false,
-        currentView: 'home',
-        showDateDropdown: false,
-        users: [], // Initialize as an empty array
-        chartData: [
-          { date: '2023-05-13', users: 10 },
-          { date: '2023-05-14', users: 12 },
-          { date: '2023-05-15', users: 8 },
-          { date: '2023-05-16', users: 14 },
-          { date: '2023-05-17', users: 11 },
-          { date: '2023-05-18', users: 16 },
-          { date: '2023-05-19', users: 13 },
-        ],
-        error: null,
-      };
+export default {
+  data() {
+    return {
+      data: null,
+      totaluser: null,
+      total_dr: null,
+      user: null,
+      showSidebar: false,
+      currentView: 'home',
+      showDateDropdown: false,
+      users: [],
+      chartData: [
+        { date: '2023-05-13', users: 10 },
+        { date: '2023-05-14', users: 12 },
+        { date: '2023-05-15', users: 8 },
+        { date: '2023-05-16', users: 14 },
+        { date: '2023-05-17', users: 11 },
+        { date: '2023-05-18', users: 16 },
+        { date: '2023-05-19', users: 13 },
+      ],
+      error: null,
+    };
+  },
+  computed: {
+    totalUsers() {
+      return this.users.length;
     },
-    computed: {
-      totalUsers() {
-        return this.users.length;
-      },
-      totalDoctors() {
-        return this.users.filter((user) => user.isDoctor).length;
-      },
+    totalDoctors() {
+      return this.users.filter((user) => user.isDoctor).length;
     },
-    async mounted() {
-      try {
-        if (!document.cookie.includes('aura-token')) {
-          this.$router.push('/enroll')
-        }
-        this.data = await admindata();
-        console.log(this.data.data);
-        this.totaluser = this.data.data.total_users_count;
-        this.total_dr = this.data.data.doctors_users_count;
-        this.user = this.data.data.normal_users_count;
-
-        const user = await alluser();
-        console.log(user);
-        this.users = user.data.all_users; // Assign the all_users array to the users data property
-
-        this.renderChart(); // Ensure chart renders after data is fetched
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        // You can also handle the error in a user-friendly way, e.g., display an error message
+  },
+  async mounted() {
+    try {
+      if (!document.cookie.includes('aura-token')) {
+        this.$router.push('/enroll')
       }
+      this.data = await admindata();
+      console.log(this.data.data);
+      this.totaluser = this.data.data.total_users_count;
+      this.total_dr = this.data.data.doctors_users_count;
+      this.user = this.data.data.normal_users_count;
+
+      const user = await alluser();
+      console.log(user);
+      this.users = user.data.all_users.map(u => ({ ...u, isDoctor: u.doctor }));
+
+      this.renderChart();
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  },
+  methods: {
+    logout() {
+      document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      window.location.href = "/enroll";
+      localStorage.clear();
     },
-    methods: {
-      logout() {
-        document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        window.location.href = "/enroll";
-        localStorage.clear();
-      },
-      async toggleView(view) {
-        this.currentView = view;
-        console.log('Toggle View:', view);
-      },
-      toggleDateDropdown() {
-        this.showDateDropdown = !this.showDateDropdown;
-      },
-      renderChart() {
-        const canvas = document.getElementById('area-chart');
-        if (canvas) {
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            new Chart(ctx, {
-              type: 'line',
-              data: {
-                labels: this.chartData.map((item) => new Date(item.date).toLocaleDateString()),
-                datasets: [
-                  {
-                    label: 'Users',
-                    data: this.chartData.map((item) => item.users),
-                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1,
-                    fill: true,
-                  },
-                ],
-              },
-              options: {
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                  },
+    async toggleView(view) {
+      this.currentView = view;
+      console.log('Toggle View:', view);
+    },
+    toggleDateDropdown() {
+      this.showDateDropdown = !this.showDateDropdown;
+    },
+    renderChart() {
+      const canvas = document.getElementById('area-chart');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: this.chartData.map((item) => new Date(item.date).toLocaleDateString()),
+              datasets: [
+                {
+                  label: 'Users',
+                  data: this.chartData.map((item) => item.users),
+                  backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                  borderColor: 'rgba(54, 162, 235, 1)',
+                  borderWidth: 1,
+                  fill: true,
+                },
+              ],
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
                 },
               },
-            });
-          } else {
-            console.error('Error: Canvas context could not be obtained.');
-          }
-        } else {
-          console.error('Error: Canvas element with ID "area-chart" does not exist.');
-        }
-      },
-      async toggleDoctor(user) {
-        try {
-          const userData = {
-            user_email: user.email,
-            is_doctor: !user.doctor // Toggle the doctor status
-          };
-
-          const response = await amdoctor(userData);
-          console.log(response);
-
-          // Update the user data in the users array
-          const updatedUsers = this.users.map(u => {
-            if (u.email === user.email) {
-              // Update the doctor property based on the existing value
-              return { ...u, doctor: userData.is_doctor };
-            }
-            return u;
+            },
           });
-          this.users = updatedUsers;
-
-          // Handle the response here, e.g., show a success message
-        } catch (error) {
-          this.error = error;
-          // Handle the error here, e.g., show an error message
+        } else {
+          console.error('Error: Canvas context could not be obtained.');
         }
-      },
+      } else {
+        console.error('Error: Canvas element with ID "area-chart" does not exist.');
+      }
     },
-  };
+    async toggleDoctor(user) {
+  try {
+    const userData = {
+      user_email: user.email,
+      is_doctor: !user.isDoctor
+    };
+
+    const response = await amdoctor(userData);
+    console.log(response);
+
+    const updatedUsers = this.users.map(u => {
+      if (u.email === user.email) {
+        if (response.data.message === 'User Permission disabled doctor') {
+          // Doctor permission is being disabled
+          return { ...u, isDoctor: false, doctor: false };
+        } else {
+          // Doctor permission is being enabled
+          return { ...u, isDoctor: true, doctor: true };
+        }
+      }
+      return u;
+    });
+    this.users = updatedUsers;
+  } catch (error) {
+    this.error = error;
+  }
+},
+  },
+};
 </script>
