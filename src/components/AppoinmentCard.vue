@@ -1,26 +1,36 @@
 <template>
 
-  <template v-if="done = false">
 
-  </template>
-  <template v-else>
-
-  </template>
-
-  <div
-    class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between">
-    <div>
-      <a href="#">
-        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ doctor.full_name }}</h5>
+  <div v-if="doctor && Object.keys(doctor).length > 0">
+    <div
+      class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between">
+      <div>
+        <a href="#">
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ doctor.full_name }}</h5>
+        </a>
+        <p class="font-bold text-gray-700">cardiology</p>
+        <p class="mb-3 font-normal text-white dark:text-gray-400 ">-------------------------------------</p>
+      </div>
+      <a href="#" @click="Book_appoinment = true"
+        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-secondary focus:ring-4 focus:outline-none focus:ring-tertiary dark:bg-primary dark:hover:bg-secondary dark:focus:ring-tertiary self-end">
+        Book Appointment
       </a>
-      <p class="font-bold text-gray-700">cardiology</p>
-      <p class="mb-3 font-normal text-white dark:text-gray-400 ">-------------------------------------</p>
     </div>
-    <a href="#" @click="Book_appoinment = true"
-      class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-secondary focus:ring-4 focus:outline-none focus:ring-tertiary dark:bg-primary dark:hover:bg-secondary dark:focus:ring-tertiary self-end">
-      Book Appointment
-    </a>
   </div>
+
+  <div v-else class="flex justify-center items-center h-screen">
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <div class="flex items-center justify-center mb-4">
+        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+        </svg>
+      </div>
+      <h1 class="text-2xl font-bold text-gray-800 mb-4">No Doctor Available</h1>
+      <p class="text-gray-600">We apologize for the inconvenience. Currently, there are no doctors available for appointments.</p>
+    </div>
+  </div>
+
+
 
   <div v-if="Book_appoinment" class="fixed z-10 inset-0 overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -135,52 +145,52 @@
         name: '',
         error: '',
         selectedDate: null,
-        formattedDateTime: '', // Add this line
+        formattedDateTime: '',
         done: false,
         showSuccessMessage: false
       }
     },
     props: {
-    doctor: {
-      type: Object,
-      required: true
-    }
-  }, methods: {
-  async bookNow() {
-    try {
-      // Format the date and time into a single string
-      const dateObj = new Date(this.selectedDate);
-      const timeValue = document.getElementById('time').value;
-      const [hours, minutes] = timeValue.split(':');
-      dateObj.setHours(parseInt(hours));
-      dateObj.setMinutes(parseInt(minutes));
-      this.formattedDateTime = dateObj.toISOString();
-      console.log(this.formattedDateTime);
-
-      // Send the formatted date and time in the appointment_time field
-      const response = await takeappoinment({
-        doctor_user: this.doctor.email,
-        appointment_time: this.formattedDateTime,
-      });
-
-      // Check the response status
-      if (response.status === 200) {
-        this.showSuccessMessage = true;
-        setTimeout(() => {
-          this.showSuccessMessage = false;
-          this.Book_appoinment = false;
-        }, 1000);
-      } else {
-        // console.log(response.response.data.message);
-        // Handle error
-        this.error = response.response.data.message || 'An error occurred. Please try again later.';
+      doctor: {
+        type: Object,
+        required: true
       }
-    } catch (error) {
-      console.log(error.response.data);
-      
+    }, methods: {
+      async bookNow() {
+        try {
+          const dateObj = new Date(this.selectedDate);
+          const timeValue = document.getElementById('time').value;
+          const [hours, minutes] = timeValue.split(':');
+          dateObj.setHours(parseInt(hours));
+          dateObj.setMinutes(parseInt(minutes));
+          this.formattedDateTime = dateObj.toISOString();
+          console.log(this.formattedDateTime);
+
+          const response = await takeappoinment({
+            doctor_user: this.doctor.email,
+            appointment_time: this.formattedDateTime,
+          });
+
+          // Check the response status
+          if (response.status === 200) {
+            this.showSuccessMessage = true;
+            setTimeout(() => {
+              this.showSuccessMessage = false;
+              this.Book_appoinment = false;
+            }, 1000);
+          } else {
+            // console.log(response.response.data.message);
+            // Handle error
+            this.error = response.response.data.message || 'An error occurred. Please try again later.';
+          }
+        } catch (error) {
+          console.log(error.response.data);
+
+        }
+      }
+    },mounted(){
+      console.log(this.doctor);
     }
-  }
-    },
 
   }
 
