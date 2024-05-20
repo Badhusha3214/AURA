@@ -109,7 +109,7 @@ export const alluser = async () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res);
+    //   console.log(res);
       return res;
     } catch (error) {
       console.log(error);
