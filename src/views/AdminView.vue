@@ -4,7 +4,7 @@
       class="md:w-48 bg-gray-800 text-white p-4 transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0"
       :class="{ '-translate-x-full': !showSidebar }">
       <div class="mb-8">
-        <img src="/assets/logo.svg" alt="logo" class="h-8" />
+        <img src="/assets/logo.png" alt="logo" class="h-8" />
       </div>
       <nav>
         <ul class="space-y-2">
@@ -148,7 +148,7 @@
   </div>
 </template>
 <script>
-import { admindata, alluser, amdoctor } from '@/api/index'
+import { admindata, alluser, amdoctor , graph } from '@/api/index'
 import Chart from 'chart.js/auto';
 
 export default {
@@ -162,6 +162,7 @@ export default {
       currentView: 'home',
       showDateDropdown: false,
       users: [],
+      graph: [],
       chartData: [
         { date: '2023-05-13', users: 10 },
         { date: '2023-05-14', users: 12 },
@@ -196,6 +197,9 @@ export default {
       const user = await alluser();
       console.log(user);
       this.users = user.data.all_users.map(u => ({ ...u, isDoctor: u.doctor }));
+
+      this.graph = await graph();
+      console.log(this.graph);
 
       this.renderChart();
     } catch (error) {

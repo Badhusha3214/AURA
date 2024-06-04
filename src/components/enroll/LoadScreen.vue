@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col items-center justify-center h-screen">
-      <img src="/assets/logo.svg" alt="logo" class="mb-8" />
+      <img src="/assets/logo.png" alt="logo" class="mb-8" />
       <div class="w-64">
         <div
           class="h-2 bg-gray-300 rounded-full overflow-hidden relative"

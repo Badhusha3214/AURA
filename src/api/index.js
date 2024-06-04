@@ -117,6 +117,47 @@ export const alluser = async () => {
     }
   };
 
+export const graph = async () => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.get(`${import.meta.env.VITE_APP_AURA_API_URL}/admin/graph`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    //   console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+export const UserAppoinments = async () => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.get(`${import.meta.env.VITE_APP_AURA_API_URL}/appoinment/get-appoinments-users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    //   console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
 
 export const admindata = async () => {
     try {
@@ -139,6 +180,28 @@ export const admindata = async () => {
     }
   };
 
+  export const getpatient = async () => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.get(`${import.meta.env.VITE_APP_AURA_API_URL}/appoinment/get-appoinments-doctor`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
+
 export const Newdate = async (data) => {
     try {
       const cookies = document.cookie.split(';');
@@ -148,6 +211,26 @@ export const Newdate = async (data) => {
       }
       const token = tokenCookie.split('=')[1];
       const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/user-analytics/period-start`,data , {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+export const appoinmentAccept = async (data) => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/appoinment/accept   `,data , {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -223,6 +306,27 @@ export const amdoctor = async (data) => {
     }
   };
 
+  export const appoinmentCancl = async (data) => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/appoinment/cancel`,data , {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
 
 
 export const enddate = async (data) => {
@@ -266,6 +370,8 @@ export const enddate = async (data) => {
       return error;
     }
   };
+
+
 
 export const userLogin = async (user) => {
     try {
@@ -440,42 +546,7 @@ export const Newnote = async (user) => {
     }
 };
 
-export const getDoctorsList = async()=>{
-    let data = [
-        {
-            Name: 'Dr. Shemmy raj',
-            Department:  'Gynaecologist',
-            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
-            email: 'badhushashaji0@gmail.com'
-        },
-        {
-            Name: 'Dr. Thankappan raj',
-            Department:  'Gynaecologist',
-            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
-            email: 'badhusha.shaji22@gmail.com'
-        },
-        {
-            Name: 'Dr. Rajesh raj',
-            Department:  'Gynaecologist',
-            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
-            email: 'badhusha.shaji22@gmail.com'
-        },
-        {
-            Name: 'Dr. Shashikala',
-            Department:  'General surgeon',
-            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
-            email: 'badhusha.shaji22@gmail.com'
-        },
-        {
-            Name: 'Dr. Sushamma',
-            Department:  'General surgeon',
-            Hospital: 'N S S MEDICAL MISSION HOSPITAL, PERUNNA, CHANGANACHERRY',
-            email: 'badhusha.shaji22@gmail.com'
-        },
-    ]
 
-    return data;
-};
 export const getpatientList = async()=>{
     let data = [
         {
