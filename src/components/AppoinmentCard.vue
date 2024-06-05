@@ -1,5 +1,5 @@
 <template>
-  <div v-if="doctors.length > 0">
+   <div v-if="doctors.length > 0">
     <div v-for="doctor in doctors" :key="doctor.id">
       <!-- Doctor card template -->
       <div
@@ -25,9 +25,17 @@
             <p class="text-gray-700 dark:text-white">
               Appointment Time: {{ new Date(doctor.appointment.appointment_time).toLocaleString() }}
             </p>
-            <!-- Button for Reject -->
+            <!-- Button for Call -->
             <div class="flex justify-end mt-4">
               <button
+                v-if="new Date(doctor.appointment.appointment_time).toLocaleString() === new Date().toLocaleString()"
+                @click="callNow(Phno)"
+                class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-secondary focus:ring-4 focus:outline-none focus:ring-tertiary dark:bg-primary dark:hover:bg-secondary dark:focus:ring-tertiary"
+              >
+                Call
+              </button>
+              <button
+                v-else
                 @click="confirmReject(doctor.appointment)"
                 class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300"
               >
@@ -279,6 +287,7 @@ export default {
       showRejectModal: false,
       rejectGmail: "",
       appointmentToReject: null,
+      Phno: null,
     };
   },
   methods: {
@@ -358,7 +367,8 @@ export default {
     try {
       const appointmentsResponse = await UserAppoinments();
       this.appoinments = appointmentsResponse.data.appoinment;
-      
+      console.log(appointmentsResponse.data.doctor_phone_number);
+      this.Phno = appointmentsResponse.data.doctor_phone_number
       const allUserData = await alluser();
       const allUsers = allUserData.data.all_users;
       this.doctors = allUsers.filter((user) => user.doctor === true).map(doctor => {
