@@ -296,39 +296,39 @@ export default {
       this.Book_appoinment = true;
     },
     async bookNow() {
-      try {
-        const dateObj = new Date(this.selectedDate);
-        const timeValue = document.getElementById("time").value;
-        const [hours, minutes] = timeValue.split(":");
-        dateObj.setHours(parseInt(hours));
-        dateObj.setMinutes(parseInt(minutes));
-        this.formattedDateTime = dateObj.toISOString();
-        console.log(this.formattedDateTime);
-        console.log(this.selectedDoctor);
-        
-        const response = await takeappoinment({
-          doctor_email: this.selectedDoctor.email,
-          doctor_name: this.selectedDoctor.full_name,
-          appointment_time: this.formattedDateTime,
-        });
+  try {
+    const dateObj = new Date(this.selectedDate);
+    const timeValue = document.getElementById("time").value;
+    const [hours, minutes] = timeValue.split(":");
+    dateObj.setHours(parseInt(hours));
+    dateObj.setMinutes(parseInt(minutes));
+    this.formattedDateTime = dateObj.toISOString();
+    console.log(this.formattedDateTime);
+    console.log(this.selectedDoctor);
 
-        if (response.status === 200) {
-          this.showSuccessMessage = true;
-          setTimeout(() => {
-            this.showSuccessMessage = false;
-            this.Book_appoinment = false;
-            location.reload();
-          }, 1000);
-          
-        } else {
-          this.error =
-            response.response.data.message ||
-            "An error occurred. Please try again later.";
-        }
-      } catch (error) {
-        console.log(error.response.data);
-      }
-    },
+    const response = await takeappoinment({
+      doctor_email: this.selectedDoctor.email,
+      doctor_name: this.selectedDoctor.full_name,
+      appointment_time: this.formattedDateTime,
+    });
+
+    if (response.status === 200) {
+      this.showSuccessMessage = true;
+      setTimeout(() => {
+        this.showSuccessMessage = false;
+        this.Book_appoinment = false;
+        location.reload();
+      }, 1000);
+    } else {
+      this.error =
+        response.data.message ||
+        "An error occurred while booking the appointment. Please try again later.";
+    }
+  } catch (error) {
+    console.log(error);
+    this.error = "An error occurred while booking the appointment. Please try again later.";
+  }
+},
     confirmReject(appointment) {
       this.appointmentToReject = appointment;
       this.showRejectModal = true;
@@ -364,21 +364,22 @@ export default {
     },
   },
   async mounted() {
-    try {
-      const appointmentsResponse = await UserAppoinments();
-      this.appoinments = appointmentsResponse.data.appoinment;
-      console.log(appointmentsResponse.data.doctor_phone_number);
-      this.Phno = appointmentsResponse.data.doctor_phone_number
-      const allUserData = await alluser();
-      const allUsers = allUserData.data.all_users;
-      this.doctors = allUsers.filter((user) => user.doctor === true).map(doctor => {
-        doctor.appointment = this.appoinments.find(app => app.doctor_email === doctor.email) || null;
-        return doctor;
-      });
-      console.log(this.doctors);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  },
+  try {
+    const allUserData = await alluser();
+    const allUsers = allUserData.data.all_users;
+    this.doctors = allUsers.filter((user) => user.doctor === true).map(doctor => {
+      doctor.appointment = this.appoinments.find(app => app.doctor_email === doctor.email) || null;
+      return doctor;
+    });
+    console.log(this.doctors);
+    const appointmentsResponse = await UserAppoinments();
+    this.appoinments = appointmentsResponse.data.appoinment || [];
+    console.log(appointmentsResponse.data.doctor_phone_number);
+    this.Phno = appointmentsResponse.data.doctor_phone_number;
+
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+},
 };
 </script>
