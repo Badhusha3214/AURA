@@ -364,21 +364,36 @@ export default {
     },
   },
   async mounted() {
-    try {
-      const allUserData = await alluser();
-      const appointmentsResponse = await UserAppoinments();
-      this.appoinments = appointmentsResponse.data.appoinment;
-      console.log(appointmentsResponse.data.doctor_phone_number);
-      this.Phno = appointmentsResponse.data.doctor_phone_number
+  try {
+    const allUserData = await alluser();
+    const appointmentsResponse = await UserAppoinments();
+    this.appoinments = appointmentsResponse.data.appoinment || [];
+
+    if (this.appoinments.length === 0) {
+      console.log('No appointments found');
+
       const allUsers = allUserData.data.all_users;
       this.doctors = allUsers.filter((user) => user.doctor === true).map(doctor => {
         doctor.appointment = this.appoinments.find(app => app.doctor_email === doctor.email) || null;
         return doctor;
       });
+
       console.log(this.doctors);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
+    } else {
+      console.log(appointmentsResponse.data.doctor_phone_number);
+      this.Phno = appointmentsResponse.data.doctor_phone_number;
+
+      const allUsers = allUserData.data.all_users;
+      this.doctors = allUsers.filter((user) => user.doctor === true).map(doctor => {
+        doctor.appointment = this.appoinments.find(app => app.doctor_email === doctor.email) || null;
+        return doctor;
+      });
+
+      console.log(this.doctors);
     }
-  },
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+},
 };
 </script>
