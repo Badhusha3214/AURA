@@ -78,10 +78,21 @@
       </div>
     </div>
   </div>
-
+  <div v-if="showConfirmDelete" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white rounded-md p-4">
+    <p class="text-gray-700">Are you sure you want to delete this note?</p>
+    <div class="mt-4 flex justify-end">
+      <button class="bg-red-500 text-white px-4 py-2 rounded mr-2" @click="confirmDeleteNote">
+        Delete
+      </button>
+      <button class="bg-gray-400 text-white px-4 py-2 rounded" @click="cancelDeleteNote">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
 
 </template>
-
 <script>
 import { Newnote, Getnote, deleteNote } from "@/api/index"
 
@@ -95,7 +106,9 @@ export default {
       notess: [],
       loading: false,
       showLoader: false,
-      noteToEdit: null
+      noteToEdit: null,
+      showConfirmDelete: false,
+      noteToDelete: null
     };
   },
   async mounted() {
@@ -122,7 +135,6 @@ export default {
       };
 
       try {
-
         const response = await Newnote(newNote);
         this.notess.push(response.data);
         this.notes.unshift({
@@ -135,7 +147,6 @@ export default {
         this.newNoteTitle = "";
         this.newNoteContent = "";
         this.showAddNote = false;
-
         this.showLoader = false;
         this.saveNotes();
       } catch (error) {
@@ -147,27 +158,39 @@ export default {
       this.saveNotes();
     },
     editNote(index) {
-      // this.showLoader = true;
       this.showAddNote = true;
       this.newNoteTitle = this.notes[index].title;
       this.newNoteContent = this.notes[index].content;
       this.noteToEdit = this.notes[index];
-      // this.showLoader = false;
     },
-    async deleteNote(index) {
-      try {
-        this.showLoader = true;
-        const noteId = this.notes[index].note_id;
-        await deleteNote(noteId);
-        this.notess = this.notess.filter(note => note.note_id !== noteId);
-        this.notes.splice(index, 1);
-        this.saveNotes();
-        this.showLoader = false;
-      } catch (error) {
-        console.error(error);
-        this.showLoader = false;
-      }
-    }, saveNote() {
+    deleteNote(index) {
+      this.noteToDelete = index;
+      this.showConfirmDelete = true;
+    },
+    confirmDeleteNote() {
+      this.showConfirmDelete = false;
+      const index = this.noteToDelete;
+      this.showLoader = true;
+      const noteId = this.notes[index].note_id;
+      deleteNote(noteId)
+        .then(() => {
+          this.notess = this.notess.filter(note => note.note_id !== noteId);
+          this.notes.splice(index, 1);
+          this.saveNotes();
+          this.showConfirmDelete = false;
+          this.noteToDelete = null;
+          this.showLoader = false;
+        })
+        .catch(error => {
+          console.error(error);
+          this.showLoader = false;
+        });
+    },
+    cancelDeleteNote() {
+      this.showConfirmDelete = false;
+      this.noteToDelete = null;
+    },
+    saveNote() {
       if (this.noteToEdit !== null) {
         const index = this.notes.findIndex(note => note.note_id === this.noteToEdit.note_id);
         if (index !== -1) {
@@ -183,9 +206,6 @@ export default {
         this.addNote();
       }
     },
-    // saveNotes() {
-    //   localStorage.setItem("notes", JSON.stringify(this.notes));
-    // },
     formatDate(dateString) {
       const date = new Date(dateString);
       return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
@@ -200,7 +220,6 @@ export default {
   },
 };
 </script>
-
 <style>
 textarea {
   border: none;

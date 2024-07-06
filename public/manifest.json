@@ -14,13 +14,13 @@
       "purpose": "any"  
     },
     {
-      "src": "assets/logo.svg",
+      "src": "assets/logo.png",
       "sizes": "262x262",
       "type": "image/svg",
       "purpose": "any"
     },
     {
-      "src": "assets/logo_name.svg",
+      "src": "assets/logo_name.png",
       "sizes": "652x752",
       "type": "image/svg",
       "purpose": "any"

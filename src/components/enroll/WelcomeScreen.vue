@@ -215,6 +215,7 @@
               localStorage.setItem('last_cycle_irregular_start', response.data.UserData.last_cycle_irregular_start);
               localStorage.setItem('last_cycle_regular', response.data.UserData.last_cycle_regular);
               localStorage.setItem('last_period_start', response.data.UserData.last_period_start);
+              localStorage.setItem('isdoctor', response.data.UserData.doctor);
               this.$router.push('/');
             } else if (response.status === 400) {
               this.error = response.data["message"];
