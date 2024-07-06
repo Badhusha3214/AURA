@@ -7,8 +7,8 @@
   </template>
   <template v-else>
 
-    <div class="splash-screen ">
-      <img src="/assets/logo_name.png" alt="logo" class="pb-20"/>
+    <div class="splash-screen  ">
+      <img src="/assets/logo_name.png" alt="logo" class="pb-20 md:h-96"/>
     </div>
     <div class="absolute bottom-0 w-full flex justify-center mb-12">
       <div class="relative flex flex-col items-center gap-2 justify-center my-3">

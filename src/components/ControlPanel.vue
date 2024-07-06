@@ -59,7 +59,7 @@
 
     <!-- ENDING -->
     <div v-if="showendingDatePicker" class="fixed inset-0 z-50 flex justify-center items-center">
-      <div class="absolute inset-0 bg-black opacity-50" @click="showDatePicker = false"></div>
+      <div class="absolute inset-0 bg-black opacity-50" @click="showendingDatePicker = false"></div>
       <div class="bg-white rounded-lg p-6 relative z-10">
         <h2 class="text-xl font-bold mb-4">Select Your Ending Date</h2>
         <div v-if="showError" class="text-red-500 mt-2">
@@ -74,7 +74,7 @@
 
     <!-- Mood -->
     <div v-if="yourMood" class="fixed inset-0 z-50 flex justify-center items-center">
-      <div class="absolute inset-0 bg-black opacity-50" @click="showDatePicker = false"></div>
+      <div class="absolute inset-0 bg-black opacity-50" @click="yourMood = false"></div>
       <div class="bg-white rounded-lg p-6 relative z-10">
         <h2 class="text-xl font-bold mb-4">About Your Moods</h2>
         <p>During the periods time</p>
