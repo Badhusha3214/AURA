@@ -26,7 +26,7 @@ export default{
   return {
     images: [
       'confirmation.svg',
-      'splash_screen_logo.svg',
+      'splash_screen_logo.png',
       // Add more image paths as needed
     ],
     currentIndex: 0,

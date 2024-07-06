@@ -4,7 +4,7 @@
       class="md:w-48 bg-gray-800 text-white p-4 transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0"
       :class="{ '-translate-x-full': !showSidebar }">
       <div class="mb-8">
-        <img src="/assets/logo.svg" alt="logo" class="h-8" />
+        <img src="/assets/logo.png" alt="logo" class="h-8" />
       </div>
       <nav>
         <ul class="space-y-2">
@@ -98,12 +98,8 @@
               </div>
             </div>
             <a href="#" class="flex items-center text-blue-500 hover:text-blue-700transition duration-300">
-              <span class="mr-2">Users Report</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
-                </path>
-              </svg>
+
+
             </a>
           </div>
         </div>
@@ -124,131 +120,167 @@
       </div>
 
       <div v-if="currentView === 'users'">
-  <div v-for="(user, index) in users" :key="index" class="bg-white p-6 rounded-md shadow-md flex items-center justify-between mb-4">
-    <div>
-      <h2 class="text-2xl font-bold text-gray-800" :class="{ 'mb-1': user.isDoctor }">
-        {{ user.isDoctor ? 'Dr. ' + user.name : user.name }}
-      </h2>
-      <p class="text-gray-600">{{ user.email }}</p>
-    </div>
-    <div class="flex items-center">
-      <span v-if="user.isDoctor" class="mr-2 text-sm font-medium text-gray-500">Doctor</span>
-      <label :for="`doctorToggle-${index}`" class="flex items-center cursor-pointer">
-        <div class="relative">
-          <input :id="`doctorToggle-${index}`" type="checkbox" v-model="user.isDoctor" class="sr-only" />
-          <div class="w-10 h-6 bg-gray-400 rounded-full shadow-inner" :class="{ 'bg-green-500': user.isDoctor }"></div>
-          <div class="absolute inset-y-0 left-0 w-4 h-4 m-1 bg-white rounded-full shadow transition-transform duration-300 ease-in-out transform" :class="{ 'translate-x-4': user.isDoctor }"></div>
+        <div v-for="(user, index) in users" :key="index"
+          class="bg-white p-6 rounded-md shadow-md flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800" :class="{ 'mb-1': user.isDoctor }">
+              {{ user.isDoctor ? 'Dr. ' + user.full_name : user.name }}
+            </h2>
+            <p class="text-gray-600">{{ user.email }}</p>
+          </div>
+          <div class="flex items-center">
+            <span v-if="user.isDoctor" class="mr-2 text-sm font-medium text-gray-500">Doctor</span>
+            <label :for="`doctorToggle-${index}`" class="flex items-center cursor-pointer">
+              <div class="relative">
+                <input :id="`doctorToggle-${index}`" type="checkbox" v-model="user.isDoctor" class="sr-only"
+                  @change="toggleDoctor(user)" />
+                <div class="w-10 h-6 bg-gray-400 rounded-full shadow-inner" :class="{ 'bg-green-500': user.isDoctor }">
+                </div>
+                <div
+                  class="absolute inset-y-0 left-0 w-4 h-4 m-1 bg-white rounded-full shadow transition-transform duration-300 ease-in-out transform"
+                  :class="{ 'translate-x-4': user.isDoctor }"></div>
+              </div>
+            </label>
+          </div>
         </div>
-      </label>
-    </div>
-  </div>
-</div>
+      </div>
     </main>
   </div>
 </template>
 <script>
-  import { admindata, alluser } from '@/api/index'
-  import Chart from 'chart.js/auto';
+import { admindata, alluser, amdoctor , graph } from '@/api/index'
+import Chart from 'chart.js/auto';
 
-  export default {
-    data() {
-      return {
-        data: null,
-        totaluser: null,
-        total_dr: null,
-        user: null,
-        showSidebar: false,
-        currentView: 'home',
-        showDateDropdown: false,
-        users: [], // Initialize as an empty array
-        chartData: [
-          { date: '2023-05-13', users: 10 },
-          { date: '2023-05-14', users: 12 },
-          { date: '2023-05-15', users: 8 },
-          { date: '2023-05-16', users: 14 },
-          { date: '2023-05-17', users: 11 },
-          { date: '2023-05-18', users: 16 },
-          { date: '2023-05-19', users: 13 },
-        ],
-      };
+export default {
+  data() {
+    return {
+      data: null,
+      totaluser: null,
+      total_dr: null,
+      user: null,
+      showSidebar: false,
+      currentView: 'home',
+      showDateDropdown: false,
+      users: [],
+      graph: [],
+      chartData: [
+        { date: '2023-05-13', users: 10 },
+        { date: '2023-05-14', users: 12 },
+        { date: '2023-05-15', users: 8 },
+        { date: '2023-05-16', users: 14 },
+        { date: '2023-05-17', users: 11 },
+        { date: '2023-05-18', users: 16 },
+        { date: '2023-05-19', users: 13 },
+      ],
+      error: null,
+    };
+  },
+  computed: {
+    totalUsers() {
+      return this.users.length;
     },
-    computed: {
-      totalUsers() {
-        return this.users.length;
-      },
-      totalDoctors() {
-        return this.users.filter((user) => user.isDoctor).length;
-      },
+    totalDoctors() {
+      return this.users.filter((user) => user.isDoctor).length;
     },
-    async mounted() {
-      try {
-        if (!document.cookie.includes('aura-token')) {
-          this.$router.push('/enroll')
-        }
-        this.data = await admindata();
-        console.log(this.data.data);
-        this.totaluser = this.data.data.total_users_count;
-        this.total_dr = this.data.data.doctors_users_count;
-        this.user = this.data.data.normal_users_count;
-
-        const user = await alluser();
-        console.log(user);
-        this.users = user.data.all_users; // Assign the all_users array to the users data property
-
-        this.renderChart(); // Ensure chart renders after data is fetched
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        // You can also handle the error in a user-friendly way, e.g., display an error message
+  },
+  async mounted() {
+    try {
+      if (!document.cookie.includes('aura-token')) {
+        this.$router.push('/enroll')
       }
+      this.data = await admindata();
+      console.log(this.data.data);
+      this.totaluser = this.data.data.total_users_count;
+      this.total_dr = this.data.data.doctors_users_count;
+      this.user = this.data.data.normal_users_count;
+
+      const user = await alluser();
+      console.log(user);
+      this.users = user.data.all_users.map(u => ({ ...u, isDoctor: u.doctor }));
+
+      this.graph = await graph();
+      console.log(this.graph);
+
+      this.renderChart();
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  },
+  methods: {
+    logout() {
+      document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      window.location.href = "/enroll";
+      localStorage.clear();
     },
-    methods: {
-      logout() {
-        document.cookie = "aura-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        window.location.href = "/enroll";
-        localStorage.clear();
-      },
-      toggleView(view) {
-        this.currentView = view;
-        console.log('Toggle View:', view);
-      },
-      toggleDateDropdown() {
-        this.showDateDropdown = !this.showDateDropdown;
-      },
-      renderChart() {
-        const canvas = document.getElementById('area-chart');
-        if (canvas) {
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            new Chart(ctx, {
-              type: 'line',
-              data: {
-                labels: this.chartData.map((item) => new Date(item.date).toLocaleDateString()),
-                datasets: [
-                  {
-                    label: 'Users',
-                    data: this.chartData.map((item) => item.users),
-                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1,
-                    fill: true,
-                  },
-                ],
-              },
-              options: {
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                  },
+    async toggleView(view) {
+      this.currentView = view;
+      console.log('Toggle View:', view);
+    },
+    toggleDateDropdown() {
+      this.showDateDropdown = !this.showDateDropdown;
+    },
+    renderChart() {
+      const canvas = document.getElementById('area-chart');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: this.chartData.map((item) => new Date(item.date).toLocaleDateString()),
+              datasets: [
+                {
+                  label: 'Users',
+                  data: this.chartData.map((item) => item.users),
+                  backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                  borderColor: 'rgba(54, 162, 235, 1)',
+                  borderWidth: 1,
+                  fill: true,
+                },
+              ],
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
                 },
               },
-            });
-          } else {
-            console.error('Error: Canvas context could not be obtained.');
-          }
+            },
+          });
         } else {
-          console.error('Error: Canvas element with ID "area-chart" does not exist.');
+          console.error('Error: Canvas context could not be obtained.');
         }
-      },
+      } else {
+        console.error('Error: Canvas element with ID "area-chart" does not exist.');
+      }
     },
-  };
+    async toggleDoctor(user) {
+  try {
+    const userData = {
+      user_email: user.email,
+      is_doctor: !user.isDoctor
+    };
+
+    const response = await amdoctor(userData);
+    console.log(response);
+
+    const updatedUsers = this.users.map(u => {
+      if (u.email === user.email) {
+        if (response.data.message === 'User Permission disabled doctor') {
+          // Doctor permission is being disabled
+          return { ...u, isDoctor: false, doctor: false };
+        } else {
+          // Doctor permission is being enabled
+          return { ...u, isDoctor: true, doctor: true };
+        }
+      }
+      return u;
+    });
+    this.users = updatedUsers;
+  } catch (error) {
+    this.error = error;
+  }
+},
+  },
+};
 </script>
