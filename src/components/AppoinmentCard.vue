@@ -1,4 +1,5 @@
 <template>
+
    <div v-if="doctors.length > 0">
     <div v-for="doctor in doctors" :key="doctor.id">
       <!-- Doctor card template -->
@@ -80,6 +81,10 @@
       </p>
     </div>
   </div>
+  <a href="#" @click="Book_appoinment = true" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-secondary focus:ring-4 focus:outline-none focus:ring-tertiary dark:bg-primary dark:hover:bg-secondary dark:focus:ring-tertiary self-end">
+    Book Appointment
+  </a>
+</div>
 
   <div v-if="Book_appoinment" class="fixed z-10 inset-0 overflow-y-auto">
     <div
@@ -177,6 +182,7 @@
             <button
               type="button"
               class="inline-flex justify-center w-full rounded-xl border border-transparent px-4 py-2 bg-primary text-base leading-6 font-medium text-white shadow-sm hover:bg-primary2 focus:outline-none focus:border-red-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+
               @click="bookNow"
             >
               Book Now
@@ -329,6 +335,7 @@ export default {
         console.log(error.response.data);
       }
     },
+
     confirmReject(appointment) {
       this.appointmentToReject = appointment;
       this.showRejectModal = true;
