@@ -2,7 +2,6 @@
     <IsMobile />
     <EnrollLayout>
 
-
         <template v-if="displayStep === 'StepOne'">
             <StepOne
                 @updateEnrollData="updateEnrollData"
