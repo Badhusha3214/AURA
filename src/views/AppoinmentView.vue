@@ -1,7 +1,6 @@
 <template>
   <IsMobile />
   <DashboardLayout />
-
   <div v-if="isDoctor" class="bg-gradient-to-b from-white via-pink-100 to-pink-100">
     
       <div class="mt-2 flex items-center justify-center">
