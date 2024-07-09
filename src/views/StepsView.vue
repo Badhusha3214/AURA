@@ -2,14 +2,12 @@
     <IsMobile />
     <EnrollLayout>
 
-
         <template v-if="displayStep === 'StepOne'">
             <StepOne
                 @updateEnrollData="updateEnrollData"
                 @triggerNext="triggerNext"
             />
         </template>
-
 
         <template v-else-if="displayStep === 'StepTwo'">
             <StepTwo
