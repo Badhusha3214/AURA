@@ -9,7 +9,6 @@
             />
         </template>
 
-
         <template v-else-if="displayStep === 'StepTwo'">
             <StepTwo
                 @updateEnrollData="updateEnrollData"
