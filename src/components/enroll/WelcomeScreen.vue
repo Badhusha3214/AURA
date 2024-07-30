@@ -31,6 +31,8 @@
       Sign up with Gmail
     </button>
   </div>
+  
+  
 
   <!-- Main modal -->
   <div id="authentication-modal" tabindex="-1" aria-hidden="true"
