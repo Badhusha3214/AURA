@@ -5,7 +5,7 @@
         <div class="container">
         </div>
     </div>
-    <div class="absolute bottom-0 w-full flex justify-center mb-12">
+    <div class="w-full flex justify-center p-5 mt-auto">
         <div class="relative flex flex-col items-center gap-2 justify-center my-3">
             <button class="text-white font-semibold text-xl w-72 p-3 rounded-full" :class="{
             'bg-primary': selected !== null,
