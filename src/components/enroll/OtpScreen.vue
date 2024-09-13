@@ -23,7 +23,7 @@
         </div>
       </div>
   
-      <div class="w-full flex justify-center p-5 mt-auto">
+      <div class="absolute w-full flex justify-center p-5 mt-auto">
         <button @click="usersverify" class="text-white font-semibold w-full text-lg p-3 rounded-full"
           :class="enableButton ? 'bg-primary' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
           :disabled="!enableButton" type="button">Next</button>
