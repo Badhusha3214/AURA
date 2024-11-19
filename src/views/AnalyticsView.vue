@@ -5,7 +5,7 @@
     class="calendar-container bg-gradient-to-b from-white via-pink-100 to-pink-100 text-gray-700 rounded-lg shadow-md p-8 pb-20">
     <div class="header justify-center mb-8">
       <h1 class="text-2xl text-pink-500 font-bold mb-1"> Your Cycle Tracker</h1>
-      <p class="text-gray-500 text-xl">Select any of the moths</p>
+      <p class="text-gray-500 text-xl">Select any of the months</p>
       <div class="flex justify-between mt-4">
         <!-- <button
           class="bg-white text-pink-500 px-4 py-2 rounded-md shadow-md hover:bg-pink-500 hover:text-white"
