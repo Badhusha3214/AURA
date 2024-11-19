@@ -1,13 +1,13 @@
 <template>
     <div class="flex flex-col min-h-screen">
       <div class="flex-grow flex flex-col items-center justify-center">
-        <div class="w-full lg:w-1/3 lg:py-20">
-          <img class="w-full h-full" src="/assets/illustration/pin.svg" alt="welcome" />
+        <div class="w-full md:p-4 lg:w-1/3 lg:py-20 flex justify-center">
+          <img class="w-1/2 h-1/2" src="/assets/illustration/pin.svg" alt="welcome" />
         </div>
         
         <div class="flex flex-col items-center gap-5 justify-center my-3">
           <div>
-            <p class="font-semibold text-2xl w-72 text-center">OTP Verification</p>
+            <p class="font-semibold text-2xl w-72 text-center">OTP Verification mari mari</p>
             <hr class="w-48 h-1 mx-auto bg-pink-500 border-0 rounded dark:bg-gray-700">
           </div>
           <span class="text-xs text-black-500">Enter the OTP that send to your email</span>
@@ -23,7 +23,7 @@
         </div>
       </div>
   
-      <div class="absolute w-full flex justify-center p-5 mt-auto">
+      <div class=" w-full flex justify-center p-5 mt-auto">
         <button @click="usersverify" class="text-white font-semibold w-full text-lg p-3 rounded-full"
           :class="enableButton ? 'bg-primary' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
           :disabled="!enableButton" type="button">Next</button>

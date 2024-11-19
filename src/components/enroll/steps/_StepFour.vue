@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col items-center justify-center">
-        <EnrollProgress question="When did your last period start?" />
+        <h1 class="text-2xl font-semibold p-3 text-center">When did your last period start?</h1>
         <Calendar @dateSelected="handleDateSelected" />
         <div class="container">
         </div>
@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import EnrollProgress from '@/components/partials/EnrollProgress.vue';
 import Calendar from '@/components/Calender.vue';
 import { userdetail } from '@/api/index.js'
 
@@ -29,7 +28,6 @@ export default {
     emits: ['updateEnrollData', 'triggerNext'],
     name: 'StepFour',
     components: {
-        EnrollProgress,
         Calendar,
     },
     data() {

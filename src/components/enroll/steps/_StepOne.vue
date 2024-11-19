@@ -1,7 +1,7 @@
 <template>
   <div class="my-10 py-10">
     <div class="flex flex-col items-center justify-center">
-      <EnrollProgress question="Are you trying to<br/>conceive?" />
+      <h1 class="text-2xl font-semibold p-3 text-center">Are you trying to<br/>conceive?</h1>
     </div>
     <div class="flex flex-col gap-5 items-center justify-center" id="accordion-collapse" data-accordion="collapse">
       <template v-for="(choice, index) in choices" :key="index">
@@ -32,14 +32,10 @@
 </template>
 
 <script>
-import EnrollProgress from '@/components/partials/EnrollProgress.vue';
 
 export default {
   emits: ['updateEnrollData', 'triggerNext'],
   name: 'StepOne',
-  components: {
-    EnrollProgress,
-  },
   data() {
     return {
       choices: [
