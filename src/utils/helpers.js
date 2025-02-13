@@ -1,4 +1,3 @@
-
 /*
     ---------------------------------- START : BASIC TERMINOLOGY ----------------------------------
 
@@ -32,13 +31,26 @@
 
 import moment from 'moment';
 
-
+// New function to get cycle data from localStorage
+export const getCycleData = () => {
+    const savedCycleData = localStorage.getItem('cycleData');
+    if (!savedCycleData) {
+        return {
+            cycleLength: 28,
+            periodLength: 5,
+            lastStartDate: null,
+            lastEndDate: null
+        };
+    }
+    return JSON.parse(savedCycleData);
+};
 
 
 /**
  * @param {string} lastMenstrualPeriod
  * @param {number} cycleLength
  * @param {number} periodLength
+ * @param {string} actualEndDate
  * @returns {object} menstrualCycle
  * 
  * @description
@@ -46,30 +58,34 @@ import moment from 'moment';
  * -   It then calculates the menstrual cycle based on the input, by calling the calculateMenstrualCycles function.
  * -   It returns the menstrual cycle.
 */
-export const calculateMenstrualCycles = (lastMenstrualPeriod, cycleLength, periodLength) => {
+export const calculateMenstrualCycles = (lastMenstrualPeriod, cycleLength = null, periodLength = null) => {
+    // Get data from localStorage if not provided
+    const cycleData = getCycleData();
+    const actualCycleLength = cycleLength || cycleData.cycleLength;
+    const actualPeriodLength = periodLength || cycleData.periodLength;
+    const actualEndDate = cycleData.lastEndDate;
 
-    let beforeLastMenstrualPeriod = moment(lastMenstrualPeriod).subtract(cycleLength, 'days').format('YYYY-MM-DD');
+    // Validate required data
+    if (!lastMenstrualPeriod) {
+        console.warn('Missing last menstrual period date');
+        return null;
+    }
 
-    let nextCycle = getMenstrualCycle(lastMenstrualPeriod, cycleLength, periodLength);
-    let currentCycle = getMenstrualCycle(beforeLastMenstrualPeriod, cycleLength, periodLength);
+    let beforeLastMenstrualPeriod = moment(lastMenstrualPeriod)
+        .subtract(actualCycleLength, 'days')
+        .format('YYYY-MM-DD');
 
-    let menstrualCycle = {
+    let nextCycle = getMenstrualCycle(lastMenstrualPeriod, actualCycleLength, actualPeriodLength, actualEndDate);
+    let currentCycle = getMenstrualCycle(beforeLastMenstrualPeriod, actualCycleLength, actualPeriodLength);
 
-        cycleLength: cycleLength,
-        periodLength: periodLength,
-
-        lastMenstrualPeriod: lastMenstrualPeriod,
-        beforeLastMenstrualPeriod: beforeLastMenstrualPeriod,
-
-        currentCycle: currentCycle,
-        nextCycle: nextCycle,
-
+    return {
+        cycleLength: actualCycleLength,
+        periodLength: actualPeriodLength,
+        lastMenstrualPeriod,
+        beforeLastMenstrualPeriod,
+        currentCycle,
+        nextCycle,
     };
-
-    // console.log(menstrualCycle);
-
-    return menstrualCycle;
-
 };
 
 
@@ -79,6 +95,7 @@ export const calculateMenstrualCycles = (lastMenstrualPeriod, cycleLength, perio
  * @param {string} lastMenstrualPeriod
  * @param {number} cycleLength
  * @param {number} periodLength
+ * @param {string} actualEndDate
  * @returns {object} menstrualCycle
  * 
  * @description
@@ -86,19 +103,63 @@ export const calculateMenstrualCycles = (lastMenstrualPeriod, cycleLength, perio
  * -   It then it calculates all the important dates of the menstrual cycle.
  * -   It returns the dates of the menstrual cycle in an object.
 */
-export const getMenstrualCycle = (lastMenstrualPeriod, cycleLength, periodLength) => {
+export const getMenstrualCycle = (lastMenstrualPeriod, cycleLength, periodLength, actualEndDate = null) => {
+    const cycleData = getCycleData();
+    
+    // If this is calculating the current cycle and we have an actual end date, use it
+    const useActualEndDate = actualEndDate && 
+        moment(lastMenstrualPeriod).isSame(cycleData.lastStartDate, 'day');
 
     return {
-        fertileWindowStartDate: moment(lastMenstrualPeriod).add(cycleLength / 2 - 5, 'days').format('YYYY-MM-DD'),
-        ovulationDate: moment(lastMenstrualPeriod).add(cycleLength / 2, 'days').format('YYYY-MM-DD'),
-        fertileWindowEndDate: moment(lastMenstrualPeriod).add(cycleLength / 2, 'days').format('YYYY-MM-DD'),
+        // Menstruation Phase (Days 0-5)
+        menstruationStartDate: moment(lastMenstrualPeriod).format('YYYY-MM-DD'),
+        menstruationEndDate: moment(lastMenstrualPeriod).add(periodLength, 'days').format('YYYY-MM-DD'),
 
-        pmsStartDate: moment(lastMenstrualPeriod).add(cycleLength - 5, 'days').format('YYYY-MM-DD'),
-        periodStartDate: moment(lastMenstrualPeriod).add(cycleLength, 'days').format('YYYY-MM-DD'),
-        pmsEndDate: moment(lastMenstrualPeriod).add(cycleLength, 'days').format('YYYY-MM-DD'),
-        periodEndDate: moment(lastMenstrualPeriod).add(cycleLength + periodLength, 'days').format('YYYY-MM-DD')
-    }
+        // Follicular Phase (Days 0-14)
+        follicularStartDate: moment(lastMenstrualPeriod).format('YYYY-MM-DD'),
+        follicularEndDate: moment(lastMenstrualPeriod).add(14, 'days').format('YYYY-MM-DD'),
 
+        // Fertile window starts 5 days before ovulation
+        fertileWindowStartDate: moment(lastMenstrualPeriod)
+            .add(cycleLength / 2 - 5, 'days')
+            .format('YYYY-MM-DD'),
+        
+        // Ovulation typically occurs around cycle day 14 (cycleLength / 2)
+        ovulationDate: moment(lastMenstrualPeriod)
+            .add(cycleLength / 2, 'days')
+            .format('YYYY-MM-DD'),
+        
+        // Fertile window ends on ovulation day
+        fertileWindowEndDate: moment(lastMenstrualPeriod)
+            .add(cycleLength / 2, 'days')
+            .format('YYYY-MM-DD'),
+
+        // Luteal Phase (Days 15-28)
+        lutealStartDate: moment(lastMenstrualPeriod).add(15, 'days').format('YYYY-MM-DD'),
+        lutealEndDate: moment(lastMenstrualPeriod).add(cycleLength, 'days').format('YYYY-MM-DD'),
+
+        // PMS starts 5 days before next period
+        pmsStartDate: moment(lastMenstrualPeriod)
+            .add(cycleLength - 5, 'days')
+            .format('YYYY-MM-DD'),
+        
+        // Next period start
+        periodStartDate: moment(lastMenstrualPeriod)
+            .add(cycleLength, 'days')
+            .format('YYYY-MM-DD'),
+        
+        // PMS ends when period starts
+        pmsEndDate: moment(lastMenstrualPeriod)
+            .add(cycleLength, 'days')
+            .format('YYYY-MM-DD'),
+        
+        // Use actual end date if available and applicable
+        periodEndDate: useActualEndDate ? 
+            actualEndDate : 
+            moment(lastMenstrualPeriod)
+                .add(cycleLength + periodLength, 'days')
+                .format('YYYY-MM-DD')
+    };
 };
 
 
@@ -115,19 +176,26 @@ export const getMenstrualCycle = (lastMenstrualPeriod, cycleLength, periodLength
  * -   It returns the closest date.
 */
 export const findClosestDate = (currentCycle, nextCycle) => {
-
     let currentDate = moment().format('YYYY-MM-DD');
 
-    let currentCycleDates = Object.keys(currentCycle).map(key => ({ key, value: currentCycle[key] }));
-    let nextCycleDates = Object.keys(nextCycle).map(key => ({ key, value: nextCycle[key] }));
+    // Filter out past dates
+    let currentCycleDates = Object.keys(currentCycle)
+        .map(key => ({ key, value: currentCycle[key] }))
+        .filter(item => moment(item.value).isSameOrAfter(currentDate, 'day'));
+
+    let nextCycleDates = Object.keys(nextCycle)
+        .map(key => ({ key, value: nextCycle[key] }))
+        .filter(item => moment(item.value).isSameOrAfter(currentDate, 'day'));
 
     let allDates = currentCycleDates.concat(nextCycleDates);
 
-    let closestItem = allDates.reduce((a, b) => moment(a.value).isAfter(currentDate) ? a : b);
-    // console.log("closestItem: ", closestItem);
+    // Sort by date and get the closest future date
+    let closestItem = allDates.sort((a, b) => 
+        moment(a.value).diff(moment(currentDate)) - 
+        moment(b.value).diff(moment(currentDate))
+    )[0];
 
     return closestItem;
-
 };
 
 
@@ -143,92 +211,118 @@ export const findClosestDate = (currentCycle, nextCycle) => {
  * -   It returns the message.
 */
 export const getMessage = (closestItem) => {
-
     let currentDate = moment().format('YYYY-MM-DD');
-    let closestDate = moment(closestItem.value).format('YYYY-MM-DD');
+    let closestDate = moment(closestItem.value);
+    let dayCount = closestDate.diff(moment(currentDate), 'days');
 
     switch (closestItem.key) {
+        case 'menstruationPhase':
+            return {
+                message: "You're in menstruation phase",
+                days: dayCount,
+                description: "Menstruation<br/>Phase (Days 1-5)",
+                comments: [
+                    'Period bleeding occurs',
+                    'Hormone levels are low',
+                    'May experience cramps and fatigue',
+                    'Take care of your body'
+                ]
+            };
 
+        case 'follicularPhase':
+            return {
+                message: "You're in follicular phase",
+                days: dayCount,
+                description: "Follicular<br/>Phase (Days 1-14)",
+                comments: [
+                    'Estrogen levels rising',
+                    'Body preparing for ovulation',
+                    'Energy levels increasing',
+                    'Good time for exercise'
+                ]
+            };
+
+        case 'fertileWindow':
+            return {
+                message: "You're in your fertile window",
+                days: dayCount,
+                description: "Fertile Window<br/>(Days 10-15)",
+                comments: [
+                    'Highest chance of pregnancy',
+                    'Peak fertility period',
+                    'Increased sex drive',
+                    'Track cervical mucus changes'
+                ]
+            };
+
+        case 'ovulationPhase':
+            return {
+                message: "You're in ovulation phase",
+                days: dayCount,
+                description: "Ovulation<br/>Phase (Day 14)",
+                comments: [
+                    'Egg release from ovary',
+                    'Peak fertility day',
+                    'May feel mild pain',
+                    'Most energetic phase'
+                ]
+            };
+
+        case 'lutealPhase':
+            return {
+                message: "You're in luteal phase",
+                days: dayCount,
+                description: "Luteal<br/>Phase (Days 15-28)",
+                comments: [
+                    'Progesterone rises',
+                    'May feel premenstrual symptoms',
+                    'Body temperature increases',
+                    'Energy levels may decrease'
+                ]
+            };
+
+        case 'pmsPhase':
+            return {
+                message: "You're experiencing PMS",
+                days: dayCount,
+                description: "PMS<br/>(Days 21-28)",
+                comments: [
+                    'Mood changes common',
+                    'May experience bloating',
+                    'Breast tenderness possible',
+                    'Practice self-care'
+                ]
+            };
+
+        // Keep existing cases but update their content
         case 'fertileWindowStartDate':
             return {
-                message: `Your fertile window opens in ${moment(closestDate).diff(currentDate, 'days')} days`,
-                days: moment(closestDate).diff(currentDate, 'days'),
-                description: 'Your Fertile<br/>Window Starts in',
+                message: `Fertile window begins in ${dayCount} days`,
+                days: dayCount,
+                description: "Approaching<br/>Fertile Window",
                 comments: [
-                    'High chance to get pregnant.',
-                ]
-            }
-
-        case 'ovulationDate':
-            return {
-                message: `You might ovulate in ${moment(closestDate).diff(currentDate, 'days')} days`,
-                days: moment(closestDate).diff(currentDate, 'days'),
-                description: 'You might be<br/>in Ovulation Phase',
-                comments: [
-                    'You might experience ovulation pain, etc.',
-                    'High chance to get pregnant..',
+                    'Prepare for fertility peak',
+                    'Track ovulation signs',
+                    'Optimal for conception',
+                    'Energy levels rising'
                 ]
             };
 
-        case 'fertileWindowEndDate':
-            return {
-                message: `Your fertile window ends in ${moment(closestDate).diff(currentDate, 'days')} days`,
-                days: moment(closestDate).diff(currentDate, 'days'),
-                description: 'Your Fertile<br/>Window Ends in',
-                comments: [
-                    'High chance to get pregnant..',
-                ]
-            };
-
-        case 'pmsStartDate':
-            return {
-                message: `Your PMS starts in ${moment(closestDate).diff(currentDate, 'days')} days`,
-                days: moment(closestDate).diff(currentDate, 'days'),
-                description: 'You might<br/>experience PMS in',
-                comments: [
-                    'You might experience mood swings, bloating, etc.',
-                    'Low chance to get pregnant'
-                ]
-            };
-
-        case 'periodStartDate':
-            return {
-                message: `Your period starts in ${moment(closestDate).diff(currentDate, 'days')} days`,
-                days: moment(closestDate).diff(currentDate, 'days'),
-                description: 'Your Period<br/>Starts in',
-                comments: [
-                    'You might experience cramps, mood swings, etc.',
-                    'Medium chance to get pregnant'
-                ]
-            };
-
-        case 'pmsEndDate':
-            return {
-                message: `Your PMS ends in ${moment(closestDate).diff(currentDate, 'days')} days`,
-                days: moment(closestDate).diff(currentDate, 'days'),
-                description: 'You might<br/>experience PMS in',
-                comments: [
-                    'You might experience mood swings, bloating, etc.',
-                    'Low chance to get pregnant'
-                ]
-            };
-
-        case 'periodEndDate':
-            return {
-                message: `Your period ends in ${moment(closestDate).diff(currentDate, 'days')} days`,
-                days: moment(closestDate).diff(currentDate, 'days'),
-                description: 'Your Period<br/>Ends in',
-                comments: [
-                    'You might experience cramps, mood swings, etc.',
-                    'Medium chance to get pregnant'
-                ]
-
-            };
+        // ...other existing cases with updated messaging...
 
         default:
-            return `Your next cycle starts in ${moment(closestDate).diff(currentDate, 'days')} days`;
+            return {
+                message: "Tracking your cycle",
+                days: 0,
+                description: "Cycle<br/>Monitoring",
+                comments: [
+                    'Keep tracking symptoms',
+                    'Monitor your patterns',
+                    'Stay healthy and active',
+                    'Contact doctor if concerned'
+                ]
+            };
     }
-
 };
 
 

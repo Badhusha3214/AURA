@@ -6,6 +6,7 @@ import AppoinmentView from '@/views/AppoinmentView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import ResetPassword from '@/views/ResetPassword.vue'
+import test from '@/views/test.vue'
 
 import StepsView from '@/views/StepsView.vue'
 import EnrollView from '@/views/EnrollView.vue'
@@ -55,6 +56,14 @@ const router = createRouter({
       component: AdminView,
       meta: {
         title: 'Admin'
+      }
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: test,
+      meta: {
+        title: 'test'
       }
     },
 

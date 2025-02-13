@@ -1,35 +1,45 @@
 <template>
-    <div class="flex flex-col min-h-screen">
-      <div class="flex-grow flex flex-col items-center justify-center">
-        <div class="w-full md:p-4 lg:w-1/3 lg:py-20 flex justify-center">
-          <img class="w-1/2 h-1/2" src="/assets/illustration/pin.svg" alt="welcome" />
+    <div class="flex flex-col min-h-screen px-4 sm:px-6 lg:px-8">
+      <!-- Content Section -->
+      <div class="flex-1 flex flex-col items-center justify-start pt-8 sm:pt-12">
+        <!-- Image container -->
+        <div class="w-full md:p-4 sm:w-2/3 md:w-1/2 lg:w-1/3 flex justify-center">
+          <img class="w-48 sm:w-56 md:w-64 lg:w-72 animate-float" src="/assets/illustration/pin.svg" alt="welcome" />
         </div>
         
-        <div class="flex flex-col items-center gap-5 justify-center my-3">
-          <div>
-            <p class="font-semibold text-2xl w-72 text-center">OTP Verification mari mari</p>
-            <hr class="w-48 h-1 mx-auto bg-pink-500 border-0 rounded dark:bg-gray-700">
-          </div>
-          <span class="text-xs text-black-500">Enter the OTP that send to your email</span>
-          <input v-model="otp" type="text" maxlength="6"
-            class="w-full p-3 text-lg text-center rounded text-gray-900 border border-gray-300 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        <!-- OTP Form Section -->
+        <div class="flex flex-col items-center gap-4 sm:gap-5 justify-center my-3 w-full max-w-md animate-fadeIn">
+            <div>
+                <p class="font-semibold text-xl sm:text-2xl w-full sm:w-72 text-center">OTP Verification</p>
+                <hr class="w-32 sm:w-48 h-1 mx-auto bg-pink-500 border-0 rounded dark:bg-gray-700">
+            </div>
+            <span class="text-xs sm:text-sm text-black-500 text-center">Enter the OTP that send to your email</span>
+            <input v-model="otp" type="text" maxlength="6"
+            class="w-full max-w-xs p-2 sm:p-3 text-base sm:text-lg text-center rounded text-gray-900 border border-gray-300 bg-gray-50 transition-all duration-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             placeholder="Enter OTP" required>
-  
-          <p v-if="message" class="text-xs mt-1 text-red-500">{{ message }}</p>
-          <button @click="resendOtp" :disabled="resendButtonDisabled" class="text-red-500 font-semibold text-lg p-3 bg-white" type="button">
-            {{ resendButtonText }}
-          </button>
-          <div v-if="showTimer" class="text-sm text-gray-500">Resend OTP in {{ timer }} seconds</div>
+
+            <p v-if="message" class="text-xs sm:text-sm mt-1 text-red-500">{{ message }}</p>
+            <button @click="resendOtp" :disabled="resendButtonDisabled" 
+                class="text-red-500 font-semibold text-base sm:text-lg p-2 sm:p-3 bg-white hover:bg-gray-50" type="button">
+                {{ resendButtonText }}
+            </button>
+            <div v-if="showTimer" class="text-xs sm:text-sm text-gray-500">Resend OTP in {{ timer }} seconds</div>
         </div>
       </div>
-  
-      <div class=" w-full flex justify-center p-5 mt-auto">
-        <button @click="usersverify" class="text-white font-semibold w-full text-lg p-3 rounded-full"
-          :class="enableButton ? 'bg-primary' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
-          :disabled="!enableButton" type="button">Next</button>
+
+      <!-- Button Section - Fixed at bottom -->
+      <div class="sticky bottom-0 left-0 right-0 w-full bg-white py-4 px-4 sm:px-6 ">
+        <div class="max-w-md mx-auto">
+          <button @click="usersverify" 
+            class="text-white font-semibold w-full text-base sm:text-lg p-2.5 sm:p-3 rounded-full transition-colors"
+            :class="enableButton ? 'bg-primary hover:bg-primary/90' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
+            :disabled="!enableButton" type="button">
+            Next
+          </button>
+        </div>
       </div>
     </div>
-  </template>
+</template>
 
 <script>
 import { userVerify, resendotp } from '@/api/index.js'
@@ -145,3 +155,49 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+.shadow-top {
+  box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.1), 0 -2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    transform: scale(1.02);
+}
+
+button {
+    transition: all 0.3s ease;
+}
+
+button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+button:not(:disabled):active {
+    transform: translateY(0);
+}
+</style>

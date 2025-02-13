@@ -1,4 +1,3 @@
-
 <template>
     <div class="central-circle">
 
@@ -7,10 +6,10 @@
                 <div class="central-circle__inner">
                     
                     <div class="central-circle__content">
-                        <span class="text-xl font-medium text-center" v-html="info"></span>
+                        <span class="text-xl font-medium text-center" v-html="localInfo"></span>
 
-                        <template v-if="days">
-                            <span class="text-4xl font-semibold mt-3">{{ days }} {{ days > 1 ? 'Days' : 'Day' }}</span>
+                        <template v-if="localDays">
+                            <span class="text-4xl font-semibold mt-3">{{ localDays }} {{ localDays > 1 ? 'Days' : 'Day' }}</span>
                         </template>
                     </div>
                         
@@ -19,50 +18,100 @@
         </div>
 
         <div class="central-circle__comment">
-            <p class="text-center text-secondary font-semibold text-xl">{{ comment }}</p>
+            <p class="text-center text-secondary font-semibold text-xl">{{ localComment }}</p>
         </div>
         
     </div>
 </template>
 
 <script>
+import { getPeriodData } from '@/utils/periodStorage';
+import moment from 'moment';
+
 export default {
   name: 'CentralCircle',
-  data() {
-    return {
-      nextPeriodStartDate: null,
-      ovulationDate: null,
-      fertileWindowStartDate: null,
-      fertileWindowEndDate: null,
-      pmsStartDate: null,
-      pmsEndDate: null,
-    }
-  },
   props: {
     dates: {
       type: Object,
-      required: true
+      default: () => ({})
     },
     comment: {
       type: String,
-      required: true
+      default: ''
     },
     info: {
       type: String,
-      required: true
+      default: ''
     },
     days: {
       type: Number,
-      required: true
+      default: 0
     }
   },
-  mounted() {
-    // console.log(this.comment);
-    // console.log(this.info);
+  data() {
+    return {
+      localInfo: this.info,
+      localDays: this.days,
+      localComment: this.comment
+    }
+  },
+  methods: {
+    updateCircleData() {
+      const data = getPeriodData();
+      const today = moment();
+      
+      if (data.periods && data.periods.length > 0) {
+        const currentPeriod = data.periods[data.periods.length - 1];
+        const startDate = moment(currentPeriod.startDate);
+        const endDate = currentPeriod.endDate ? moment(currentPeriod.endDate) : null;
+
+        // If period has ended, calculate next period
+        if (endDate && today.isAfter(endDate)) {
+          const nextPeriodStart = moment(startDate).add(data.cycleLength || 28, 'days');
+          const daysUntilNext = nextPeriodStart.diff(today, 'days');
+          
+          this.localDays = daysUntilNext;
+          this.localInfo = "Days Until<br/>Next Period";
+          this.localComment = "Your period has ended";
+          return;
+        }
+
+        // If period is active (between start and end date or no end date yet)
+        if (!endDate || today.isBetween(startDate, endDate, 'day', '[]')) {
+          const daysSinceStart = today.diff(startDate, 'days') + 1;
+          
+          if (daysSinceStart <= 5) {
+            this.localInfo = "Menstruation<br/>Phase";
+            this.localDays = daysSinceStart;
+            this.localComment = "Period bleeding occurs. Track your symptoms.";
+          }
+          return;
+        }
+
+        // If we're past menstruation, show other phases
+        const daysSinceStart = today.diff(startDate, 'days') + 1;
+        if (daysSinceStart <= 14) {
+          this.localInfo = "Follicular<br/>Phase";
+          this.localDays = daysSinceStart;
+          this.localComment = "Body preparing for ovulation";
+        } else if (daysSinceStart === 14) {
+          this.localInfo = "Ovulation<br/>Day";
+          this.localDays = daysSinceStart;
+          this.localComment = "Peak fertility day";
+        } else if (daysSinceStart <= 28) {
+          this.localInfo = "Luteal<br/>Phase";
+          this.localDays = daysSinceStart;
+          this.localComment = "Post-ovulation phase";
+        }
+      }
+    }
+  },
+  created() {
+    this.updateCircleData();
+    setInterval(this.updateCircleData, 3600000);
   }
 }
 </script>
-
 
 <style lang="scss" scoped>
     .central-circle {

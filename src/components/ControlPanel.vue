@@ -43,45 +43,98 @@
 
     <!-- Date Picker -->
     <!-- STARTING  -->
-    <div v-if="showDatePicker" class="fixed inset-0 z-50 flex justify-center items-center">
+    <div v-if="showDatePicker" class="fixed inset-0 z-50 flex items-end sm:items-center">
       <div class="absolute inset-0 bg-black opacity-50" @click="showDatePicker = false"></div>
-      <div class="bg-white rounded-lg p-6 relative z-10">
-        <h2 class="text-xl font-bold mb-4">Select Your Starting Date</h2>
-        <div v-if="showError" class="text-red-500 mt-2">
+      <div
+        class="bg-white w-full sm:w-96 rounded-t-2xl sm:rounded-2xl p-6 relative z-10 transform transition-transform duration-300 ease-out">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold">Select Starting Date</h2>
+          <button @click="showDatePicker = false" class="text-gray-500 hover:text-gray-700">
+            <span class="icon-ic-close text-xl"></span>
+          </button>
+        </div>
+        <div v-if="showError" class="text-red-500 mb-4 text-sm">
           Please enter a date on or before today.
         </div>
-        <div class="mr-4">
-          <input type="date" id="datePicker" class="form-input rounded-xl bg-gray-50" v-model="selectedDate">
+        <div class="space-y-4">
+          <input type="date" id="datePicker"
+            class="w-full form-input rounded-xl bg-gray-50 px-4 py-3 border-2 border-gray-200 focus:border-primary focus:ring-0"
+            v-model="selectedDate">
+          <button @click="setToday"
+            class="w-full py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
+            Set to Today
+          </button>
+          <button class="w-full py-3 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors"
+            @click="submitDate">
+            Confirm Date
+          </button>
         </div>
-        <button class="mt-4 bg-primary text-white rounded-md px-4 py-2" @click="submitDate">Submit</button>
       </div>
     </div>
 
     <!-- ENDING -->
-    <div v-if="showendingDatePicker" class="fixed inset-0 z-50 flex justify-center items-center">
-      <div class="absolute inset-0 bg-black opacity-50" @click="showDatePicker = false"></div>
-      <div class="bg-white rounded-lg p-6 relative z-10">
-        <h2 class="text-xl font-bold mb-4">Select Your Ending Date</h2>
-        <div v-if="showError" class="text-red-500 mt-2">
+    <div v-if="showendingDatePicker" class="fixed inset-0 z-50 flex items-end sm:items-center">
+      <div class="absolute inset-0 bg-black opacity-50" @click="showendingDatePicker = false"></div>
+      <div
+        class="bg-white w-full sm:w-96 rounded-t-2xl sm:rounded-2xl p-6 relative z-10 transform transition-transform duration-300 ease-out">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold">Select Ending Date</h2>
+          <button @click="showendingDatePicker = false" class="text-gray-500 hover:text-gray-700">
+            <span class="icon-ic-close text-xl"></span>
+          </button>
+        </div>
+        <div v-if="showError" class="text-red-500 mb-4 text-sm">
           Please enter a date on or before today.
         </div>
-        <div class="mr-4">
-          <input type="date" id="datePicker" class="form-input rounded-xl bg-gray-50" v-model="selectedDate">
+        <div class="space-y-4">
+          <input type="date" id="endDatePicker"
+            class="w-full form-input rounded-xl bg-gray-50 px-4 py-3 border-2 border-gray-200 focus:border-primary focus:ring-0"
+            v-model="selectedDate">
+          <button @click="setToday"
+            class="w-full py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
+            Set to Today
+          </button>
+          <button class="w-full py-3 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors"
+            @click="submitendDate">
+            Confirm Date
+          </button>
         </div>
-        <button class="mt-4 bg-primary text-white rounded-md px-4 py-2" @click="submitendDate">Submit</button>
       </div>
     </div>
 
     <!-- Mood -->
     <div v-if="yourMood" class="fixed inset-0 z-50 flex justify-center items-center">
-      <div class="absolute inset-0 bg-black opacity-50" @click="showDatePicker = false"></div>
-      <div class="bg-white rounded-lg p-6 relative z-10">
-        <h2 class="text-xl font-bold mb-4">About Your Moods</h2>
-        <p>During the periods time</p>
-        <textarea v-model="newNoteContent"
-          class=" border-white w-full rounded-md px-4 py-2  placeholder-gray-400  text-base h-48"
-          placeholder="Content"></textarea>
-        <button class="mt-4 bg-primary text-white rounded-md px-4 py-2" @click="submitmood">Submit</button>
+      <div class="absolute inset-0 bg-black opacity-50" @click="yourMood = false"></div>
+      <div class="bg-white rounded-lg p-6 relative z-10 w-full max-w-md">
+        <h2 class="text-xl font-bold mb-4">How are you feeling?</h2>
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <button
+            v-for="mood in moodOptions"
+            :key="mood"
+            class="px-4 py-3 rounded-lg text-left transition-colors"
+            :class="selectedMood === mood ? 
+              'bg-pink-500 text-white' : 
+              'bg-pink-50 text-pink-600 hover:bg-pink-100'"
+            @click="selectMood(mood)"
+          >
+            {{ mood }}
+          </button>
+        </div>
+        <div class="flex justify-end gap-2 mt-4">
+          <button 
+            class="px-4 py-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200"
+            @click="yourMood = false"
+          >
+            Cancel
+          </button>
+          <button 
+            class="px-4 py-2 rounded-md bg-pink-500 text-white hover:bg-pink-600"
+            @click="submitmood"
+            :disabled="!selectedMood"
+          >
+            Save
+          </button>
+        </div>
       </div>
     </div>
 
@@ -92,15 +145,18 @@
         <h2 class="text-xl font-bold mb-4">How was your bleeding</h2>
         <div class="flex flex-col items-start mb-4">
           <div class="flex items-center mb-2">
-            <input id="heavy" class="peer/draft text-red-600 focus:ring-red-500 dark:focus:ring-red-600" type="radio" name="status" value="heavy" v-model="bleedingLevel" />
+            <input id="heavy" class="peer/draft text-red-600 focus:ring-red-500 dark:focus:ring-red-600" type="radio"
+              name="status" value="heavy" v-model="bleedingLevel" />
             <label for="heavy" class="peer-checked/draft:text-pink-500 ml-2">Heavy</label>
           </div>
           <div class="flex items-center mb-2">
-            <input id="medium" class="peer/draft text-pink-600 focus:ring-pink-500" type="radio" name="status" value="medium" v-model="bleedingLevel" />
+            <input id="medium" class="peer/draft text-pink-600 focus:ring-pink-500" type="radio" name="status"
+              value="medium" v-model="bleedingLevel" />
             <label for="medium" class="peer-checked/draft:text-pink-500 ml-2">Medium</label>
           </div>
           <div class="flex items-center">
-            <input id="low" class="peer/draft text-pink-600 focus:ring-pink-500" type="radio" name="status" value="low" v-model="bleedingLevel" />
+            <input id="low" class="peer/draft text-pink-600 focus:ring-pink-500" type="radio" name="status" value="low"
+              v-model="bleedingLevel" />
             <label for="low" class="peer-checked/draft:text-pink-500 ml-2">Low</label>
           </div>
         </div>
@@ -112,7 +168,9 @@
 </template>
 <script>
 
-import {Newdate , enddate} from '@/api/index'
+import { Newdate, enddate } from '@/api/index'
+import { calculateMenstrualCycles, getMenstrualCycle } from '@/utils/helpers'
+import { getPeriodData, savePeriodData } from '@/utils/periodStorage';
 
 export default {
   name: 'ControlPanel',
@@ -149,7 +207,24 @@ export default {
         // { name: 'Icon 10', iconSrc: '/assets/Icons/Group 60.png' },
         // { name: 'Icon 11', iconSrc: '/assets/Icons/Group 61.png' },
         // { name: 'Icon 12', iconSrc: '/assets/Icons/Group 62.png' }
-      ]
+      ],
+      cycleData: {
+        cycleLength: 28,
+        periodLength: 5,
+        lastStartDate: null,
+        lastEndDate: null
+      },
+      moodOptions: [
+        "Happy 😊",
+        "Energetic ⚡",
+        "Tired 😫",
+        "Stressed 😰",
+        "Emotional 🥺",
+        "Irritable 😤",
+        "Calm 😌",
+        "Anxious 😬"
+      ],
+      selectedMood: null
     }
   },
   mounted() {
@@ -158,6 +233,11 @@ export default {
       this.activeControl = 'home';
     } else {
       this.activeControl = currentPath.split('/')[1];
+    }
+    // Load saved cycle data
+    const savedCycleData = localStorage.getItem('cycleData');
+    if (savedCycleData) {
+      this.cycleData = JSON.parse(savedCycleData);
     }
   },
   methods: {
@@ -179,69 +259,127 @@ export default {
       }
     },
     async submitDate() {
-  try {
-    await Newdate({ start_date: this.selectedDate })
-      .then((Response) => {
-        console.log(Response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    console.log('last_period_start:', this.selectedDate);
-    localStorage.setItem('last_period_start', this.selectedDate);
-    localStorage.setItem('last_period_end', "");
-    this.showDatePicker = false;
-  } catch (error) {
-    console.log(error);
-  }
-},
-    async submitendDate() {
       try {
-        await enddate({ end_date:this.selectedDate })
-        .then((Response) => {
-          console.log(Response);
-        })
-        console.log('last_period_end', this.selectedDate);
-        localStorage.setItem('last_period_end', this.selectedDate);
-        this.showendingDatePicker = false;
-      } catch (error){
+        await Newdate({ start_date: this.selectedDate });
+        
+        // Create new period entry
+        const newPeriod = {
+          startDate: this.selectedDate,
+          endDate: null,
+          bleedingLevels: [],
+          moods: []
+        };
+        
+        // Save to localStorage
+        savePeriodData(newPeriod);
+        
+        // Update cycle calculations
+        this.updateCycleCalculations();
+        
+        this.showDatePicker = false;
+        
+        // Refresh the page
+        window.location.reload();
+        
+      } catch (error) {
         console.log(error);
       }
-      },
+    },
+    
+    async submitendDate() {
+      try {
+        await enddate({ end_date: this.selectedDate });
+        
+        // Update the current period with end date
+        const data = getPeriodData();
+        const currentPeriod = data.periods[data.periods.length - 1];
+        if (currentPeriod && !currentPeriod.endDate) {
+          currentPeriod.endDate = this.selectedDate;
+          savePeriodData(currentPeriod);
+        }
+        
+        // Update cycle calculations
+        this.updateCycleCalculations();
+        
+        this.showendingDatePicker = false;
+        
+        // Refresh the page
+        window.location.reload();
+        
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    selectMood(mood) {
+      this.selectedMood = mood;
+    },
     submitmood() {
-      localStorage.setItem('Moods', this.newNoteContent);
+      if (!this.selectedMood) return;
+      
+      const data = getPeriodData();
+      const currentPeriod = data.periods[data.periods.length - 1];
+      if (currentPeriod) {
+        currentPeriod.moods.push({
+          date: new Date().toISOString().split('T')[0],
+          note: this.selectedMood
+        });
+        savePeriodData(currentPeriod);
+      }
+      this.selectedMood = null;
       this.yourMood = false;
     },
     submitBleedingLevel() {
-      // Handle the selected bleeding level here
-      console.log('Bleeding Level:', this.bleedingLevel);
-      // Reset or close the modal as needed
+      const data = getPeriodData();
+      const currentPeriod = data.periods[data.periods.length - 1];
+      if (currentPeriod) {
+        currentPeriod.bleedingLevels.push({
+          date: new Date().toISOString().split('T')[0],
+          level: this.bleedingLevel
+        });
+        savePeriodData(currentPeriod);
+      }
       this.bleedingStatus = false;
     },
     isSameDay(date1, date2) {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
-  },
+      return (
+        date1.getFullYear() === date2.getFullYear() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getDate() === date2.getDate()
+      );
+    },
+    setToday() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      this.selectedDate = `${year}-${month}-${day}`;
+    },
+    updateCycleCalculations() {
+      const data = getPeriodData();
+      const cycles = calculateMenstrualCycles(
+        data.periods[data.periods.length - 1].startDate,
+        data.cycleLength,
+        data.averagePeriodLength
+      );
+      localStorage.setItem('menstrualCycles', JSON.stringify(cycles));
+    }
   },
   watch: {
     selectedDate(newDate) {
-    if (newDate) {
-      const selectedDateObj = new Date(newDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Set time to 00:00:00 to ensure fair comparison
+      if (newDate) {
+        const selectedDateObj = new Date(newDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set time to 00:00:00 to ensure fair comparison
 
         // Check if the selected date is after today
         if (selectedDateObj > today && !this.isSameDay(selectedDateObj, today)) {
-        this.selectedDate = null; // Reset the selected date
-        this.showError = true; // Show an error message or notification
-      } else {
-        this.showError = false; // Hide the error message or notification
+          this.selectedDate = null; // Reset the selected date
+          this.showError = true; // Show an error message or notification
+        } else {
+          this.showError = false; // Hide the error message or notification
+        }
       }
     }
-  }
   },
   computed: {
     maxDate() {
@@ -259,13 +397,15 @@ export default {
 body {
   overflow-x: hidden;
 }
+
 .control-panel {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   box-shadow: 0px -2px 3px 0px rgba(0, 0, 0, 0.2);
-  z-index: 10; /* Increase this value if needed */
+  z-index: 10;
+  /* Increase this value if needed */
 }
 
 .control-panel__items {

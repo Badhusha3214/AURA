@@ -1,6 +1,5 @@
-
 <template>
-    <div class="calender-date">
+    <div class="calender-date cursor-pointer" @click="$emit('click')">
 
         <button class="w-full h-full">
             <div ref="date" class="calender-date__day border border-primary rounded-lg p-2" :class="day.date === today ? 'bg-primary text-white' : 'bg-white text-primary'">
@@ -35,7 +34,8 @@
                     date: this.day.date
                 },
             }
-        }
+        },
+        emits: ['click']
     }
 </script>
 
