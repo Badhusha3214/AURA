@@ -207,17 +207,38 @@
               this.isLoading = true;
               localStorage.setItem('email', this.email);
               document.cookie = `aura-token=${response.data.Token}; max-age=864000`;
-              localStorage.setItem('conceive', response.data.UserData.conceive);
-              localStorage.setItem('userName', response.data.UserData.full_name);
-              localStorage.setItem('userNumber', response.data.UserData.phone_number);
-              localStorage.setItem('DOB', response.data.UserData.dob);
-              localStorage.setItem('duration_period', response.data.UserData.duration_period);
-              localStorage.setItem('email', response.data.UserData.email);
-              localStorage.setItem('last_cycle_irregular_last', response.data.UserData.last_cycle_irregular_last);
-              localStorage.setItem('last_cycle_irregular_start', response.data.UserData.last_cycle_irregular_start);
-              localStorage.setItem('last_cycle_regular', response.data.UserData.last_cycle_regular);
-              localStorage.setItem('last_period_start', response.data.UserData.last_period_start);
-              localStorage.setItem('isdoctor', response.data.UserData.doctor);
+              
+              // Store userData properly
+              const userData = response.data.UserData;
+              localStorage.setItem('conceive', userData.conceive);
+              localStorage.setItem('userName', userData.full_name);
+              localStorage.setItem('userNumber', userData.phone_number);
+              localStorage.setItem('DOB', userData.dob);
+              localStorage.setItem('duration_period', userData.duration_period);
+              localStorage.setItem('email', userData.email);
+              
+              // Ensure proper storage of period data - convert null to empty strings if needed
+              localStorage.setItem('last_cycle_irregular_start', userData.last_cycle_irregular_start || '');
+              localStorage.setItem('last_cycle_irregular_last', userData.last_cycle_irregular_last || '');
+              localStorage.setItem('last_cycle_regular', userData.last_cycle_regular);
+              
+              // Properly format the last_period_start date if needed
+              if (userData.last_period_start) {
+                // Ensure the date is in a consistent format
+                const lastPeriodDate = new Date(userData.last_period_start);
+                localStorage.setItem('last_period_start', lastPeriodDate.toISOString().split('T')[0]);
+              } else {
+                localStorage.setItem('last_period_start', '');
+              }
+              
+              // Store doctor status
+              localStorage.setItem('isdoctor', userData.doctor);
+              
+              // Store cycle data if available
+              if (userData.cycle_data) {
+                localStorage.setItem('cycle_data', userData.cycle_data);
+              }
+              
               this.$router.push('/');
             } else if (response.status === 400) {
               this.error = response.data["message"];

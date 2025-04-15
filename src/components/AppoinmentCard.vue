@@ -262,138 +262,372 @@
     </div>
   </div>
 </template>
+
 <script>
-import datepicker from "@/components/datepicker.vue";
-import { UserAppoinments, appoinmentCancl , takeappoinment, alluser } from "@/api/index";
+import { alluser, appoinment, UserAppoinments, appoinmentCancl } from '@/api/index';
 
 export default {
-  name: "AppoinmentCard",
-  components: {
-    datepicker,
+  name: 'AppoinmentCard',
+  props: {
+    // Add user_name as a prop with default value
+    user_name: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
-      Book_appoinment: false,
-      name: "",
-      error: "",
-      selectedDate: null,
-      formattedDateTime: "",
-      done: false,
-      showSuccessMessage: false,
       doctors: [],
-      selectedDoctor: null,
-      appoinment: null,
-      appoinments: [],
+      loading: false,
+      Book_appoinment: false,
       showRejectModal: false,
-      rejectGmail: "",
-      appointmentToReject: null,
-      Phno: null,
+      rejectGmail: '',
+      selectedDoctor: null,
+      name: localStorage.getItem('userName') || this.user_name || '', // Initialize with prop or localStorage
+      selectedDate: '',
+      error: '',
+      showSuccessMessage: false,
+      // ...existing code...
+      loadingHistory: false,
+      appointment: {
+        user_name: '', // Initialize with empty string
+        date: '',
+        time: '',
+        doctor_id: '',
+        reason: '',
+      },
+      errors: {
+        user_name: '',
+        date: '',
+        time: '',
+        doctor_id: '',
+        reason: '',
+      },
+      errorMessage: '',
+      appointments: [],
+      showHistory: false,
+      availableTimes: [
+        '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM',
+        '12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM',
+        '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM', '5:00 PM'
+      ]
     };
   },
+  computed: {
+    today() {
+      const today = new Date();
+      return today.toISOString().split('T')[0];
+    }
+  },
+  async mounted() {
+    // Attempt to load user's name from localStorage
+    const userName = localStorage.getItem('userName');
+    if (userName) {
+      this.appointment.user_name = userName;
+    }
+    
+    // Load doctors
+    try {
+      const response = await alluser();
+      if (response && response.data && response.data.all_users) {
+        this.doctors = response.data.all_users.filter(user => user.doctor === true);
+        
+        // After loading doctors, load user's appointments
+        await this.loadUserAppointments();
+      }
+    } catch (error) {
+      console.error('Error loading doctors:', error);
+    }
+
+    // Check if name is already set and update if needed
+    if (!this.name && this.user_name) {
+      this.name = this.user_name;
+    }
+  },
   methods: {
+    async submitAppointment() {
+      // Reset errors
+      this.errors = {
+        user_name: '',
+        date: '',
+        time: '',
+        doctor_id: '',
+        reason: '',
+      };
+      this.errorMessage = '';
+      
+      // Validate form
+      let isValid = true;
+      
+      if (!this.appointment.user_name) {
+        this.errors.user_name = 'Name is required';
+        isValid = false;
+      }
+      
+      if (!this.appointment.date) {
+        this.errors.date = 'Date is required';
+        isValid = false;
+      }
+      
+      if (!this.appointment.time) {
+        this.errors.time = 'Time is required';
+        isValid = false;
+      }
+      
+      if (!this.appointment.doctor_id) {
+        this.errors.doctor_id = 'Please select a doctor';
+        isValid = false;
+      }
+      
+      if (!this.appointment.reason) {
+        this.errors.reason = 'Reason is required';
+        isValid = false;
+      }
+      
+      if (!isValid) {
+        return;
+      }
+      
+      this.loading = true;
+      
+      try {
+        // Create appointment datetime string
+        const appointmentDateTime = `${this.appointment.date}T${this.convertTo24Hour(this.appointment.time)}`;
+        
+        // Prepare appointment data for API
+        const appointmentData = {
+          user_name: this.appointment.user_name,
+          doctor_id: this.appointment.doctor_id,
+          appointment_time: appointmentDateTime,
+          reason: this.appointment.reason
+        };
+        
+        console.log('Sending appointment data:', appointmentData);
+        
+        // Use makeappointment instead of bookAppointment
+        const response = await takeappointment(appointmentData);
+        
+        if (response && response.status === 201) {
+          alert('Appointment booked successfully!');
+          // Reset form
+          this.appointment = {
+            user_name: this.appointment.user_name, // Keep the name
+            date: '',
+            time: '',
+            doctor_id: '',
+            reason: '',
+          };
+          
+          // Load updated appointments
+          if (this.showHistory) {
+            this.fetchAppointments();
+          }
+        } else {
+          this.errorMessage = 'Failed to book appointment. Please try again.';
+        }
+      } catch (error) {
+        console.error('Error booking appointment:', error);
+        if (error.response?.data?.message) {
+          this.errorMessage = error.response.data.message;
+        } else {
+          this.errorMessage = 'An error occurred while booking your appointment. Please try again.';
+        }
+      } finally {
+        this.loading = false;
+      }
+    },
+    
+    async fetchAppointments() {
+      this.loadingHistory = true;
+      try {
+        const response = await getAppointments();
+        if (response && response.data) {
+          this.appointments = response.data.appointments || [];
+        }
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+      } finally {
+        this.loadingHistory = false;
+      }
+    },
+    
+    convertTo24Hour(time12h) {
+      const [time, modifier] = time12h.split(' ');
+      let [hours, minutes] = time.split(':');
+      
+      if (hours === '12') {
+        hours = '00';
+      }
+      
+      if (modifier === 'PM') {
+        hours = parseInt(hours, 10) + 12;
+      }
+      
+      return `${hours}:${minutes}:00`;
+    },
+    
+    formatDateTime(dateTime) {
+      const date = new Date(dateTime);
+      return date.toLocaleString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      });
+    },
+    
+    getStatusClass(status) {
+      switch(status?.toLowerCase()) {
+        case 'pending':
+          return 'bg-yellow-100 text-yellow-800';
+        case 'accepted':
+          return 'bg-green-100 text-green-800';
+        case 'rejected':
+          return 'bg-red-100 text-red-800';
+        default:
+          return 'bg-gray-100 text-gray-800';
+      }
+    },
     openBookingModal(doctor) {
       this.selectedDoctor = doctor;
       this.Book_appoinment = true;
+      // Pre-fill name from localStorage if available
+      this.name = localStorage.getItem('userName') || '';
     },
+    
     async bookNow() {
+      // Validate all fields are filled
+      if (!this.name || !this.selectedDate) {
+        this.error = 'Please fill all required fields';
+        return;
+      }
+      
+      // Get time from the time input element
+      const timeInput = document.getElementById('time');
+      const selectedTime = timeInput.value;
+      
+      if (!selectedTime) {
+        this.error = 'Please select a time';
+        return;
+      }
+      
       try {
-        const dateObj = new Date(this.selectedDate);
-        const timeValue = document.getElementById("time").value;
-        const [hours, minutes] = timeValue.split(":");
-        dateObj.setHours(parseInt(hours));
-        dateObj.setMinutes(parseInt(minutes));
-        this.formattedDateTime = dateObj.toISOString();
-        console.log(this.formattedDateTime);
-        console.log(this.selectedDoctor);
+        // Format date and time properly
+        const appointmentDateTime = `${this.selectedDate}T${selectedTime}`;
         
-        const response = await takeappoinment({
+        // Prepare data for API with user_name explicitly set
+        const appointmentData = {
+          user_name: this.name, // Explicitly set user_name which is required
           doctor_email: this.selectedDoctor.email,
           doctor_name: this.selectedDoctor.full_name,
-          appointment_time: this.formattedDateTime,
-        });
-
-        if (response.status === 200) {
+          appointment_time: appointmentDateTime
+        };
+        
+        console.log('Sending appointment data:', appointmentData);
+        
+        // Call the API to book appointment
+        const response = await appoinment(appointmentData);
+        
+        if (response && (response.status === 200 || response.status === 201)) {
+          // Store the user name for future use
+          localStorage.setItem('userName', this.name);
+          
+          // Show success message
           this.showSuccessMessage = true;
           setTimeout(() => {
             this.showSuccessMessage = false;
             this.Book_appoinment = false;
-            location.reload();
-          }, 1000);
-          
+            // Refresh the page or reload appointments
+            window.location.reload();
+          }, 2000);
         } else {
-          this.error =
-            response.response.data.message ||
-            "An error occurred. Please try again later.";
+          this.error = response.data?.message || 'Failed to book appointment';
         }
       } catch (error) {
-        console.log(error.response.data);
+        console.error('Error booking appointment:', error);
+        if (error.response && error.response.data && error.response.data.message) {
+          this.error = error.response.data.message;
+        } else {
+          this.error = 'An error occurred while booking your appointment';
+        }
       }
     },
+    
+    // Method to load user appointments
+    async loadUserAppointments() {
+      try {
+        const response = await UserAppoinments();
+        
+        if (response && response.data) {
+          // Update doctor list with appointment information
+          this.doctors.forEach(doctor => {
+            const appointment = response.data.appoinments?.find(
+              app => app.doctor_id === (doctor.id || doctor._id)
+            );
+            
+            if (appointment) {
+              doctor.appointment = appointment;
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error loading user appointments:', error);
+      }
+    },
+    // Use appoinmentCancl for cancellation
+    async confirmRejectAppointment() {
+      if (!this.rejectGmail) {
+        this.error = 'Please enter your Gmail to confirm';
+        return;
+      }
+      
+      try {
+        const response = await appoinmentCancl({ 
+          appointment_id: this.selectedAppointment.id, 
+          email: this.rejectGmail 
+        });
+        
+        if (response && (response.status === 200 || response.status === 201)) {
+          this.showRejectModal = false;
+          window.location.reload();
+        } else {
+          this.error = response.data?.message || 'Failed to cancel appointment';
+        }
+      } catch (error) {
+        console.error('Error cancelling appointment:', error);
+        this.error = error.response?.data?.message || 'An error occurred while cancelling';
+      }
+    },
+    
     confirmReject(appointment) {
-      this.appointmentToReject = appointment;
+      this.selectedAppointment = appointment;
       this.showRejectModal = true;
     },
-    async confirmRejectAppointment() {
-      try {
-        console.log(this.appointmentToReject.appointment_id);
-        const responce = await appoinmentCancl({
-          appointment_id: this.appointmentToReject.appointment_id,
-        }) 
-        console.log(responce);
-        console.log(`Rejecting appointment with Gmail: ${this.rejectGmail}`);
-        console.log(this.appointmentToReject);
-        if(responce.status = 200){
-          this.showSuccessMessage = true;
-          setTimeout(() => {
-            this.showSuccessMessage = false;
-            this.Book_appoinment = false;
-            location.reload();
-          }, 1000);
-          
-        } else {
-          this.error =
-            response.response.data.message ||
-            "An error occurred. Please try again later.";
-        }
-        // Close the modal after rejection
-        this.showRejectModal = false;
-        this.rejectGmail = "";  // Clear the input field
-      } catch (error) {
-        console.error("Error rejecting appointment:", error);
-      }
-    },
   },
-  async mounted() {
-  try {
-    const allUserData = await alluser();
-    const appointmentsResponse = await UserAppoinments();
-    this.appoinments = appointmentsResponse.data.appoinment || [];
-
-    if (this.appoinments.length === 0) {
-      console.log('No appointments found');
-
-      const allUsers = allUserData.data.all_users;
-      this.doctors = allUsers.filter((user) => user.doctor === true).map(doctor => {
-        doctor.appointment = this.appoinments.find(app => app.doctor_email === doctor.email) || null;
-        return doctor;
-      });
-
-      console.log(this.doctors);
-    } else {
-      console.log(appointmentsResponse.data.doctor_phone_number);
-      this.Phno = appointmentsResponse.data.doctor_phone_number;
-
-      const allUsers = allUserData.data.all_users;
-      this.doctors = allUsers.filter((user) => user.doctor === true).map(doctor => {
-        doctor.appointment = this.appoinments.find(app => app.doctor_email === doctor.email) || null;
-        return doctor;
-      });
-
-      console.log(this.doctors);
+  watch: {
+    showHistory(newVal) {
+      if (newVal) {
+        this.fetchAppointments();
+      }
     }
-  } catch (error) {
-    console.error("Error fetching user data:", error);
   }
-},
 };
 </script>
+
+<style scoped>
+.loader {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #e74694;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>

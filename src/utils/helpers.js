@@ -30,6 +30,7 @@
 
 
 import moment from 'moment';
+import { saveCycleDataToAPI } from '@/api/index';
 
 // New function to get cycle data from localStorage
 export const getCycleData = () => {
@@ -61,8 +62,8 @@ export const getCycleData = () => {
 export const calculateMenstrualCycles = (lastMenstrualPeriod, cycleLength = null, periodLength = null) => {
     // Get data from localStorage if not provided
     const cycleData = getCycleData();
-    const actualCycleLength = cycleLength || cycleData.cycleLength;
-    const actualPeriodLength = periodLength || cycleData.periodLength;
+    const actualCycleLength = Number(cycleLength) || Number(cycleData.cycleLength);
+    const actualPeriodLength = Number(periodLength) || Number(cycleData.periodLength);
     const actualEndDate = cycleData.lastEndDate;
 
     // Validate required data
@@ -71,12 +72,29 @@ export const calculateMenstrualCycles = (lastMenstrualPeriod, cycleLength = null
         return null;
     }
 
+    console.log('Calculating menstrual cycles with:', {
+        lastMenstrualPeriod,
+        actualCycleLength,
+        actualPeriodLength,
+        actualEndDate
+    });
+
+    // Calculate the start date of the previous cycle
     let beforeLastMenstrualPeriod = moment(lastMenstrualPeriod)
         .subtract(actualCycleLength, 'days')
         .format('YYYY-MM-DD');
 
+    // Calculate next and current cycles
     let nextCycle = getMenstrualCycle(lastMenstrualPeriod, actualCycleLength, actualPeriodLength, actualEndDate);
     let currentCycle = getMenstrualCycle(beforeLastMenstrualPeriod, actualCycleLength, actualPeriodLength);
+
+    // Log calculated cycles for debugging
+    console.log('Calculated cycles:', {
+        cycleLength: actualCycleLength,
+        periodLength: actualPeriodLength,
+        currentCycle,
+        nextCycle
+    });
 
     return {
         cycleLength: actualCycleLength,
@@ -106,37 +124,67 @@ export const calculateMenstrualCycles = (lastMenstrualPeriod, cycleLength = null
 export const getMenstrualCycle = (lastMenstrualPeriod, cycleLength, periodLength, actualEndDate = null) => {
     const cycleData = getCycleData();
     
+    // Ensure all values are numbers, not strings
+    cycleLength = Number(cycleLength);
+    periodLength = Number(periodLength);
+    
     // If this is calculating the current cycle and we have an actual end date, use it
     const useActualEndDate = actualEndDate && 
         moment(lastMenstrualPeriod).isSame(cycleData.lastStartDate, 'day');
+    
+    // Calculate the end of menstruation (period end date)
+    const menstruationEndDate = moment(lastMenstrualPeriod)
+        .add(periodLength - 1, 'days') // Subtract 1 because the start day counts as day 1
+        .format('YYYY-MM-DD');
+    
+    // Calculate next period start date (cycle length after current period start)
+    const nextPeriodStartDate = moment(lastMenstrualPeriod)
+        .add(cycleLength, 'days')
+        .format('YYYY-MM-DD');
+    
+    // Calculate next period end date
+    const nextPeriodEndDate = useActualEndDate 
+        ? actualEndDate 
+        : moment(nextPeriodStartDate)
+            .add(periodLength - 1, 'days')
+            .format('YYYY-MM-DD');
+
+    // Log the calculation steps
+    console.log('Calculating menstrual cycle for start date:', lastMenstrualPeriod, {
+        cycleLength,
+        periodLength,
+        menstruationEndDate,
+        nextPeriodStartDate,
+        nextPeriodEndDate
+    });
 
     return {
-        // Menstruation Phase (Days 0-5)
+        // Menstruation Phase (Days 1-5 typically)
         menstruationStartDate: moment(lastMenstrualPeriod).format('YYYY-MM-DD'),
-        menstruationEndDate: moment(lastMenstrualPeriod).add(periodLength, 'days').format('YYYY-MM-DD'),
+        menstruationEndDate: menstruationEndDate,
 
-        // Follicular Phase (Days 0-14)
+        // Follicular Phase (Days 1-14)
         follicularStartDate: moment(lastMenstrualPeriod).format('YYYY-MM-DD'),
-        follicularEndDate: moment(lastMenstrualPeriod).add(14, 'days').format('YYYY-MM-DD'),
+        follicularEndDate: moment(lastMenstrualPeriod).add(14 - 1, 'days').format('YYYY-MM-DD'),
 
         // Fertile window starts 5 days before ovulation
         fertileWindowStartDate: moment(lastMenstrualPeriod)
-            .add(cycleLength / 2 - 5, 'days')
+            .add(Math.floor(cycleLength / 2) - 5, 'days')
             .format('YYYY-MM-DD'),
         
         // Ovulation typically occurs around cycle day 14 (cycleLength / 2)
         ovulationDate: moment(lastMenstrualPeriod)
-            .add(cycleLength / 2, 'days')
+            .add(Math.floor(cycleLength / 2), 'days')
             .format('YYYY-MM-DD'),
         
         // Fertile window ends on ovulation day
         fertileWindowEndDate: moment(lastMenstrualPeriod)
-            .add(cycleLength / 2, 'days')
+            .add(Math.floor(cycleLength / 2), 'days')
             .format('YYYY-MM-DD'),
 
         // Luteal Phase (Days 15-28)
-        lutealStartDate: moment(lastMenstrualPeriod).add(15, 'days').format('YYYY-MM-DD'),
-        lutealEndDate: moment(lastMenstrualPeriod).add(cycleLength, 'days').format('YYYY-MM-DD'),
+        lutealStartDate: moment(lastMenstrualPeriod).add(15 - 1, 'days').format('YYYY-MM-DD'),
+        lutealEndDate: moment(lastMenstrualPeriod).add(cycleLength - 1, 'days').format('YYYY-MM-DD'),
 
         // PMS starts 5 days before next period
         pmsStartDate: moment(lastMenstrualPeriod)
@@ -144,21 +192,13 @@ export const getMenstrualCycle = (lastMenstrualPeriod, cycleLength, periodLength
             .format('YYYY-MM-DD'),
         
         // Next period start
-        periodStartDate: moment(lastMenstrualPeriod)
-            .add(cycleLength, 'days')
-            .format('YYYY-MM-DD'),
+        periodStartDate: nextPeriodStartDate,
         
         // PMS ends when period starts
-        pmsEndDate: moment(lastMenstrualPeriod)
-            .add(cycleLength, 'days')
-            .format('YYYY-MM-DD'),
+        pmsEndDate: nextPeriodStartDate,
         
-        // Use actual end date if available and applicable
-        periodEndDate: useActualEndDate ? 
-            actualEndDate : 
-            moment(lastMenstrualPeriod)
-                .add(cycleLength + periodLength, 'days')
-                .format('YYYY-MM-DD')
+        // Next period end
+        periodEndDate: nextPeriodEndDate
     };
 };
 
@@ -214,7 +254,11 @@ export const getMessage = (closestItem) => {
     let currentDate = moment().format('YYYY-MM-DD');
     let closestDate = moment(closestItem.value);
     let dayCount = closestDate.diff(moment(currentDate), 'days');
-
+    
+    // Ensure dayCount is at least 0 to avoid negative values
+    dayCount = Math.max(0, dayCount);
+    
+    // Rest of the switch case logic remains the same
     switch (closestItem.key) {
         case 'menstruationPhase':
             return {
@@ -323,6 +367,33 @@ export const getMessage = (closestItem) => {
                 ]
             };
     }
+};
+
+// Saves calculated cycle data to both localStorage and API
+export const saveCycleData = async (cycles) => {
+  // Save to localStorage
+  localStorage.setItem('menstrualCycles', JSON.stringify(cycles));
+  
+  // Save to API
+  try {
+    await saveCycleDataToAPI(cycles);
+  } catch (error) {
+    console.error('Error saving cycle data to API:', error);
+  }
+};
+
+// Get menstrual cycle from localStorage - renamed to avoid duplicate declaration
+export const getSavedMenstrualCycles = () => {
+  try {
+    const cyclesData = localStorage.getItem('menstrualCycles');
+    if (cyclesData) {
+      return JSON.parse(cyclesData);
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting cycle data from localStorage:', error);
+    return null;
+  }
 };
 
 

@@ -44,16 +44,12 @@
               </div>
               <select v-else v-model="newAppointment.doctorId" 
                       class="w-full px-3 py-2 border rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                      :disabled="doctors.length === 0"
-                      @change="handleDoctorSelection">
-                <option value="" disabled>{{ doctors.length === 0 ? 'No doctors available' : 'Select a doctor' }}</option>
+                      :disabled="doctors.length === 0">
+                <option value="" disabled selected>{{ doctors.length === 0 ? 'No doctors available' : 'Select a doctor' }}</option>
                 <option v-for="doctor in doctors" :key="doctor.id" :value="doctor.id">
                   Dr. {{ doctor.name }} - {{ doctor.specialty }}
                 </option>
               </select>
-              <p v-if="newAppointment.doctorId" class="mt-1 text-sm text-green-600">
-                Selected doctor ID: {{ newAppointment.doctorId }}
-              </p>
               <p v-if="doctors.length === 0 && !doctorsLoading" class="mt-1 text-sm text-red-500">
                 No doctors available. Please try again later.
               </p>
@@ -168,7 +164,7 @@
 <script>
 import DashboardLayout from '@/layouts/DashboardLayout.vue';
 import DrAppoinment from '@/components/DrAppoinment.vue';
-import { getpatient, appoinment, alluser, appoinmentCancl } from '@/api/index';
+import { getdoctors, appoinment, alluser } from '@/api/index';
 
 export default {
   components: {
@@ -261,25 +257,14 @@ export default {
         console.log('Doctors response:', response);
         
         if (response && response.data && response.data.all_users) {
-          // Add more detailed logging to debug doctor data
-          console.log('Raw doctor data:', JSON.stringify(response.data.all_users.filter(user => user.doctor === true)));
-          
           this.doctors = response.data.all_users
             .filter(user => user.doctor === true)
-            .map((doctor, index) => {
-              // Log each doctor's ID to ensure it exists
-              console.log(`Doctor ${doctor.full_name || doctor.name} - ID:`, doctor.id || doctor._id);
-              
-              return {
-                // Ensure each doctor gets a unique ID using index if server doesn't provide one
-                id: doctor.id || doctor._id || `doctor-${Date.now()}-${index}`,
-                name: doctor.full_name || doctor.name || 'Unknown',
-                specialty: doctor.specialty || 'General Practitioner',
-                email: doctor.email
-              };
-            });
-          
-          console.log('Processed doctors for dropdown:', this.doctors);
+            .map(doctor => ({
+              id: doctor.id || doctor._id,
+              name: doctor.full_name || doctor.name || 'Unknown',
+              specialty: doctor.specialty || 'General Practitioner',
+              email: doctor.email
+            }));
         } else {
           console.error("Unexpected doctors data structure");
           this.doctors = [];
@@ -323,54 +308,15 @@ export default {
       // Make sure user_name is set
       this.newAppointment.user_name = this.newAppointment.user_name || this.userName || localStorage.getItem('userName') || '';
       
-      // Enhanced debugging to see the exact data types
-      console.log('Appointment form data (with types):', {
-        user_name: { value: this.newAppointment.user_name, type: typeof this.newAppointment.user_name },
-        doctorId: { value: this.newAppointment.doctorId, type: typeof this.newAppointment.doctorId },
-        dateTime: { value: this.newAppointment.dateTime, type: typeof this.newAppointment.dateTime },
-        reason: { value: this.newAppointment.reason, type: typeof this.newAppointment.reason }
-      });
-      
-      // Fix for doctor selection issue - use selectedDoctor from a computed property or find it directly
-      const selectedDoctorId = this.newAppointment.doctorId;
-      console.log('Selected doctor ID:', selectedDoctorId);
-      console.log('Available doctors:', this.doctors);
-      
-      // Improved validation with more specific checks
-      if (!this.newAppointment.user_name || this.newAppointment.user_name.trim() === '') {
-        alert('Please enter your name');
+      if (!this.newAppointment.user_name || !this.newAppointment.doctorId || !this.newAppointment.dateTime || !this.newAppointment.reason) {
+        alert('Please fill all fields including your name');
         return;
       }
       
-      if (!selectedDoctorId) {
-        alert('Please select a doctor');
-        return;
-      }
-      
-      if (!this.newAppointment.dateTime) {
-        alert('Please select a date and time');
-        return;
-      }
-      
-      if (!this.newAppointment.reason || this.newAppointment.reason.trim() === '') {
-        alert('Please enter a reason for your visit');
-        return;
-      }
-      
-      console.log('All validations passed, booking appointment with user_name:', this.newAppointment.user_name);
+      console.log('Booking appointment with user_name:', this.newAppointment.user_name);
       
       try {
-        // Find the doctor using the ID
-        const doctor = this.doctors.find(d => String(d.id) === String(selectedDoctorId));
-        
-        // Enhanced debugging for doctor selection
-        console.log('Selected doctor:', doctor);
-        console.log('Doctor ID comparison:', this.doctors.map(d => ({
-          id: d.id,
-          selected: String(d.id) === String(selectedDoctorId),
-          idType: typeof d.id,
-          selectedType: typeof selectedDoctorId
-        })));
+        const doctor = this.doctors.find(d => d.id === this.newAppointment.doctorId);
         
         if (!doctor) {
           alert('Selected doctor not found. Please try again.');
@@ -379,11 +325,11 @@ export default {
         
         // Prepare data for API
         const appointmentData = {
-          user_name: this.newAppointment.user_name.trim(),
+          user_name: this.newAppointment.user_name,
           doctor_email: doctor.email,
           doctor_name: doctor.name,
           appointment_time: this.newAppointment.dateTime,
-          reason: this.newAppointment.reason.trim()
+          reason: this.newAppointment.reason
         };
         
         console.log('Sending appointment data:', appointmentData);
@@ -425,80 +371,50 @@ export default {
       }
     },
     
-    handleDoctorSelection(event) {
-      // Log the selected value directly from the event
-      console.log('Doctor selected via dropdown:', event.target.value);
-      // Ensure doctorId is properly set
-      this.newAppointment.doctorId = event.target.value;
-    },
-    
-    async cancelAppointment(appointmentId) {
+    cancelAppointment(appointmentId) {
       if (confirm('Are you sure you want to cancel this appointment?')) {
-        try {
-          // Find the appointment in the local array
-          const index = this.patientAppointments.findIndex(a => a.id === appointmentId);
-          
-          if (index !== -1) {
-            // Show loading state
-            this.patientAppointments[index].status = 'processing...';
-            
-            // Call the API to cancel the appointment
-            const response = await appoinmentCancl({
-              appointment_id: appointmentId
-            });
-            
-            console.log('Cancel appointment response:', response);
-            
-            if (response && (response.status === 200 || response.status === 201)) {
-              // Update the local state on success
-              this.patientAppointments[index].status = 'cancelled';
-              alert('Appointment cancelled successfully');
-            } else {
-              // Revert the status on error
-              this.patientAppointments[index].status = 'upcoming';
-              alert('Failed to cancel appointment. Please try again.');
-            }
-          }
-        } catch (error) {
-          console.error('Error cancelling appointment:', error);
-          alert('Error cancelling appointment. Please try again.');
-          
-          // Find the appointment again and revert the status
-          const index = this.patientAppointments.findIndex(a => a.id === appointmentId);
-          if (index !== -1) {
-            this.patientAppointments[index].status = 'upcoming';
-          }
+        const index = this.patientAppointments.findIndex(a => a.id === appointmentId);
+        if (index !== -1) {
+          this.patientAppointments[index].status = 'cancelled';
+          alert('Appointment cancelled successfully');
         }
       }
     },
     
     checkDoctorStatus() {
-      const isDoctor = localStorage.getItem('isdoctor') === 'true';
-      console.log('Doctor status check:', isDoctor);
-      
-      this.isDoctor = isDoctor;
-      console.log('Is doctor:', this.isDoctor);
-      
-      if (this.isDoctor) {
-        console.log('Configuring UI for doctor view');
-        this.currentTab = 'upcoming';
-        document.title = 'My Patient Appointments - Aura';
-        this.patientAppointments = [];
-      } else {
-        console.log('Configuring UI for patient view');
-        this.currentTab = 'book';
-        document.title = 'Book Appointment - Aura';
-        this.upcomingAppointments = [];
-        this.previousAppointments = [];
+      try {
+        const isDoctor = localStorage.getItem('isdoctor') === 'true';
+        console.log('Doctor status check:', isDoctor);
+        
+        this.isDoctor = isDoctor;
+        console.log('Is doctor:', this.isDoctor);
+        
+        if (this.isDoctor) {
+          console.log('Configuring UI for doctor view');
+          this.currentTab = 'upcoming';
+          document.title = 'My Patient Appointments - Aura';
+          this.patientAppointments = [];
+        } else {
+          console.log('Configuring UI for patient view');
+          this.currentTab = 'book';
+          document.title = 'Book Appointment - Aura';
+          this.upcomingAppointments = [];
+          this.previousAppointments = [];
+        }
+        
+        return isDoctor;
+      } catch (error) {
+        console.error('Error checking doctor status:', error);
+        this.isDoctor = false;
+        return false;
       }
-      
-      return isDoctor;
     },
     
     handleStorageChange(event) {
       if (event.key === 'isdoctor') {
         console.log('Doctor status changed in another tab/window');
         const newDoctorStatus = event.newValue === 'true';
+        
         if (newDoctorStatus !== this.isDoctor) {
           console.log(`Updating doctor status: ${this.isDoctor} -> ${newDoctorStatus}`);
           this.isDoctor = newDoctorStatus;
@@ -507,16 +423,17 @@ export default {
         }
       }
     },
-    
+
     setupStorageListener() {
       this.boundHandleStorageChange = this.handleStorageChange.bind(this);
       window.addEventListener('storage', this.boundHandleStorageChange);
     },
-    
+
     setupPeriodicVerification() {
       this.statusInterval = setInterval(() => {
         try {
           const currentStatus = localStorage.getItem('isdoctor') === 'true';
+          
           if (currentStatus !== this.isDoctor) {
             console.log('Doctor status changed, refreshing view');
             this.isDoctor = currentStatus;
@@ -529,7 +446,6 @@ export default {
       }, 30000);
     }
   },
-  
   mounted() {
     this.checkDoctorStatus();
     
@@ -548,7 +464,6 @@ export default {
       this.newAppointment.user_name = storedUserName;
     }
   },
-  
   beforeUnmount() {
     if (this.statusInterval) {
       clearInterval(this.statusInterval);

@@ -1,121 +1,102 @@
 <template>
-  <div v-if="loading">Loading...</div>
-  <div v-else-if="!appointments || appointments.length === 0">
-    <p>No appointments available.</p>
-  </div>
-  <div v-else>
-    <div v-for="appointment in appointments" :key="appointment.appointment_id">
-      <div
-        class="w-full mx-5 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between"
-      >
-        <div>
-          <h5
-            class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-          >
-            {{ appointment.user_name }}
-          </h5>
-          <p class="font-bold text-gray-700">{{ appointment.doctor_name }}</p>
-          <p
-            class="mb-1 font-normal text-gray-700 dark:text-gray-400"
-            @click="callNumber(appointment.doctor_phone)"
-          >
-            {{ formatAppointmentTime(appointment.appointment_time) }}
-          </p>
-          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-            {{ appointment.appointment_status }}
-          </p>
-          <p class="text-white" >---------------------------</p>
+  <div class="doctor-appointments">
+    <div v-if="loading" class="loading-container py-10 text-center">
+      <div class="loader mx-auto"></div>
+      <p class="mt-4 text-gray-600">Loading your appointments...</p>
+    </div>
+    
+    <div v-else-if="!appointments || appointments.length === 0" class="empty-state p-8 text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-pink-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      <h3 class="text-xl font-medium text-pink-600 mb-2">No appointments found</h3>
+      <p class="text-gray-600">You don't have any appointment requests yet.</p>
+    </div>
+    
+    <div v-else class="appointments-list space-y-4">
+      <div v-for="appointment in appointments" :key="appointment.appointment_id" 
+           class="appointment-card bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-5 border-b border-gray-100">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">{{ appointment.user_name }}</h3>
+              <p class="text-gray-600 text-sm">{{ formatAppointmentTime(appointment.appointment_time) }}</p>
+            </div>
+            
+            <div :class="getStatusBadgeClass(appointment.appointment_status)" 
+                 class="px-3 py-1 rounded-full text-xs font-medium">
+              {{ formatStatus(appointment.appointment_status) }}
+            </div>
+          </div>
+          
+          <div class="mt-3">
+            <p class="text-sm text-gray-700 font-medium">Doctor: {{ appointment.doctor_name }}</p>
+            <p v-if="appointment.appointment_reason" class="mt-2 text-sm text-gray-600">
+              <span class="font-medium">Reason:</span> {{ appointment.appointment_reason }}
+            </p>
+          </div>
+          
+          <div v-if="appointment.reject_reason" class="mt-3 p-3 bg-red-50 rounded-md text-sm text-red-700">
+            <span class="font-medium">Rejection reason:</span> {{ appointment.reject_reason }}
+          </div>
         </div>
-
-        <div v-if="appointment.appointment_status === 'accepted'">
-          <a
-            href="#"
-            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-secondary focus:ring-4 focus:outline-none focus:ring-tertiary dark:bg-primary dark:hover:bg-secondary dark:focus:ring-tertiary"
-            >Waiting</a
-          >
-        </div>
-        <div v-else-if="appointment.appointment_status === 'rejected'">
-          <a
-            href="#"
-            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-secondary focus:ring-4 focus:outline-none focus:ring-tertiary dark:bg-primary dark:hover:bg-secondary dark:focus:ring-tertiary"
-            >rejected</a
-          >
-        </div>
-
-        <div v-else class="flex justify-between">
-          <a
-            href="#"
-            @click.prevent="acceptAppointment(appointment.appointment_id)"
-            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-secondary focus:ring-4 focus:outline-none focus:ring-tertiary dark:bg-primary dark:hover:bg-secondary dark:focus:ring-tertiary"
-            >Accept</a
-          >
-          <a
-            href="#"
-            @click.prevent="showReject(appointment.appointment_id)"
-            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-secondary focus:ring-4 focus:outline-none focus:ring-tertiary dark:bg-primary dark:hover:bg-secondary dark:focus:ring-tertiary"
-            >Reject</a
-          >
+        
+        <div class="p-4 bg-gray-50">
+          <div v-if="appointment.appointment_status === 'accepted'">
+            <button @click="callNumber(appointment.doctor_phone)" 
+                    class="w-full py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+              <span class="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                Call Patient
+              </span>
+            </button>
+          </div>
+          
+          <div v-else-if="appointment.appointment_status === 'rejected'" class="text-center text-sm text-gray-500">
+            This appointment has been rejected
+          </div>
+          
+          <div v-else class="flex gap-3">
+            <button @click="acceptAppointment(appointment.appointment_id)" 
+                    class="flex-1 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
+              Accept
+            </button>
+            <button @click="showReject(appointment.appointment_id)" 
+                    class="flex-1 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+              Reject
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Reject Modal -->
-  <div v-if="showRejectModal" class="fixed z-10 inset-0 overflow-y-auto">
-    <div
-      class="flex items-end justify-center min-h-screen -mt-44 pt-4 px-4 pb-20 text-center sm:block sm:p-0"
-    >
-      <div class="fixed inset-0 transition-opacity">
-        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-      </div>
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
-      <div
-        class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-headline"
-      >
-        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-          <div class="sm:flex sm:items-start">
-            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-              <h3
-                class="text-lg leading-6 font-medium text-gray-900"
-                id="modal-headline"
-              >
-                Reject Appointment
-              </h3>
-              <div class="mt-2">
-                <p class="text-sm leading-5 text-gray-500">
-                  Please provide a reason for rejecting the appointment.
-                </p>
-                
-                <textarea
-                  v-model="rejectReason"
-                  class="mt-2 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                ></textarea>
-              </div>
-            </div>
-          </div>
+    <!-- Reject Modal -->
+    <div v-if="showRejectModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-auto">
+        <div class="p-5 border-b">
+          <h3 class="text-lg font-semibold text-gray-800">Reject Appointment</h3>
         </div>
-        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-          <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-            <button
-              @click.prevent="rejectAppointment"
-              type="button"
-              class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-red-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-            >
-              Reject
-            </button>
-          </span>
-          <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-            <button
-              @click.prevent="closeRejectModal"
-              type="button"
-              class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-            >
-              Cancel
-            </button>
-          </span>
+        
+        <div class="p-5">
+          <p class="text-gray-600 mb-4">Please provide a reason for rejecting the appointment.</p>
+          <textarea v-model="rejectReason" 
+                   class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+                   rows="3"
+                   placeholder="Enter reason for rejection"></textarea>
+        </div>
+        
+        <div class="p-4 bg-gray-50 flex justify-end gap-3 rounded-b-lg">
+          <button @click="closeRejectModal"
+                 class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
+            Cancel
+          </button>
+          <button @click="rejectAppointment"
+                 class="px-4 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition-colors"
+                 :disabled="!rejectReason.trim()">
+            Reject Appointment
+          </button>
         </div>
       </div>
     </div>
@@ -142,82 +123,172 @@ export default {
   },
   methods: {
     async fetchAppointments() {
+      this.loading = true;
       try {
         const response = await getpatient();
-        console.log(response);
+        console.log('Appointment response:', response);
         if (response.data && response.data.appoinment) {
           this.appointments = response.data.appoinment;
         } else {
           console.error("Unexpected response data structure");
           this.appointments = [];
         }
-        this.loading = false;
       } catch (error) {
         console.error("Error fetching appointments:", error);
+        this.appointments = [];
+      } finally {
         this.loading = false;
       }
     },
+    
     async acceptAppointment(appointmentId) {
       try {
-        console.log(appointmentId);
-        const response = await appoinmentAccept({
-          appointment_id: appointmentId,
-        });
-        // Handle the response as needed
-        console.log(response);
+        // Show loading state if needed
+        const appointmentIndex = this.appointments.findIndex(
+          app => app.appointment_id === appointmentId
+        );
+        
+        if (appointmentIndex !== -1) {
+          // Optimistic update
+          this.appointments[appointmentIndex].appointment_status = 'loading';
+          
+          const response = await appoinmentAccept({
+            appointment_id: appointmentId,
+          });
+          
+          console.log('Accept response:', response);
+          
+          // Update appointment status
+          this.appointments[appointmentIndex].appointment_status = 'accepted';
+        }
       } catch (error) {
         console.error("Error accepting appointment:", error);
+        // Revert the optimistic update if there was an error
+        const appointmentIndex = this.appointments.findIndex(
+          app => app.appointment_id === appointmentId
+        );
+        if (appointmentIndex !== -1) {
+          this.appointments[appointmentIndex].appointment_status = 'pending';
+        }
       }
     },
+    
     showReject(appointmentId) {
       this.selectedAppointmentId = appointmentId;
+      this.rejectReason = "";
       this.showRejectModal = true;
     },
+    
     async rejectAppointment() {
+      if (!this.rejectReason.trim()) {
+        return; // Don't allow empty reason
+      }
+      
       try {
-        // Call the API to reject the appointment
-        const response = await rejectAppointment({
-          appointment_id: this.selectedAppointmentId,
-          reject_reason: this.rejectReason,
-        });
-        console.log(response);
-        // Update the appointments array with the rejected appointment
-        this.appointments = this.appointments.map((appointment) => {
-          if (appointment.appointment_id === this.selectedAppointmentId) {
-            return {
-              ...appointment,
-              appointment_status: "rejected",
-            };
-          }
-          return appointment;
-        });
-
-        // Reset the state
-        this.showRejectModal = false;
-        this.rejectReason = "";
-        this.selectedAppointmentId = null;
+        const appointmentIndex = this.appointments.findIndex(
+          app => app.appointment_id === this.selectedAppointmentId
+        );
+        
+        if (appointmentIndex !== -1) {
+          // Optimistic update
+          this.appointments[appointmentIndex].appointment_status = 'loading';
+          
+          const response = await rejectAppointment({
+            appointment_id: this.selectedAppointmentId,
+            reject_reason: this.rejectReason,
+          });
+          
+          console.log('Reject response:', response);
+          
+          // Update appointment status and reason
+          this.appointments[appointmentIndex].appointment_status = 'rejected';
+          this.appointments[appointmentIndex].reject_reason = this.rejectReason;
+          
+          // Close modal
+          this.closeRejectModal();
+        }
       } catch (error) {
         console.error("Error rejecting appointment:", error);
+        // Revert the optimistic update if there was an error
+        const appointmentIndex = this.appointments.findIndex(
+          app => app.appointment_id === this.selectedAppointmentId
+        );
+        if (appointmentIndex !== -1) {
+          this.appointments[appointmentIndex].appointment_status = 'pending';
+        }
       }
     },
+    
     closeRejectModal() {
       this.showRejectModal = false;
       this.rejectReason = "";
       this.selectedAppointmentId = null;
     },
+    
     formatAppointmentTime(appointmentTime) {
       const currentTime = moment();
       const appointmentDateTime = moment(appointmentTime);
 
       if (currentTime.isSame(appointmentDateTime, "minute")) {
-        return "Call Now";
+        return "Now";
       }
 
       return appointmentDateTime.format("MMMM D, YYYY - h:mm A");
     },
+    
     callNumber(phoneNumber) {
+      if (!phoneNumber) return;
+      
+      // Create a clickable phone link
+      window.location.href = `tel:${phoneNumber}`;
       console.log("Calling number:", phoneNumber);
     },
+    
+    getStatusBadgeClass(status) {
+      switch (status) {
+        case 'pending':
+          return 'bg-yellow-100 text-yellow-800';
+        case 'accepted':
+          return 'bg-green-100 text-green-800';
+        case 'rejected':
+          return 'bg-red-100 text-red-800';
+        case 'loading':
+          return 'bg-blue-100 text-blue-800';
+        default:
+          return 'bg-gray-100 text-gray-800';
+      }
+    },
+    
+    formatStatus(status) {
+      switch (status) {
+        case 'pending':
+          return 'Pending';
+        case 'accepted':
+          return 'Accepted';
+        case 'rejected':
+          return 'Rejected';
+        case 'loading':
+          return 'Processing...';
+        default:
+          return status;
+      }
+    }
   },
 };
 </script>
+
+<style scoped>
+.loader {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #e74694;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>

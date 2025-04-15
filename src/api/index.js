@@ -1,46 +1,58 @@
-
 import axios from 'axios';
 import { useRoute } from 'vue-router';
+import { saveApiDataToLocalStorage } from '@/utils/periodStorage';
 
 let token;
 
-export const getBasicData = () => {
-    return {
-        data: {
-            id: '1',
-            firstName: localStorage.getItem('userName'),
-            lastName: '',
-            email: localStorage.getItem('email'),
-            dob: '1990-01-01',
-
-            cycleLength: Number(localStorage.getItem('last_cycle_regular')),                    // Length of menstrual cycle in days
-            periodLength: Number(localStorage.getItem('duration_period')),                    // Length of period in days (bleeding days)
-            lastMenstrualPeriod: localStorage.getItem('last_period_start'),  // Start date of last period
-            frequency: 'regular',               // 'regular' | 'irregular'
-
-            createdAt: '2020-01-01',
-            updatedAt: '2020-01-01'
+export const getBasicData = async () => {
+    try {
+        const cookies = document.cookie.split(';');
+        const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+        if (!tokenCookie) {
+            throw new Error('No token found in cookie');
         }
+        const token = tokenCookie.split('=')[1];
+        const response = await axios.get(`${import.meta.env.VITE_APP_AURA_API_URL}/user-analytics/getdata`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        
+        return {
+            data: {
+                id: response.data.user_id || '1',
+                firstName: response.data.user_name || '',
+                lastName: '',
+                email: response.data.email || '',
+                dob: response.data.dob || '1990-01-01',
+                cycleLength: Number(response.data.last_cycle_regular) || 28,
+                periodLength: Number(response.data.duration_period) || 5,
+                lastMenstrualPeriod: response.data.last_period_start,
+                frequency: response.data.last_cycle_irregular ? 'irregular' : 'regular',
+                createdAt: response.data.created_at || '2020-01-01',
+                updatedAt: response.data.updated_at || '2020-01-01'
+            }
+        };
+    } catch (error) {
+        console.error('Error fetching basic data:', error);
+        // Return default data in case of error
+        return {
+            data: {
+                id: '1',
+                firstName: '',
+                lastName: '',
+                email: '',
+                dob: '1990-01-01',
+                cycleLength: 28,
+                periodLength: 5,
+                lastMenstrualPeriod: null,
+                frequency: 'regular',
+                createdAt: '2020-01-01',
+                updatedAt: '2020-01-01'
+            }
+        };
     }
-    //     data: {
-    //         id: '1',
-    //         firstName: 'Jane',
-    //         lastName: 'Doe',
-    //         email: localStorage.getItem('email'),
-    //         dob: '1990-01-01',
-
-    //         cycleLength: 28,                    // Length of menstrual cycle in days
-    //         periodLength: 6,                    // Length of period in days (bleeding days)
-    //         lastMenstrualPeriod: 2024-5-9,  // Start date of last period
-    //         frequency: 'regular',               // 'regular' | 'irregular'
-
-    //         createdAt: '2020-01-01',
-    //         updatedAt: '2020-01-01'
-    //     }
-    // }
 };
-
-
 
 export const userRegister = async (user) => {
     try {
@@ -88,7 +100,13 @@ export const getdata = async () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res);
+      
+      // Save API data to localStorage automatically when received
+      if (res && res.data) {
+        saveApiDataToLocalStorage(res.data);
+      }
+      
+      console.log('API data received and saved to localStorage:', res);
       return res;
     } catch (error) {
       console.log(error);
@@ -545,6 +563,7 @@ export const deleteAccount = async (user) => {
 
 export const Newnote = async (user) => {
     try {
+        console.log('Creating new note with data:', user);
         const cookies = document.cookie.split(';');
         const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
         if (!tokenCookie) {
@@ -552,56 +571,217 @@ export const Newnote = async (user) => {
         }
         const token = tokenCookie.split('=')[1];
 
-        const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/notes/add`, user, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        console.log(res.headers);
-        console.log(res.data);
+        // Ensure the content field is properly set
+        const payload = {
+            title: user.title || 'Note',
+            content: user.content || ''
+        };
+
+        const res = await axios.post(
+            `${import.meta.env.VITE_APP_AURA_API_URL}/notes/add`, 
+            payload, 
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+            }
+        );
+        
+        console.log('Note creation response:', res);
         return res;
     } catch (error) {
-        console.log(error);
-        return error;
+        console.error('Error creating note:', error);
+        // Return a structured error object for better error handling
+        return {
+            error: true,
+            status: error.response?.status || 500,
+            message: error.message || 'Failed to create note',
+            details: error
+        };
     }
 };
 
+export const getpatientList = async () => {
+    try {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+      if (!tokenCookie) {
+        throw new Error('No token found in cookie');
+      }
+      const token = tokenCookie.split('=')[1];
+      const res = await axios.get(`${import.meta.env.VITE_APP_AURA_API_URL}/appoinment/get-appoinments-doctor`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log('Patient list from API:', res.data);
+      
+      if (res.data && res.data.appoinment) {
+        return res.data.appoinment.map(appointment => ({
+          Name: appointment.user_name,
+          Department: 'Patient',
+          mode: 'audio call', // This data might need to come from API
+          time: new Date(appointment.appointment_time).toLocaleString(),
+          appointment_id: appointment.appointment_id,
+          appointment_status: appointment.appointment_status
+        }));
+      }
+      return [];
+    } catch (error) {
+      console.error('Error fetching patient list:', error);
+      // Return fallback data in case of error
+      return [];
+    }
+};
 
-export const getpatientList = async()=>{
-    let data = [
-        {
-            Name: 'Saabu',
-            Department:  'Gynaecologist',
-            mode: 'audio call',
-            time: '30/04/2024 12:30 PM'
-        },
-        {
-            Name: 'taakol karan',
-            Department:  'Gynaecologist',
-            mode: 'audio call',
-            time: '30/04/2024 12:00 PM'
+// Helper function to get token consistently
+export const getAuthToken = () => {
+  const cookies = document.cookie.split(';');
+  const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+  if (!tokenCookie) {
+    throw new Error('No token found in cookie');
+  }
+  return tokenCookie.split('=')[1];
+};
 
+// Function to add period start date
+export const addPeriodStartDate = async (data) => {
+  try {
+    const token = getAuthToken();
+    const res = await axios.post(
+      `${import.meta.env.VITE_APP_AURA_API_URL}/user-analytics/period-start`,
+      { start_date: data.start_date },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-            Name: 'pappuraajan',
-            Department:  'Gynaecologist',
-            mode: 'audio call',
-            time: '30/04/2024 12:40 PM'
-        },
-        {
-            Name: 'Shashikala',
-            Department:  'General surgeon',
-            mode: 'vedio call',
-            time: '30/04/2024 12:00 PM'
-        },
-        {
-            Name: 'shikari shambu',
-            Department:  'General surgeon',
-            mode: 'vedio call',
-            time: '30/04/2024 12:00 PM'
-        },
-    ]
+      }
+    );
+    console.log('Period start date response:', res);
+    return res;
+  } catch (error) {
+    console.error('Error adding period start date:', error);
+    return error;
+  }
+};
 
-    return data;
+// Function to add period end date
+export const addPeriodEndDate = async (data) => {
+  try {
+    const token = getAuthToken();
+    const res = await axios.post(
+      `${import.meta.env.VITE_APP_AURA_API_URL}/user-analytics/period-end`,
+      { end_date: data.end_date },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log('Period end date response:', res);
+    return res;
+  } catch (error) {
+    console.error('Error adding period end date:', error);
+    return error;
+  }
+};
+
+// Function to add mood data
+export const addMoodData = async (data) => {
+  try {
+    const token = getAuthToken();
+    const res = await axios.post(
+      `${import.meta.env.VITE_APP_AURA_API_URL}/user-analytics/add-mood`,
+      {
+        mood: data.mood,
+        date: data.date || new Date().toISOString().split('T')[0]
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log('Mood data response:', res);
+    return res;
+  } catch (error) {
+    console.error('Error adding mood data:', error);
+    return error;
+  }
+};
+
+// Function to add bleeding status - update to use the new endpoint
+export const addBleedingStatus = async (data) => {
+  try {
+    const token = getAuthToken();
+    const res = await axios.post(
+      `${import.meta.env.VITE_APP_AURA_API_URL}/user-analytics/add-bleeding`,
+      {
+        level: data.status,
+        date: data.date || new Date().toISOString().split('T')[0]
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log('Bleeding status response:', res);
+    return res;
+  } catch (error) {
+    console.error('Error adding bleeding status:', error);
+    return error;
+  }
+};
+
+// Function to save cycle data to the database
+export const saveCycleDataToAPI = async (cycleData) => {
+  try {
+    const token = getAuthToken();
+    const res = await axios.post(
+      `${import.meta.env.VITE_APP_AURA_API_URL}/user-analytics/save-cycle-data`,
+      { cycleData },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      }
+    );
+    console.log('Cycle data saved to API:', res);
+    return res;
+  } catch (error) {
+    console.error('Error saving cycle data to API:', error);
+    return {
+      error: true,
+      message: error.message || 'Failed to save cycle data',
+      details: error
+    };
+  }
+};
+
+// Function to get cycle data from the database
+export const getCycleDataFromAPI = async () => {
+  try {
+    const token = getAuthToken();
+    const res = await axios.get(
+      `${import.meta.env.VITE_APP_AURA_API_URL}/user-analytics/get-cycle-data`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+      }
+    );
+    console.log('Cycle data retrieved from API:', res);
+    return res;
+  } catch (error) {
+    console.error('Error getting cycle data from API:', error);
+    return {
+      error: true,
+      message: error.message || 'Failed to get cycle data',
+      details: error
+    };
+  }
 };
 

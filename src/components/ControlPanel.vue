@@ -168,9 +168,11 @@
 </template>
 <script>
 
-import { Newdate, enddate } from '@/api/index'
-import { calculateMenstrualCycles, getMenstrualCycle } from '@/utils/helpers'
+// Fix import statement to include Newnote
+import { Newdate, enddate, addPeriodStartDate, addPeriodEndDate, addMoodData, addBleedingStatus, Newnote, getdata } from '@/api/index'
+import { calculateMenstrualCycles, getMenstrualCycle, saveCycleData } from '@/utils/helpers'
 import { getPeriodData, savePeriodData } from '@/utils/periodStorage';
+import { saveCycleDataToAPI } from '@/api/index';
 
 export default {
   name: 'ControlPanel',
@@ -260,85 +262,320 @@ export default {
     },
     async submitDate() {
       try {
-        await Newdate({ start_date: this.selectedDate });
+        // Get the most recent API data first to check for ongoing periods
+        const apiData = await getdata();
+        let hasOngoingPeriod = false;
         
-        // Create new period entry
-        const newPeriod = {
-          startDate: this.selectedDate,
-          endDate: null,
-          bleedingLevels: [],
-          moods: []
-        };
+        if (apiData && apiData.data && apiData.data.period_dates && apiData.data.period_dates.length > 0) {
+            // Check if there's an active period from API data
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth() + 1;
+            const currentYear = currentDate.getFullYear();
+            
+            // Look for periods in the current month
+            const currentPeriods = apiData.data.period_dates.filter(period => 
+                Number(period.period_month) === currentMonth && 
+                Number(period.period_year) === currentYear
+            );
+            
+            hasOngoingPeriod = currentPeriods.length > 0;
+            console.log('Current periods from API:', currentPeriods, 'Has ongoing period:', hasOngoingPeriod);
+        }
         
-        // Save to localStorage
-        savePeriodData(newPeriod);
+        // If no API data found, fall back to localStorage check
+        if (!hasOngoingPeriod) {
+            const data = getPeriodData();
+            hasOngoingPeriod = data && data.periods && data.periods.length > 0 && 
+              data.periods[data.periods.length - 1].startDate && 
+              !data.periods[data.periods.length - 1].endDate;
+        }
         
-        // Update cycle calculations
-        this.updateCycleCalculations();
+        if (hasOngoingPeriod) {
+            alert('You already have an ongoing period. Please end your current period before starting a new one.');
+            this.showDatePicker = false;
+            return;
+        }
         
-        this.showDatePicker = false;
+        // Use the API function for adding period start date
+        const response = await addPeriodStartDate({ start_date: this.selectedDate });
         
-        // Refresh the page
-        window.location.reload();
-        
-      } catch (error) {
-        console.log(error);
-      }
-    },
+        if (response && response.data && response.data.message) {
+            console.log('Period start date saved:', response.data.message);
+            
+            // Create new period entry for local storage backup
+            const newPeriod = {
+              startDate: this.selectedDate,
+              endDate: null,
+              bleedingLevels: [],
+              moods: []
+            };
+            
+            // Save to localStorage as backup
+            savePeriodData(newPeriod);
+            
+            // Update cycle calculations and save to both localStorage and API
+            const data = getPeriodData();
+            const cycles = calculateMenstrualCycles(
+                this.selectedDate,
+                data.cycleLength || 28,
+                data.averagePeriodLength || 5
+            );
+            
+            // Save to both localStorage and API
+            await saveCycleData(cycles);
+            
+            this.showDatePicker = false;
+            this.showPopup = false;
+            
+            // Refresh the page to show updated data from API
+            window.location.reload();
+        } else {
+            alert('Failed to save period start date. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error submitting period start date:', error);
+        alert('Error: ' + (error.message || 'Failed to save period start date'));
+    }
+},
     
     async submitendDate() {
       try {
-        await enddate({ end_date: this.selectedDate });
+        // Get the most recent API data first to check for ongoing periods
+        const apiData = await getdata();
+        let hasPeriodToEnd = false;
+        let periodStartDate = null;
         
-        // Update the current period with end date
-        const data = getPeriodData();
-        const currentPeriod = data.periods[data.periods.length - 1];
-        if (currentPeriod && !currentPeriod.endDate) {
-          currentPeriod.endDate = this.selectedDate;
-          savePeriodData(currentPeriod);
+        if (apiData && apiData.data && apiData.data.period_dates && apiData.data.period_dates.length > 0) {
+            // Get the most recent period from API data
+            const lastPeriod = apiData.data.period_dates[apiData.data.period_dates.length - 1];
+            
+            if (lastPeriod.period_dates && lastPeriod.period_dates.length > 0) {
+                hasPeriodToEnd = true;
+                const periodYear = lastPeriod.period_year;
+                const periodMonth = String(lastPeriod.period_month).padStart(2, '0');
+                const periodDay = String(lastPeriod.period_dates[0]).padStart(2, '0');
+                periodStartDate = `${periodYear}-${periodMonth}-${periodDay}`;
+            }
         }
         
-        // Update cycle calculations
-        this.updateCycleCalculations();
+        // If no API data found, fall back to localStorage check
+        if (!hasPeriodToEnd) {
+            const data = getPeriodData();
+            const currentPeriod = data && data.periods && data.periods.length > 0 ? 
+              data.periods[data.periods.length - 1] : null;
+              
+            hasPeriodToEnd = currentPeriod && currentPeriod.startDate && !currentPeriod.endDate;
+            periodStartDate = currentPeriod ? currentPeriod.startDate : null;
+        }
         
-        this.showendingDatePicker = false;
+        if (!hasPeriodToEnd) {
+            alert("You don't have an ongoing period to end. Please start a period first.");
+            this.showendingDatePicker = false;
+            return;
+        }
         
-        // Refresh the page
-        window.location.reload();
+        // Validate selected end date is after start date
+        if (periodStartDate) {
+            const startDate = new Date(periodStartDate);
+            const endDate = new Date(this.selectedDate);
+            
+            if (endDate < startDate) {
+                alert('End date cannot be before the start date (' + startDate.toLocaleDateString() + ')');
+                return;
+            }
+            
+            // Calculate all dates in between (inclusive) for local storage
+            const allDates = [];
+            const currentDate = new Date(startDate);
+            
+            while (currentDate <= endDate) {
+              allDates.push(new Date(currentDate).toISOString().split('T')[0]);
+              currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            console.log('Period spans these dates:', allDates);
+        }
         
-      } catch (error) {
-        console.log(error);
+        // Use the API function for adding period end date
+        const response = await addPeriodEndDate({ end_date: this.selectedDate });
+        
+        if (response && response.data && response.data.message) {
+            console.log('Period end date saved:', response.data.message);
+            
+            // Update localStorage for backup
+            const data = getPeriodData();
+            if (data && data.periods && data.periods.length > 0) {
+                const currentPeriod = data.periods[data.periods.length - 1];
+                if (currentPeriod && !currentPeriod.endDate) {
+                    // Set the end date
+                    currentPeriod.endDate = this.selectedDate;
+                    
+                    // Add all dates between start and end to period data
+                    currentPeriod.allDates = [];
+                    const startDate = new Date(currentPeriod.startDate);
+                    const endDate = new Date(this.selectedDate);
+                    const tempDate = new Date(startDate);
+                    
+                    while (tempDate <= endDate) {
+                      currentPeriod.allDates.push(new Date(tempDate).toISOString().split('T')[0]);
+                      tempDate.setDate(tempDate.getDate() + 1);
+                    }
+                    
+                    savePeriodData(currentPeriod);
+                }
+            }
+            
+            // Update cycle calculations and save to both localStorage and API
+            const cycles = calculateMenstrualCycles(
+                periodStartDate,
+                data.cycleLength || 28,
+                (new Date(this.selectedDate) - new Date(periodStartDate)) / (1000 * 60 * 60 * 24) + 1
+            );
+            
+            // Save to both localStorage and API
+            await saveCycleData(cycles);
+            
+            this.showendingDatePicker = false;
+            this.showPopup = false;
+            
+            // Refresh the page to show updated data from API
+            window.location.reload();
+        } else {
+            alert('Failed to save period end date. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error submitting period end date:', error);
+        alert('Error: ' + (error.message || 'Failed to save period end date'));
+    }
+},
+    
+    async submitmood() {
+      if (!this.selectedMood) {
+        alert('Please select a mood first');
+        return;
       }
-    },
-    selectMood(mood) {
-      this.selectedMood = mood;
-    },
-    submitmood() {
-      if (!this.selectedMood) return;
       
-      const data = getPeriodData();
-      const currentPeriod = data.periods[data.periods.length - 1];
-      if (currentPeriod) {
-        currentPeriod.moods.push({
-          date: new Date().toISOString().split('T')[0],
-          note: this.selectedMood
-        });
-        savePeriodData(currentPeriod);
+      try {
+        console.log('Submitting mood:', this.selectedMood);
+        
+        const moodData = {
+          mood: this.selectedMood,
+          date: new Date().toISOString().split('T')[0]
+        };
+        
+        // Log exactly what is being sent to the API
+        console.log('Sending mood data to API:', JSON.stringify(moodData, null, 2));
+        
+        // Use the dedicated mood API function
+        const response = await addMoodData(moodData);
+        
+        console.log('API response for mood submission:', response);
+        
+        if (response && (response.data || response.status === 200)) {
+          console.log('Mood saved successfully');
+          
+          // Update local storage if needed
+          try {
+            const data = getPeriodData();
+            if (data && data.periods && data.periods.length > 0) {
+              const currentPeriod = data.periods[data.periods.length - 1];
+              if (currentPeriod) {
+                if (!currentPeriod.moods) {
+                  currentPeriod.moods = [];
+                }
+                
+                const newMood = {
+                  date: moodData.date,
+                  note: this.selectedMood
+                };
+                
+                // Log what is being added to localStorage
+                console.log('Adding mood to local storage:', JSON.stringify(newMood, null, 2));
+                
+                currentPeriod.moods.push(newMood);
+                savePeriodData(currentPeriod);
+                console.log('Mood saved to local storage');
+              }
+            }
+          } catch (storageError) {
+            console.error('Error updating local storage:', storageError);
+          }
+          
+          // Close the mood dialog and reset selection
+          this.selectedMood = null;
+          this.yourMood = false;
+          this.showPopup = false;
+          
+          // Provide feedback to the user
+          alert('Your mood has been saved successfully!');
+        } else {
+          console.warn('Unexpected API response:', response);
+          alert('Something went wrong. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error submitting mood:', error);
+        alert('Failed to save your mood. Please try again later.');
       }
-      this.selectedMood = null;
-      this.yourMood = false;
     },
-    submitBleedingLevel() {
-      const data = getPeriodData();
-      const currentPeriod = data.periods[data.periods.length - 1];
-      if (currentPeriod) {
-        currentPeriod.bleedingLevels.push({
-          date: new Date().toISOString().split('T')[0],
-          level: this.bleedingLevel
-        });
-        savePeriodData(currentPeriod);
+    
+    async submitBleedingLevel() {
+      if (!this.bleedingLevel) {
+        alert('Please select a bleeding level first');
+        return;
       }
-      this.bleedingStatus = false;
+      
+      try {
+        const bleedingData = {
+          status: this.bleedingLevel,
+          date: new Date().toISOString().split('T')[0]
+        };
+        
+        // Log exactly what is being sent to the API
+        console.log('Sending bleeding data to API:', JSON.stringify(bleedingData, null, 2));
+        
+        // Use the updated API function for bleeding status
+        const response = await addBleedingStatus(bleedingData);
+        
+        if (response && (response.data || response.status === 200)) {
+          console.log('Bleeding status saved:', response);
+          
+          // Update local storage as backup
+          const data = getPeriodData();
+          if (data && data.periods && data.periods.length > 0) {
+            const currentPeriod = data.periods[data.periods.length - 1];
+            if (currentPeriod) {
+              if (!currentPeriod.bleedingLevels) {
+                currentPeriod.bleedingLevels = [];
+              }
+              
+              const newBleeding = {
+                date: bleedingData.date,
+                level: this.bleedingLevel
+              };
+              
+              // Log what is being added to localStorage
+              console.log('Adding bleeding level to local storage:', JSON.stringify(newBleeding, null, 2));
+              
+              currentPeriod.bleedingLevels.push(newBleeding);
+              savePeriodData(currentPeriod);
+              console.log('Complete period data after adding bleeding level:', JSON.stringify(data, null, 2));
+            }
+          }
+          
+          // Close the dialog and reset
+          this.bleedingLevel = null;
+          this.bleedingStatus = false;
+          this.showPopup = false;
+          
+          // Provide feedback
+          alert('Your bleeding level has been saved successfully!');
+        } else {
+          alert('Something went wrong. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error submitting bleeding level:', error);
+        alert('Failed to save your bleeding level. Please try again later.');
+      }
     },
     isSameDay(date1, date2) {
       return (
@@ -356,12 +593,20 @@ export default {
     },
     updateCycleCalculations() {
       const data = getPeriodData();
-      const cycles = calculateMenstrualCycles(
-        data.periods[data.periods.length - 1].startDate,
-        data.cycleLength,
-        data.averagePeriodLength
-      );
-      localStorage.setItem('menstrualCycles', JSON.stringify(cycles));
+      if (data && data.periods && data.periods.length > 0) {
+        const cycles = calculateMenstrualCycles(
+          data.periods[data.periods.length - 1].startDate,
+          data.cycleLength || 28,
+          data.averagePeriodLength || 5
+        );
+        
+        // Save to both localStorage and API
+        saveCycleData(cycles);
+      }
+    },
+    selectMood(mood) {
+      console.log('Selected mood:', mood);
+      this.selectedMood = mood;
     }
   },
   watch: {

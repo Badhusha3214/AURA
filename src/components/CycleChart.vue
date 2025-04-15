@@ -1,119 +1,143 @@
 <template>
-  <div class="chart-container">
-    <Line v-if="chartData.datasets.length > 0" :data="chartData" :options="chartOptions" />
-    <div v-else class="flex justify-center items-center h-full">
-      <p class="text-gray-500">No data available yet. Start tracking your periods to see analytics.</p>
+  <div class="cycle-chart-container">
+    <canvas ref="cycleChart"></canvas>
+    <div v-if="periodData.length === 0" class="empty-state flex items-center justify-center h-full">
+      <p class="text-gray-500">No cycle data available to display</p>
     </div>
   </div>
 </template>
 
 <script>
-import { Line } from 'vue-chartjs'
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
+import Chart from 'chart.js/auto';
 
 export default {
   name: 'CycleChart',
-  components: { Line },
   props: {
     periodData: {
       type: Array,
-      required: true
+      default: () => []
     }
   },
-  computed: {
-    chartData() {
-      // Ensure we have data to display
-      if (!this.periodData || this.periodData.length === 0) {
-        return {
-          labels: [],
-          datasets: []
-        };
+  data() {
+    return {
+      chart: null
+    };
+  },
+  mounted() {
+    this.renderChart();
+  },
+  methods: {
+    renderChart() {
+      if (this.periodData.length === 0) return;
+      
+      const ctx = this.$refs.cycleChart.getContext('2d');
+      
+      // Prepare data for chart
+      const labels = this.periodData.map(period => 
+        `${period.month.substring(0, 3)} ${period.year}`
+      );
+      
+      const cycleData = this.periodData.map(period => period.cycleLength);
+      const durationData = this.periodData.map(period => period.duration);
+      
+      // Destroy existing chart if it exists
+      if (this.chart) {
+        this.chart.destroy();
       }
-
-      // Process the data for the chart
-      const sortedData = [...this.periodData].sort((a, b) => {
-        return new Date(`${a.month} ${a.year}`) - new Date(`${b.month} ${b.year}`);
-      });
-
-      return {
-        labels: sortedData.map(d => `${d.month} ${d.year}`),
-        datasets: [
-          {
-            label: 'Cycle Length',
-            backgroundColor: 'rgba(244, 57, 118, 0.2)',
-            borderColor: '#f43976',
-            borderWidth: 2,
-            data: sortedData.map(d => d.cycleLength),
-            tension: 0.4,
-            fill: true
-          },
-          {
-            label: 'Period Duration',
-            backgroundColor: 'rgba(255, 138, 176, 0.2)',
-            borderColor: '#ff8ab0',
-            borderWidth: 2,
-            data: sortedData.map(d => d.periodLength),
-            tension: 0.4,
-            fill: true
-          }
-        ]
-      };
-    },
-    chartOptions() {
-      return {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-            min: 0,
-            max: 40,
-            ticks: {
-              stepSize: 5
+      
+      // Create new chart
+      this.chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Cycle Length (days)',
+              data: cycleData,
+              backgroundColor: 'rgba(244, 110, 152, 0.6)',
+              borderColor: 'rgba(244, 110, 152, 1)',
+              borderWidth: 1,
+              barPercentage: 0.6
             },
-            grid: {
-              color: 'rgba(0, 0, 0, 0.1)'
+            {
+              label: 'Period Duration (days)',
+              data: durationData,
+              backgroundColor: 'rgba(153, 102, 255, 0.6)',
+              borderColor: 'rgba(153, 102, 255, 1)',
+              borderWidth: 1,
+              barPercentage: 0.6
             }
-          },
-          x: {
-            grid: {
-              display: false
-            }
-          }
+          ]
         },
-        plugins: {
-          legend: {
-            position: 'bottom'
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              grid: {
+                display: false
+              }
+            },
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(0, 0, 0, 0.05)'
+              },
+              ticks: {
+                stepSize: 7
+              }
+            }
           },
-          tooltip: {
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            titleColor: '#000',
-            bodyColor: '#666',
-            borderColor: '#f43976',
-            borderWidth: 1,
-            callbacks: {
-              label: function(context) {
-                return `${context.dataset.label}: ${context.raw} days`;
+          plugins: {
+            tooltip: {
+              callbacks: {
+                title: function(tooltipItems) {
+                  const index = tooltipItems[0].dataIndex;
+                  const period = this.periodData[index];
+                  return `${period.month} ${period.year}`;
+                }.bind(this),
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) {
+                    label += ': ';
+                  }
+                  if (context.parsed.y !== null) {
+                    label += context.parsed.y + ' days';
+                  }
+                  return label;
+                }
               }
             }
           }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index'
         }
-      };
+      });
+    }
+  },
+  watch: {
+    periodData: {
+      deep: true,
+      handler() {
+        this.$nextTick(() => {
+          this.renderChart();
+        });
+      }
     }
   }
-};
+}
 </script>
 
 <style scoped>
-.chart-container {
+.cycle-chart-container {
+  width: 100%;
   height: 100%;
-  min-height: 300px;
   position: relative;
+}
+
+.empty-state {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>
