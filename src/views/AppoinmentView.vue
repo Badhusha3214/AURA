@@ -260,28 +260,32 @@ export default {
         const response = await alluser();
         console.log('Doctors response:', response);
         
-        if (response && response.data && response.data.all_users) {
-          // Add more detailed logging to debug doctor data
-          console.log('Raw doctor data:', JSON.stringify(response.data.all_users.filter(user => user.doctor === true)));
+        if (response && response.data && response.data.users) {
+          // Updated filter to use 'doctor' property instead of 'is_doctor'
+          console.log('Raw doctor data:', JSON.stringify(response.data.users.filter(user => 
+            user.details && user.details.doctor === true)));
           
-          this.doctors = response.data.all_users
-            .filter(user => user.doctor === true)
+          this.doctors = response.data.users
+            .filter(user => user.details && user.details.doctor === true)
             .map((doctor, index) => {
+              // Get name from user details or fallback options
+              const doctorName = doctor.details?.full_name || 'Doctor';
+              
               // Log each doctor's ID to ensure it exists
-              console.log(`Doctor ${doctor.full_name || doctor.name} - ID:`, doctor.id || doctor._id);
+              console.log(`Doctor ${doctorName} - ID:`, doctor.email || `doctor-${index}`);
               
               return {
-                // Ensure each doctor gets a unique ID using index if server doesn't provide one
-                id: doctor.id || doctor._id || `doctor-${Date.now()}-${index}`,
-                name: doctor.full_name || doctor.name || 'Unknown',
-                specialty: doctor.specialty || 'General Practitioner',
+                // Use email as ID since it's unique
+                id: doctor.email || `doctor-${Date.now()}-${index}`,
+                name: doctorName,
+                specialty: doctor.details?.specialty || 'General Practitioner',
                 email: doctor.email
               };
             });
           
           console.log('Processed doctors for dropdown:', this.doctors);
         } else {
-          console.error("Unexpected doctors data structure");
+          console.error("Unexpected doctors data structure", response.data);
           this.doctors = [];
         }
       } catch (error) {

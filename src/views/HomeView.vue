@@ -252,8 +252,11 @@
                     '[]'
                 )) {
                     const dayOfPeriod = today.diff(moment(nextCycle.menstruationStartDate), 'days') + 1;
+                    // Validate to ensure the day is within reasonable range
+                    const validDayOfPeriod = Math.min(dayOfPeriod, this.periodLength || 7);
+                    
                     this.info = "Menstruation<br/>Phase Day";
-                    this.days = dayOfPeriod;
+                    this.days = validDayOfPeriod;
                     this.comment = "Track your bleeding level and symptoms";
                     return;
                 }
@@ -360,7 +363,8 @@
                             
                             const daysSinceStart = Math.floor((today - lastStartDate) / (1000 * 60 * 60 * 24));
                             
-                            if (daysSinceStart <= this.periodLength) {
+                            // Only show menstruation phase if within the period length and not a negative or excessive value
+                            if (daysSinceStart >= 0 && daysSinceStart < this.periodLength) {
                                 this.info = "Menstruation<br/>Phase Day";
                                 this.days = daysSinceStart + 1;
                                 this.comment = "Track your bleeding level and symptoms";
@@ -401,9 +405,11 @@
                     const daysSinceStart = Math.floor((today - lastStartDate) / (1000 * 60 * 60 * 24));
                     
                     // If within period days, show menstruation phase
-                    if (daysSinceStart <= periodLength) {
+                    if (daysSinceStart >= 0 && daysSinceStart < periodLength) {
+                        // Add validation to ensure we don't show impossible values
+                        const dayOfPeriod = Math.min(daysSinceStart + 1, periodLength);
                         this.info = "Menstruation<br/>Phase Day";
-                        this.days = daysSinceStart + 1;
+                        this.days = dayOfPeriod;
                         this.comment = "Track your bleeding level and symptoms";
                     } else {
                         // Calculate next period date
