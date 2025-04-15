@@ -279,33 +279,54 @@ export default {
       
       // Fetch user list from API
       const userResponse = await alluser();
-      if (userResponse && userResponse.data && userResponse.data.all_users) { 
+      console.log('Raw user response:', userResponse);
+      
+      if (userResponse && userResponse.data && userResponse.data.users) { 
         console.log('User data from API:', userResponse.data);
         
-        // Process user data
-        this.users = userResponse.data.all_users.map(user => ({
-          email: user.email,
-          doctor: !!user.doctor, // Ensure boolean
-          full_name: user.full_name || user.email.split('@')[0] // Use email username as fallback
-        }));
+        // Process user data correctly based on API structure
+        this.users = userResponse.data.users
+          .filter(user => user.email) // Only include users with email
+          .map(user => ({
+            email: user.email,
+            doctor: user.details?.doctor === true,
+            full_name: user.details?.full_name || user.email.split('@')[0], // Use email username as fallback
+            verified: user.verified
+          }));
         
-        // Generate chart data from users
-        this.generateChartDataFromUsers();
+        console.log('Processed users:', this.users);
+        
+        // Update userTypeData for pie chart
+        this.userTypeData = {
+          doctors: this.users.filter(user => user.doctor).length,
+          regular: this.users.filter(user => !user.doctor).length
+        };
       }
 
       // Try to fetch graph data from API
       try {
         const graphResponse = await graph();
-        if (graphResponse && graphResponse.data && graphResponse.data.data) {
-          // Update chart data with API response if available
-          this.chartData = graphResponse.data.data.map(item => ({
-            date: item.date,
-            users: item.count
-          }));
+        console.log('Raw graph response:', graphResponse);
+        
+        if (graphResponse && graphResponse.data) {
+          const graphData = graphResponse.data;
+          console.log('Graph data from API:', graphData);
+          
+          // Update chart data based on userRegistrations or generate from users
+          if (graphData.userRegistrations && graphData.userRegistrations.length > 0) {
+            this.chartData = graphData.userRegistrations.map(item => ({
+              date: `${item._id.year}-${item._id.month}`,
+              users: item.count
+            }));
+          } else {
+            // If no registration data, generate from users (as fallback)
+            this.generateChartDataFromUsers();
+          }
         }
       } catch (graphError) {
-        console.log('Using user data for chart as graph API failed:', graphError);
-        // We'll use the user data for charts (already handled above)
+        console.error('Using user data for chart as graph API failed:', graphError);
+        // Generate chart data from users as fallback
+        this.generateChartDataFromUsers();
       }
 
       this.$nextTick(() => {
@@ -491,26 +512,36 @@ export default {
     },
     async toggleDoctor(user) {
       try {
+        // Update function to use correct API structure
         const userData = {
-          user_email: user.email,
-          is_doctor: !user.doctor
+          email: user.email,
+          permissionType: 'doctor'
         };
-
+    
         const response = await amdoctor(userData);
         console.log('Doctor toggle response:', response);
-
+    
         if (response && response.data) {
           // Update user in the array based on the response
           const updatedUsers = this.users.map(u => {
             if (u.email === user.email) {
               return { 
                 ...u, 
-                doctor: response.data.message.includes('disabled') ? false : true 
+                doctor: !u.doctor // Toggle the doctor status
               };
             }
             return u;
           });
           this.users = updatedUsers;
+          
+          // Update userTypeData for pie chart after toggling
+          this.userTypeData = {
+            doctors: this.users.filter(user => user.doctor).length,
+            regular: this.users.filter(user => !user.doctor).length
+          };
+          
+          // Re-render the pie chart to reflect changes
+          this.renderChart();
         }
       } catch (error) {
         console.error('Error toggling doctor status:', error);
