@@ -165,13 +165,26 @@
               <span class="text-sm font-medium text-gray-500">Doctor Access</span>
               <label :for="`doctorToggle-${index}`" class="flex items-center cursor-pointer">
                 <div class="relative">
-                  <input :id="`doctorToggle-${index}`" type="checkbox" v-model="user.doctor" class="sr-only"
-                    @change="toggleDoctor(user)" />
-                  <div class="w-10 h-6 bg-gray-300 rounded-full shadow-inner" :class="{ 'bg-green-500': user.doctor }">
-                  </div>
+                  <input 
+                    :id="`doctorToggle-${index}`" 
+                    type="checkbox" 
+                    v-model="user.doctor" 
+                    class="sr-only"
+                    @change="toggleDoctor(user)" 
+                    :disabled="user.isToggling" 
+                  />
+                  <div 
+                    class="w-10 h-6 rounded-full shadow-inner" 
+                    :class="{
+                      'bg-green-500': user.doctor && !user.isToggling,
+                      'bg-gray-300': !user.doctor && !user.isToggling,
+                      'bg-yellow-300': user.isToggling
+                    }"
+                  ></div>
                   <div
                     class="absolute inset-y-0 left-0 w-4 h-4 m-1 bg-white rounded-full shadow transition-transform duration-300 ease-in-out transform"
-                    :class="{ 'translate-x-4': user.doctor }"></div>
+                    :class="{ 'translate-x-4': user.doctor }">
+                  </div>
                 </div>
               </label>
             </div>
@@ -291,7 +304,8 @@ export default {
             email: user.email,
             doctor: user.details?.doctor === true,
             full_name: user.details?.full_name || user.email.split('@')[0], // Use email username as fallback
-            verified: user.verified
+            verified: user.verified,
+            isToggling: false // Add this property for toggle state tracking
           }));
         
         console.log('Processed users:', this.users);
@@ -512,42 +526,62 @@ export default {
     },
     async toggleDoctor(user) {
       try {
-        // Update function to use correct API structure
+        // Show loading state by disabling the toggle
+        const originalDoctorStatus = user.doctor;
+        user.isToggling = true;
+        
+        console.log('Toggling doctor status for:', user.email, 'Current status:', originalDoctorStatus);
+    
+        // Prepare API request data 
         const userData = {
           email: user.email,
           permissionType: 'doctor'
         };
-    
+        
         const response = await amdoctor(userData);
-        console.log('Doctor toggle response:', response);
+        console.log('Complete doctor toggle response:', response);
     
-        if (response && response.data) {
-          // Update user in the array based on the response
-          const updatedUsers = this.users.map(u => {
-            if (u.email === user.email) {
-              return { 
-                ...u, 
-                doctor: !u.doctor // Toggle the doctor status
-              };
-            }
-            return u;
-          });
-          this.users = updatedUsers;
+        // Check for success based on status code
+        if (response && response.status >= 200 && response.status < 300 && response.data) {
+          // Get the new status directly from the response
+          const newDoctorStatus = response.data.is_doctor === true;
+          console.log('Backend returned doctor status:', newDoctorStatus);
           
-          // Update userTypeData for pie chart after toggling
+          // Update UI with the status returned from backend, not by toggling
+          user.doctor = newDoctorStatus;
+          
+          // Update userTypeData for pie chart
           this.userTypeData = {
             doctors: this.users.filter(user => user.doctor).length,
             regular: this.users.filter(user => !user.doctor).length
           };
           
-          // Re-render the pie chart to reflect changes
-          this.renderChart();
+          // Re-render the chart
+          this.$nextTick(() => {
+            this.renderChart();
+          });
+          
+          // Store doctor status for current user (although amdoctor now does this too)
+          if (user.email === localStorage.getItem('email')) {
+            localStorage.setItem('isdoctor', newDoctorStatus.toString());
+            console.log('Updated isdoctor in localStorage:', newDoctorStatus);
+          }
+          
+          // Success message
+          alert(`User ${user.email} is now ${newDoctorStatus ? 'a doctor' : 'a regular user'}`);
+        } else {
+          // Revert UI change on API failure
+          user.doctor = originalDoctorStatus;
+          alert(`Failed to update doctor status. ${response?.data?.message || 'Server did not respond correctly'}`);
         }
       } catch (error) {
         console.error('Error toggling doctor status:', error);
-        this.error = 'Failed to update user status. Please try again.';
         // Revert the checkbox state on error
         user.doctor = !user.doctor;
+        alert(`Error updating user status: ${error.message || 'Unknown error'}`);
+      } finally {
+        // Remove loading state
+        user.isToggling = false;
       }
     }
   },
@@ -562,7 +596,7 @@ export default {
 
 /* Smoother transitions */
 .transition-all {
-  transition-property: all;
+  transition-property: all; 
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
 }

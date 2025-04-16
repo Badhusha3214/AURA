@@ -303,25 +303,51 @@ export const takeappoinment = async (data) => {
   };
 
 export const amdoctor = async (data) => {
-    try {
-      const cookies = document.cookie.split(';');
-      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
-      if (!tokenCookie) {
-        throw new Error('No token found in cookie');
-      }
-      const token = tokenCookie.split('=')[1];
-      const res = await axios.post(`${import.meta.env.VITE_APP_AURA_API_URL}/admin/permissionToggle`, data ,{
+  try {
+    const cookies = document.cookie.split(';');
+    const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+    if (!tokenCookie) {
+      throw new Error('No token found in cookie');
+    }
+    const token = tokenCookie.split('=')[1];
+    
+    console.log('Sending doctor toggle request with data:', data);
+    
+    // Set specific headers and ensure proper content type
+    const res = await axios.post(
+      `${import.meta.env.VITE_APP_AURA_API_URL}/admin/permissionToggle`, 
+      data,
+      {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
-      });
-      console.log(res);
-      return res;
-    } catch (error) {
-      console.log(error);
-      return error;
+      }
+    );
+    
+    console.log('Doctor toggle API response:', res);
+    
+    // Store response data in localStorage if it's the current user
+    const userEmail = localStorage.getItem('email');
+    if (userEmail === data.email && res.data && res.status >= 200 && res.status < 300) {
+      const isDoctor = res.data.is_doctor === true;
+      localStorage.setItem('isdoctor', isDoctor.toString());
+      console.log(`Updated local isdoctor status for current user to: ${isDoctor}`);
     }
-  };
+    
+    return res;
+  } catch (error) {
+    console.error('Error in amdoctor API call:', error);
+    return {
+      status: error.response?.status || 500,
+      data: error.response?.data || { 
+        message: error.message || 'Unknown error occurred',
+        is_doctor: null
+      },
+      error: true
+    };
+  }
+};
 
   export const appoinment = async (data) => {
     try {

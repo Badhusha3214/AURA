@@ -33,6 +33,26 @@
           </button> -->
         </div>
       </div>
+      
+      <!-- Fix for the Calendar Legend section -->
+      <div class="mb-4 bg-white p-4 rounded-lg shadow-sm">
+        <h3 class="font-semibold mb-2">Calendar Legend</h3>
+        <div class="flex flex-wrap gap-4">
+          <div class="flex items-center">
+            <div class="w-4 h-4 rounded-full bg-pink-500 mr-2"></div>
+            <span>Recorded Period</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-4 h-4 rounded-full bg-pink-200 mr-2"></div>
+            <span>Predicted Period</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-4 h-4 rounded-full bg-indigo-500 mr-2"></div>
+            <span>Ovulation Day</span>
+          </div>
+        </div>
+      </div>
+      
       <div class="calendar">
         <div v-for="month in months" :key="month.name" class="month-section">
           <div class="month-header flex justify-between items-center mb-2">
@@ -49,10 +69,9 @@
               :key="date"
               class="date cursor-pointer px-4 py-2 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-700"
               :class="{
-                'bg-pink-200 text-white': markedDates.includes(date),
-                'bg-pink-500 text-white': isLastPeriodStart(date),
-                'bg-pink-500 text-white': isPeriodDay(date, month.name),
-                'bg-indigo-500 text-white': isOvulationDay(date, month.name)
+                'bg-pink-500 text-white': isLastPeriodStart(date, month.name) || isPeriodDay(date, month.name),
+                'bg-pink-200 text-white': isPredictedPeriodDay(date, month.name) && !isLastPeriodStart(date, month.name) && !isPeriodDay(date, month.name),
+                'bg-indigo-500 text-white': isOvulationDay(date, month.name) && !isLastPeriodStart(date, month.name) && !isPeriodDay(date, month.name) && !isPredictedPeriodDay(date, month.name)
               }"
               @click="markDate(date)">
               {{ date }}
@@ -72,11 +91,6 @@
 
     <!-- Graph View -->
     <div v-if="currentView === 'graph'" class="graph-container bg-white rounded-lg p-4 shadow-md">
-      <!-- <h2 class="text-xl font-bold mb-4">Cycle Analysis</h2>
-      <div class="h-[300px] mb-6">
-        <CycleChart :periodData="processedPeriodData" />
-      </div> -->
-      
       <!-- Statistics Summary -->
       <div class="mt-6 grid grid-cols-2 gap-4">
         <div class="stat-card bg-pink-50 p-4 rounded-lg">
@@ -89,13 +103,45 @@
         </div>
       </div>
 
-      <!-- Expected next period section -->
+      <!-- Period predictions section -->
       <div class="mt-6">
-        <div class="bg-pink-50 p-4 rounded-lg">
-          <h3 class="font-semibold mb-1">Expected Next Period</h3>
+        <h3 class="text-xl font-bold mb-4">Period Predictions</h3>
+        
+        <!-- Next period prediction -->
+        <div class="bg-pink-50 p-4 rounded-lg mb-4">
+          <h3 class="font-semibold mb-1">Next Expected Period</h3>
           <div class="flex items-center">
             <div class="text-2xl text-pink-500 font-bold">{{ formatNextPeriodDate }}</div>
             <div class="ml-4 text-gray-600">{{ daysUntilNextPeriod }} days from now</div>
+          </div>
+        </div>
+        
+        <!-- Past periods that should have occurred -->
+        <div v-if="pastPeriods.length > 0" class="mt-4">
+          <h3 class="font-semibold mb-2">Recent Predicted Periods You Might Have Missed</h3>
+          <div class="space-y-2">
+            <div 
+              v-for="(period, index) in pastPeriods" 
+              :key="index" 
+              class="bg-gray-50 p-3 rounded-lg border border-pink-200"
+            >
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="font-medium">{{ formatDate(period.startDate) }}</span> - 
+                  <span>{{ formatDate(period.endDate) }}</span>
+                </div>
+                <button 
+                  @click="markPeriodAsRecorded(period)" 
+                  class="text-sm px-3 py-1 bg-pink-500 text-white rounded-full hover:bg-pink-600"
+                >
+                  Record This Period
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="mt-2 text-sm text-gray-600">
+            These are predicted periods based on your cycle length of {{ averageCycleLength }} days. 
+            You can record them if they occurred or adjust your cycle data.
           </div>
         </div>
       </div>
@@ -143,21 +189,21 @@
 </template>
 
 <script>
-import DashboardLayout from '@/layouts/DashboardLayout.vue'
-import CycleChart from '@/components/CycleChart.vue'
-import { getdata } from '@/api/index'
+import DashboardLayout from '@/layouts/DashboardLayout.vue';
+import CycleChart from '@/components/CycleChart.vue';
+import { getdata } from '@/api/index';
 import { getPeriodData, getMonthlyAnalytics } from '@/utils/periodStorage';
-import moment from 'moment'; // Add this import at the top
+import moment from 'moment';
 
 async function fetchData() {
- try {
-   const response = await getdata();
-   const backendData = response.data;
-   return backendData;
- } catch (error) {
-   console.error('Error fetching data:', error);
-   return null;
- }
+  try {
+    const response = await getdata();
+    const backendData = response.data;
+    return backendData;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
 }
 
 export default {
@@ -201,8 +247,16 @@ export default {
       markedDates: [],
       userData: {},
       periods: [],
+      pastPeriods: [],
+      predictedPeriods: [],
       ovulationDays: [],
       isDoctor: false, // Add this property to track doctor status
+      debugInfo: {
+        lastPeriodStart: null,
+        cycleLength: null,
+        periodLength: null,
+        calculationSteps: []
+      }
     };
   },
   computed: {
@@ -294,32 +348,27 @@ export default {
     },
     
     nextPeriodDate() {
-      // Try to calculate from API data first
-      if (this.userData && this.userData.last_period_start) {
-        const lastPeriodStart = new Date(this.userData.last_period_start);
-        const cycleLength = Number(this.userData.last_cycle_regular) || 28;
-        
-        const nextPeriodDate = new Date(lastPeriodStart);
-        nextPeriodDate.setDate(lastPeriodStart.getDate() + cycleLength);
-        
-        return nextPeriodDate;
+      // Get the latest period data
+      const lastPeriodStart = this.userData.last_period_start 
+        ? new Date(this.userData.last_period_start) 
+        : null;
+      
+      console.log("DEBUG - Last period start:", lastPeriodStart);
+      
+      if (!lastPeriodStart) {
+        // Fallback to localStorage data if API data not available
+        const data = getPeriodData();
+        if (data?.periods?.length) {
+          const mostRecent = data.periods[data.periods.length - 1];
+          return this.calculateNextPeriod(new Date(mostRecent.startDate), data.cycleLength || 28);
+        }
+        return new Date(); // Default to today if no data
       }
       
-      // Fallback to localStorage data
-      const data = getPeriodData();
-      if (data && data.periods && data.periods.length > 0) {
-        const mostRecent = data.periods[data.periods.length - 1];
-        const startDate = new Date(mostRecent.startDate);
-        const cycleLength = Number(data.cycleLength) || 28;
-        
-        const nextPeriodDate = new Date(startDate);
-        nextPeriodDate.setDate(nextPeriodDate.getDate() + cycleLength);
-        
-        return nextPeriodDate;
-      }
+      const cycleLength = Number(this.userData.last_cycle_regular) || 28;
+      console.log("DEBUG - Cycle length:", cycleLength);
       
-      // If no data is available, return current date
-      return new Date();
+      return this.calculateNextPeriod(lastPeriodStart, cycleLength);
     },
     
     formatNextPeriodDate() {
@@ -350,9 +399,11 @@ export default {
         });
       }
     },
+    
     toggleAllNotes() {
       this.showAllNotes = !this.showAllNotes;
     },
+    
     markDate(date) {
       if (this.markedDates.includes(date)) {
         this.markedDates = this.markedDates.filter((d) => d !== date);
@@ -360,30 +411,73 @@ export default {
         this.markedDates.push(date);
       }
     },
+    
     formatDate(dateString) {
+      if (!dateString) return '';
       const date = new Date(dateString);
       return date.toLocaleDateString();
     },
-    isLastPeriodStart(date) {
+    
+    isLastPeriodStart(date, monthName) {
+      if (!this.userData.last_period_start) return false;
+      
       const lastPeriodStart = new Date(this.userData.last_period_start);
+      const currentMonthIndex = this.months.findIndex(m => m.name === monthName);
+      
       return (
-        date === lastPeriodStart.getDate() &&
-        lastPeriodStart.getMonth() === new Date().getMonth()
+        date === lastPeriodStart.getDate() && 
+        lastPeriodStart.getMonth() === currentMonthIndex
       );
     },
+    
     isPeriodDay(date, monthName) {
       const monthData = this.calendarData.find(m => m.name === monthName);
       return monthData?.periodDates.includes(date) || false;
     },
+    
+    isPredictedPeriodDay(date, monthName) {
+      try {
+        // Check if this date is part of any predicted period
+        const monthIndex = this.months.findIndex(m => m.name === monthName);
+        const currentYear = new Date().getFullYear();
+        
+        // Create a date object for the current date in the calendar
+        const checkDate = new Date(currentYear, monthIndex, date);
+        
+        // Look through predicted periods
+        for (const period of this.predictedPeriods) {
+          const startDate = new Date(period.startDate);
+          const endDate = new Date(period.endDate);
+          
+          // Use more reliable date comparison
+          if (
+            checkDate.getTime() >= startDate.getTime() && 
+            checkDate.getTime() <= endDate.getTime()
+          ) {
+            return true;
+          }
+        }
+        
+        return false;
+      } catch (error) {
+        console.error("Error in isPredictedPeriodDay:", error);
+        return false;
+      }
+    },
+
     isOvulationDay(date, monthName) {
-      if (this.userData.ovulationDays) {
-        const ovulationData = this.userData.ovulationDays.find(item => item.month === monthName);
-        if (ovulationData) {
-          return date === ovulationData.day;
+      // Check calculated ovulation days
+      const monthIndex = this.months.findIndex(m => m.name === monthName);
+      
+      for (const ovDay of this.ovulationDays) {
+        if (ovDay.date.getMonth() === monthIndex && ovDay.date.getDate() === date) {
+          return true;
         }
       }
+      
       return false;
     },
+
     getMonthName(monthNumber) {
       const months = [
         'January', 'February', 'March', 'April', 'May', 'June',
@@ -391,13 +485,16 @@ export default {
       ];
       return months[monthNumber - 1];
     },
+
     getMonthNumber(monthName) {
       return this.months.findIndex(m => m.name === monthName) + 1;
     },
+
     getSymptoms(date, monthName) {
       const monthData = this.calendarData.find(m => m.name === monthName);
       return monthData?.symptoms.filter(s => s.date === date) || [];
     },
+
     getFlowLevelClass(level) {
       switch(level.toLowerCase()) {
         case 'heavy':
@@ -411,27 +508,133 @@ export default {
           return 'bg-gray-100 text-gray-700';
       }
     },
-    formatDate(dateString) {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    },
+
     checkDoctorStatus() {
       // Check if user is a doctor from localStorage
       const isDoctor = localStorage.getItem('isdoctor');
       this.isDoctor = isDoctor === 'true';
-      
       console.log('Doctor status:', this.isDoctor);
-      
       // If user is a doctor, modify the view as needed
       if (this.isDoctor) {
         // For doctors, we might want to default to the graph view
         this.currentView = 'graph';
       }
     },
-    
+
+    calculateNextPeriod(lastPeriodStart, cycleLength) {
+      if (!lastPeriodStart) return new Date();
+      
+      const today = new Date();
+      const periodLength = Number(this.userData.duration_period) || 5;
+      let nextPeriodDate = new Date(lastPeriodStart);
+      
+      // Log for debugging
+      console.log(`DEBUG - Calculating next period from ${lastPeriodStart.toDateString()} with cycle length ${cycleLength} and period duration ${periodLength}`);
+      this.debugInfo.calculationSteps.push(`Starting with last period: ${lastPeriodStart.toDateString()}`);
+      
+      // Keep adding cycle length until we find a future date
+      let count = 0;
+      while (nextPeriodDate <= today && count < 20) {  // Limit to prevent infinite loop
+        this.debugInfo.calculationSteps.push(`Period ${count}: ${nextPeriodDate.toDateString()} (past)`);
+        
+        // The formula: next period = last period start + period length + 1 + cycle length
+        // First add period length to get to end of period
+        let periodEndDate = new Date(nextPeriodDate);
+        periodEndDate.setDate(periodEndDate.getDate() + periodLength - 1); // -1 because day 1 is already counted
+        
+        // Next period = current period start + period length + 1 + cycle length
+        // Which means: current period start + (period length - 1) + 1 + cycle length = current period start + period length + cycle length
+        nextPeriodDate = new Date(nextPeriodDate);
+        nextPeriodDate.setDate(nextPeriodDate.getDate() + periodLength + cycleLength);
+        
+        this.debugInfo.calculationSteps.push(`Period ${count} ended on: ${periodEndDate.toDateString()}`);
+        this.debugInfo.calculationSteps.push(`Next period starts on: ${nextPeriodDate.toDateString()}`);
+        count++;
+      } 
+      
+      this.debugInfo.calculationSteps.push(`Final predicted next period: ${nextPeriodDate.toDateString()} (future)`);
+      console.log(`DEBUG - Next period calculated as: ${nextPeriodDate.toDateString()}`);
+      return nextPeriodDate;
+    },
+
+    generatePastPeriods() {
+      try {
+        const lastPeriodStart = this.userData.last_period_start 
+          ? new Date(this.userData.last_period_start) 
+          : null;
+        if (!lastPeriodStart) {
+          console.log("No last period start date found");
+          return [];
+        }
+        
+        // Store for debugging
+        this.debugInfo.lastPeriodStart = lastPeriodStart;
+        this.debugInfo.cycleLength = this.userData.last_cycle_regular || 28;
+        this.debugInfo.periodLength = this.userData.duration_period || 5;
+        
+        const cycleLength = Number(this.userData.last_cycle_regular) || 28;
+        const periodLength = Number(this.userData.duration_period) || 5;
+        const today = new Date();
+        console.log(`Generating periods starting from ${lastPeriodStart.toDateString()} with cycle ${cycleLength} days and duration ${periodLength} days`);
+        
+        // Generate array of past periods (up to 6 most recent ones)
+        const pastPeriods = [];
+        this.predictedPeriods = []; // Clear previous predictions
+        
+        // Generate cycles (both past and future)
+        // We'll calculate for past cycles plus 2 future cycles
+        const totalCycles = 8; // Calculate 8 cycles for good coverage
+        
+        // First calculate end date of the initial period
+        let initialPeriodEndDate = new Date(lastPeriodStart);
+        initialPeriodEndDate.setDate(initialPeriodEndDate.getDate() + periodLength - 1);
+        console.log(`Initial period: ${lastPeriodStart.toDateString()} to ${initialPeriodEndDate.toDateString()}`);
+        
+        // Add the initial period to predictedPeriods if needed for display
+        this.predictedPeriods.push({
+          startDate: new Date(lastPeriodStart),
+          endDate: new Date(initialPeriodEndDate),
+          cycle: 0
+        });
+        
+        // Start calculating subsequent periods
+        let currentPeriodStart = new Date(lastPeriodStart);
+        for (let i = 1; i <= totalCycles; i++) {
+          // Apply the formula: next period = last period start + period length + cycle length
+          // This accounts for period duration + waiting days between periods
+          currentPeriodStart = new Date(currentPeriodStart);
+          currentPeriodStart.setDate(currentPeriodStart.getDate() + periodLength + cycleLength);
+          
+          // Calculate the end of this period: Add period duration to the start date
+          const periodEndDate = new Date(currentPeriodStart);
+          periodEndDate.setDate(currentPeriodStart.getDate() + periodLength - 1);
+          console.log(`Generated period ${i}: ${currentPeriodStart.toDateString()} to ${periodEndDate.toDateString()}`);
+          
+          // Add to predictedPeriods for calendar display (both past and future)
+          this.predictedPeriods.push({
+            startDate: new Date(currentPeriodStart),
+            endDate: new Date(periodEndDate),
+            cycle: i
+          });
+          
+          // Only add to pastPeriods (for UI display) if this period should have ended by now
+          if (periodEndDate < today) {
+            pastPeriods.push({
+              startDate: new Date(currentPeriodStart),
+              endDate: new Date(periodEndDate),
+              predicted: true
+            });
+          }
+        }
+        
+        console.log(`Generated ${this.predictedPeriods.length} predicted periods for display`);
+        return pastPeriods.reverse(); // Most recent first
+      } catch (error) {
+        console.error("Error in generatePastPeriods:", error);
+        return [];
+      } 
+    },
+
     getPeriodDataFromStorage() {
       // Get period data from localStorage
       const lastPeriodStart = localStorage.getItem('last_period_start');
@@ -449,18 +652,20 @@ export default {
         last_cycle_irregular_start: lastIrregularStart || '',
         last_cycle_irregular_last: lastIrregularLast || '',
       };
-      
       console.log('Period data from storage:', this.userData);
+      
+      // Calculate past periods that should have occurred
+      this.pastPeriods = this.generatePastPeriods();
       
       // If we have last period start, calculate period days for display
       if (lastPeriodStart) {
         this.calculatePeriodDays(lastPeriodStart, periodDuration);
+        this.calculateOvulationDays(lastPeriodStart, cycleLength);
       }
     },
-    
+
     calculatePeriodDays(startDateStr, durationDays) {
       if (!startDateStr) return;
-      
       try {
         const startDate = new Date(startDateStr);
         const monthName = this.getMonthName(startDate.getMonth() + 1);
@@ -470,11 +675,10 @@ export default {
         
         // Mark period days
         const duration = parseInt(durationDays) || 5;
+        // Only mark dates in the same month
         for (let i = 0; i < duration; i++) {
           const currentDate = new Date(startDate);
           currentDate.setDate(startDate.getDate() + i);
-          
-          // Only mark dates in the same month
           if (this.getMonthName(currentDate.getMonth() + 1) === monthName) {
             this.markedDates.push(currentDate.getDate());
           }
@@ -482,8 +686,105 @@ export default {
       } catch (error) {
         console.error('Error calculating period days:', error);
       }
+    },
+
+    calculateOvulationDays(startDateStr, cycleLength) {
+      if (!startDateStr) return;
+      try {
+        // Clear existing calculations
+        this.ovulationDays = [];
+        
+        // Calculate for the recorded period
+        const startDate = new Date(startDateStr);
+        const cycleLen = parseInt(cycleLength) || 28;
+        
+        // Ovulation is typically around day 14 in a 28-day cycle
+        // For other cycle lengths, it's proportional
+        const ovulationOffset = Math.round(cycleLen / 2) - 1;
+        
+        // Calculate ovulation day for the first cycle
+        const firstOvulationDate = new Date(startDate);
+        firstOvulationDate.setDate(startDate.getDate() + ovulationOffset);
+        this.ovulationDays.push({
+          date: firstOvulationDate,
+          cycle: 0
+        });
+        
+        // Calculate for predicted cycles (up to 6 cycles)
+        const today = new Date();
+        for (let i = 1; i <= 6; i++) {
+          const periodStartDate = new Date(startDate);
+          periodStartDate.setDate(startDate.getDate() + (cycleLen * i));
+          
+          // Only calculate if this cycle would have started by now
+          if (periodStartDate < today) {
+            const ovulationDate = new Date(periodStartDate);
+            ovulationDate.setDate(periodStartDate.getDate() + ovulationOffset);
+            this.ovulationDays.push({
+              date: ovulationDate,
+              cycle: i
+            });
+          }
+        }
+        
+        console.log("DEBUG - Calculated ovulation days:", this.ovulationDays);
+      } catch (error) {
+        console.error('Error calculating ovulation days:', error);
+      }
+    },
+        
+    markPeriodAsRecorded(period) {
+      // Add the predicted period to the recorded periods
+      const data = getPeriodData();
+      
+      // Create a new period entry
+      const newPeriod = {
+        startDate: period.startDate.toISOString().split('T')[0],
+        endDate: period.endDate.toISOString().split('T')[0],
+        allDates: this.generateDateRange(period.startDate, period.endDate),
+        moods: [],
+        bleedingLevels: []
+      };
+      
+      // Add to local storage
+      if (data.periods) {
+        data.periods.push(newPeriod);
+        localStorage.setItem('periodData', JSON.stringify(data));
+      }
+      
+      // Update the current periods display
+      this.periods.push({
+        startDate: newPeriod.startDate,
+        endDate: newPeriod.endDate,
+        month: this.getMonthName(period.startDate.getMonth() + 1),
+        year: period.startDate.getFullYear(),
+        bleedingLevels: [],
+        moods: []
+      });
+      
+      // Remove from pastPeriods array to update the UI
+      this.pastPeriods = this.pastPeriods.filter(p => 
+        p.startDate.getTime() !== period.startDate.getTime()
+      );
+      
+      // Show success message
+      alert('Period recorded successfully!');
+    },
+
+    generateDateRange(startDate, endDate) {
+      const dates = [];
+      const currentDate = new Date(startDate);
+      const lastDate = new Date(endDate);
+      
+      while (currentDate <= lastDate) {
+        dates.push(new Date(currentDate).toISOString().split('T')[0]);
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      
+      return dates;
     }
   },
+
   async mounted() {
     // Check if user is a doctor first
     this.checkDoctorStatus();
@@ -516,93 +817,19 @@ export default {
           this.isDoctor = apiData.doctor;
         }
         
-        // Use period dates from API
-        if (apiData.period_dates && apiData.period_dates.length > 0) {
-          // Process data for the calendar
-          apiData.period_dates.forEach(periodEntry => {
-            const monthName = this.getMonthName(parseInt(periodEntry.period_month) + 1);
-            // Set this month to be open by default
-            this.showDates[monthName] = true;
-            
-            // Mark dates for this month
-            const dates = periodEntry.period_dates;
-            if (typeof dates === 'string') {
-              // Handle periods_dates as string
-              const dateArray = dates.split(',').map(d => parseInt(d.trim()));
-              this.markedDates.push(...dateArray);
-            } else if (Array.isArray(dates)) {
-              // Handle periods_dates as array
-              this.markedDates.push(...dates.map(d => parseInt(d)));
-            }
-          });
-        }
+        // Regenerate predictions with updated data
+        this.pastPeriods = this.generatePastPeriods();
         
-        // Use comprehensive period data if available
-        if (apiData.periods && apiData.periods.length > 0) {
-          this.periods = apiData.periods.map(period => ({
-            startDate: period.startDate,
-            endDate: period.endDate,
-            month: this.getMonthName(new Date(period.startDate).getMonth() + 1),
-            year: new Date(period.startDate).getFullYear(),
-            bleedingLevels: period.bleedingLevels || [],
-            moods: period.moods || []
-          }));
-          
-          // Calculate ovulation days based on cycle
-          this.periods.forEach(period => {
-            const startDate = new Date(period.startDate);
-            const cycleLength = this.userData.last_cycle_regular || 28;
-            
-            // Ovulation is around midpoint of cycle
-            const ovulationDate = new Date(startDate);
-            ovulationDate.setDate(startDate.getDate() + Math.floor(cycleLength / 2));
-            
-            this.ovulationDays.push({
-              month: this.getMonthName(ovulationDate.getMonth() + 1),
-              day: ovulationDate.getDate()
-            });
-          });
-        }
-      }
+        // Open the current month by default
+        const currentMonth = this.getMonthName(new Date().getMonth() + 1);
+        this.showDates[currentMonth] = true;
+        
+        console.log(`Generated ${this.predictedPeriods.length} periods and ${this.pastPeriods.length} past periods`);
+      } 
     } catch (error) {
       console.error('Error fetching data from API:', error);
-      
-      // Fall back to local storage data
-      const data = getPeriodData();
-      if (data && data.periods && data.periods.length > 0) {
-        this.periods = data.periods.map(period => ({
-          startDate: period.startDate,
-          endDate: period.endDate,
-          month: this.getMonthName(new Date(period.startDate).getMonth() + 1),
-          year: new Date(period.startDate).getFullYear(),
-          bleedingLevels: period.bleedingLevels || [],
-          moods: period.moods || []
-        }));
-        
-        // Mark dates on calendar
-        this.periods.forEach(period => {
-          const startMonth = this.getMonthName(new Date(period.startDate).getMonth() + 1);
-          this.showDates[startMonth] = true;
-          
-          // Mark all days in the period
-          if (period.allDates && period.allDates.length > 0) {
-            period.allDates.forEach(dateStr => {
-              const date = new Date(dateStr);
-              if (this.getMonthName(date.getMonth() + 1) === startMonth) {
-                this.markedDates.push(date.getDate());
-              }
-            });
-          } else {
-            // If allDates not available, just mark start date
-            this.markedDates.push(new Date(period.startDate).getDate());
-            if (period.endDate) {
-              this.markedDates.push(new Date(period.endDate).getDate());
-            }
-          }
-        });
-      }
-    }
-  }
+    }     
+  }     
 }
 </script>
 
