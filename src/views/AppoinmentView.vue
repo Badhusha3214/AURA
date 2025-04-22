@@ -26,7 +26,9 @@
         <!-- Booking Form -->
         <div v-if="currentTab === 'book'" class="bg-white rounded-lg shadow-md p-6">
           <h2 class="text-xl font-semibold mb-4">Schedule a New Appointment</h2>
-          
+          <div v-if="!canBook" class="mb-4 text-red-500 font-medium">
+            You cannot book a new appointment until your previous one is resolved or rejected.
+          </div>
           <form @submit.prevent="bookAppointment" class="space-y-4">
             <!-- Name Field -->
             <div>
@@ -74,7 +76,8 @@
             </div>
             
             <button type="submit" 
-                    class="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 font-medium">
+                    class="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 font-medium"
+                    :disabled="!canBook">
               Book Appointment
             </button>
           </form>
@@ -132,6 +135,10 @@
                   Cancel Appointment
                 </button>
               </div>
+              <!-- Show message for rejected appointments -->
+              <div v-if="appointment.status === 'rejected'" class="mt-2">
+                <span class="text-red-600 text-sm font-semibold">This appointment was rejected by the doctor.</span>
+              </div>
             </div>
           </div>
         </div>
@@ -168,7 +175,7 @@
 <script>
 import DashboardLayout from '@/layouts/DashboardLayout.vue';
 import DrAppoinment from '@/components/DrAppoinment.vue';
-import { getpatient, appoinment, alluser, appoinmentCancl, checkIsDoctor } from '@/api/index';
+import { getpatient, appoinment, alluser, appoinmentCancl, checkIsDoctor, getAppointmentHistory } from '@/api/index';
 
 export default {
   components: {
@@ -195,7 +202,8 @@ export default {
       showNotesModal: false,
       selectedAppointment: null,
       appointmentNotes: '',
-      statusInterval: null
+      statusInterval: null,
+      canBook: true // <-- Add this flag to control booking
     };
   },
   computed: {
@@ -224,6 +232,8 @@ export default {
           return 'bg-green-100 text-green-800';
         case 'cancelled':
           return 'bg-red-100 text-red-800';
+        case 'rejected':
+          return 'bg-red-100 text-red-800'; // Add styling for rejected
         default:
           return 'bg-gray-100 text-gray-800';
       }
@@ -231,26 +241,27 @@ export default {
     
     async fetchAppointments() {
       this.loading = true;
-      
       try {
-        const userEmail = localStorage.getItem('email');
-        console.log('Fetching appointments for user:', userEmail);
-        console.log('User is doctor:', this.isDoctor);
-        
         if (this.isDoctor) {
           this.upcomingAppointments = [];
           this.previousAppointments = [];
         } else {
-          this.patientAppointments = [];
+          // Fetch from backend
+          const history = await getAppointmentHistory();
+          this.patientAppointments = Array.isArray(history) ? history : [];
+          // Allow booking if last appointment is rejected/cancelled or none exist
+          if (this.patientAppointments.length > 0) {
+            const last = this.patientAppointments[0];
+            this.canBook = !last || last.status === 'rejected' || last.status === 'cancelled';
+          } else {
+            this.canBook = true;
+          }
         }
-        
-        // Simulate API call with timeout
-        setTimeout(() => {
-          this.loading = false;
-        }, 1000);
+        this.loading = false;
       } catch (error) {
         console.error('Error fetching appointments:', error);
         this.loading = false;
+        this.canBook = true;
       }
     },
 
@@ -363,6 +374,12 @@ export default {
       
       console.log('All validations passed, booking appointment with user_name:', this.newAppointment.user_name);
       
+      // Only allow booking if canBook is true
+      if (!this.canBook) {
+        alert('You cannot book a new appointment until your previous one is resolved or rejected.');
+        return;
+      }
+
       try {
         // Find the doctor using the ID
         const doctor = this.doctors.find(d => String(d.id) === String(selectedDoctorId));
@@ -419,6 +436,8 @@ export default {
           // Switch to history tab
           this.currentTab = 'history';
           
+          this.canBook = false; // Prevent booking until status changes
+
           alert('Appointment booked successfully');
         } else {
           alert('Failed to book appointment. Please try again.');
@@ -456,6 +475,7 @@ export default {
             if (response && (response.status === 200 || response.status === 201)) {
               // Update the local state on success
               this.patientAppointments[index].status = 'cancelled';
+              this.canBook = true; // Allow booking after cancellation
               alert('Appointment cancelled successfully');
             } else {
               // Revert the status on error
@@ -534,6 +554,19 @@ export default {
           console.error('Error in periodic doctor status check:', error);
         }
       }, 30000);
+    },
+
+    // --- Add this method to update appointment status from doctor actions ---
+    updateAppointmentStatus(appointmentId, newStatus, notes = '') {
+      const idx = this.patientAppointments.findIndex(a => a.id === appointmentId);
+      if (idx !== -1) {
+        this.patientAppointments[idx].status = newStatus;
+        if (notes) this.patientAppointments[idx].notes = notes;
+        // Allow booking if rejected/cancelled
+        if (newStatus === 'rejected' || newStatus === 'cancelled') {
+          this.canBook = true;
+        }
+      }
     }
   },
   
@@ -552,6 +585,9 @@ export default {
       this.userName = storedUserName;
       this.newAppointment.user_name = storedUserName;
     }
+
+    // Listen for doctor actions (if using events or sockets, add here)
+    // Example: this.$on('appointment-status-changed', this.updateAppointmentStatus);
   },
   
   beforeUnmount() {
