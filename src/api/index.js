@@ -811,3 +811,23 @@ export const getCycleDataFromAPI = async () => {
   }
 };
 
+export const checkIsDoctor = async () => {
+  try {
+    const cookies = document.cookie.split(';');
+    const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('aura-token='));
+    if (!tokenCookie) {
+      throw new Error('No token found in cookie');
+    }
+    const token = tokenCookie.split('=')[1];
+    const res = await axios.get(`${import.meta.env.VITE_APP_AURA_API_URL}/users/is-doctor`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data?.isDoctor === true;
+  } catch (error) {
+    console.error('Error checking doctor status:', error);
+    return false;
+  }
+};
+

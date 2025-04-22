@@ -46,10 +46,6 @@
             <div class="w-4 h-4 rounded-full bg-pink-200 mr-2"></div>
             <span>Predicted Period</span>
           </div>
-          <div class="flex items-center">
-            <div class="w-4 h-4 rounded-full bg-indigo-500 mr-2"></div>
-            <span>Ovulation Day</span>
-          </div>
         </div>
       </div>
       
@@ -70,8 +66,7 @@
               class="date cursor-pointer px-4 py-2 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-700"
               :class="{
                 'bg-pink-500 text-white': isLastPeriodStart(date, month.name) || isPeriodDay(date, month.name),
-                'bg-pink-200 text-white': isPredictedPeriodDay(date, month.name) && !isLastPeriodStart(date, month.name) && !isPeriodDay(date, month.name),
-                'bg-indigo-500 text-white': isOvulationDay(date, month.name) && !isLastPeriodStart(date, month.name) && !isPeriodDay(date, month.name) && !isPredictedPeriodDay(date, month.name)
+                'bg-pink-200 text-white': isPredictedPeriodDay(date, month.name) && !isLastPeriodStart(date, month.name) && !isPeriodDay(date, month.name)
               }"
               @click="markDate(date)">
               {{ date }}
@@ -249,7 +244,7 @@ export default {
       periods: [],
       pastPeriods: [],
       predictedPeriods: [],
-      ovulationDays: [],
+      ovulationDays: [], // <-- keep for compatibility, but not used in UI anymore
       isDoctor: false, // Add this property to track doctor status
       debugInfo: {
         lastPeriodStart: null,
@@ -465,19 +460,6 @@ export default {
       }
     },
 
-    isOvulationDay(date, monthName) {
-      // Check calculated ovulation days
-      const monthIndex = this.months.findIndex(m => m.name === monthName);
-      
-      for (const ovDay of this.ovulationDays) {
-        if (ovDay.date.getMonth() === monthIndex && ovDay.date.getDate() === date) {
-          return true;
-        }
-      }
-      
-      return false;
-    },
-
     getMonthName(monthNumber) {
       const months = [
         'January', 'February', 'March', 'April', 'May', 'June',
@@ -660,7 +642,6 @@ export default {
       // If we have last period start, calculate period days for display
       if (lastPeriodStart) {
         this.calculatePeriodDays(lastPeriodStart, periodDuration);
-        this.calculateOvulationDays(lastPeriodStart, cycleLength);
       }
     },
 
@@ -685,51 +666,6 @@ export default {
         }
       } catch (error) {
         console.error('Error calculating period days:', error);
-      }
-    },
-
-    calculateOvulationDays(startDateStr, cycleLength) {
-      if (!startDateStr) return;
-      try {
-        // Clear existing calculations
-        this.ovulationDays = [];
-        
-        // Calculate for the recorded period
-        const startDate = new Date(startDateStr);
-        const cycleLen = parseInt(cycleLength) || 28;
-        
-        // Ovulation is typically around day 14 in a 28-day cycle
-        // For other cycle lengths, it's proportional
-        const ovulationOffset = Math.round(cycleLen / 2) - 1;
-        
-        // Calculate ovulation day for the first cycle
-        const firstOvulationDate = new Date(startDate);
-        firstOvulationDate.setDate(startDate.getDate() + ovulationOffset);
-        this.ovulationDays.push({
-          date: firstOvulationDate,
-          cycle: 0
-        });
-        
-        // Calculate for predicted cycles (up to 6 cycles)
-        const today = new Date();
-        for (let i = 1; i <= 6; i++) {
-          const periodStartDate = new Date(startDate);
-          periodStartDate.setDate(startDate.getDate() + (cycleLen * i));
-          
-          // Only calculate if this cycle would have started by now
-          if (periodStartDate < today) {
-            const ovulationDate = new Date(periodStartDate);
-            ovulationDate.setDate(periodStartDate.getDate() + ovulationOffset);
-            this.ovulationDays.push({
-              date: ovulationDate,
-              cycle: i
-            });
-          }
-        }
-        
-        console.log("DEBUG - Calculated ovulation days:", this.ovulationDays);
-      } catch (error) {
-        console.error('Error calculating ovulation days:', error);
       }
     },
         

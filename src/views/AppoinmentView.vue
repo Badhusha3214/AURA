@@ -168,7 +168,7 @@
 <script>
 import DashboardLayout from '@/layouts/DashboardLayout.vue';
 import DrAppoinment from '@/components/DrAppoinment.vue';
-import { getpatient, appoinment, alluser, appoinmentCancl } from '@/api/index';
+import { getpatient, appoinment, alluser, appoinmentCancl, checkIsDoctor } from '@/api/index';
 
 export default {
   components: {
@@ -476,27 +476,30 @@ export default {
       }
     },
     
-    checkDoctorStatus() {
-      const isDoctor = localStorage.getItem('isdoctor') === 'true';
-      console.log('Doctor status check:', isDoctor);
-      
-      this.isDoctor = isDoctor;
-      console.log('Is doctor:', this.isDoctor);
-      
-      if (this.isDoctor) {
-        console.log('Configuring UI for doctor view');
-        this.currentTab = 'upcoming';
-        document.title = 'My Patient Appointments - Aura';
-        this.patientAppointments = [];
-      } else {
-        console.log('Configuring UI for patient view');
-        this.currentTab = 'book';
-        document.title = 'Book Appointment - Aura';
-        this.upcomingAppointments = [];
-        this.previousAppointments = [];
+    async checkDoctorStatus() {
+      // Always check from backend for latest status
+      try {
+        const isDoctor = await checkIsDoctor();
+        this.isDoctor = isDoctor;
+        localStorage.setItem('isdoctor', isDoctor ? 'true' : 'false');
+        // Optionally update UI state
+        if (this.isDoctor) {
+          this.currentTab = 'upcoming';
+          document.title = 'My Patient Appointments - Aura';
+          this.patientAppointments = [];
+        } else {
+          this.currentTab = 'book';
+          document.title = 'Book Appointment - Aura';
+          this.upcomingAppointments = [];
+          this.previousAppointments = [];
+        }
+        return isDoctor;
+      } catch (error) {
+        console.error('Error checking doctor status:', error);
+        this.isDoctor = false;
+        localStorage.setItem('isdoctor', 'false');
+        return false;
       }
-      
-      return isDoctor;
     },
     
     handleStorageChange(event) {
@@ -534,14 +537,12 @@ export default {
     }
   },
   
-  mounted() {
-    this.checkDoctorStatus();
-    
+  async mounted() {
+    await this.checkDoctorStatus();
     if (!this.isDoctor) {
       this.fetchDoctors();
       this.fetchAppointments();
     }
-    
     this.setupStorageListener();
     this.setupPeriodicVerification();
     

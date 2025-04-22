@@ -1,202 +1,222 @@
 <template>
-  <div class="flex flex-col md:flex-row h-screen overflow-hidden">
-    <!-- Sidebar Component -->
-    <Sidebar 
-      :isOpen="showSidebar" 
-      :isAdmin="true" 
-      :activeItem="currentView"
-      @toggle="toggleSidebar"
-      @navigate="toggleView" 
-      class="z-30"
-    />
-
-    <!-- Mobile menu button - only visible on small screens -->
-    <div class="md:hidden fixed top-4 left-4 z-40">
-      <button class="p-2 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-gray-500" @click="toggleSidebar">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Overlay for mobile when sidebar is open -->
-    <div 
-      v-if="showSidebar" 
-      class="md:hidden fixed inset-0 bg-black bg-opacity-50 z-20"
-      @click="toggleSidebar"
-    ></div>
-
-    <!-- Main content area -->
-    <main class="flex-1 p-4 bg-gray-100 overflow-y-auto transition-all duration-300" :class="{'md:ml-0': showSidebar}">
-      <!-- Page title -->
-      <div class="mb-6 mt-8 md:mt-0">
-        <h1 class="text-2xl font-bold text-gray-800">{{ pageTitle }}</h1>
-      </div>
-
-      <!-- Home View -->
-      <div v-if="currentView === 'home'" class="space-y-6">
-        <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div class="bg-white p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-            <h3 class="text-sm font-medium text-gray-500 mb-2">Total Users</h3>
-            <span class="text-2xl font-bold text-gray-800">{{ totalUsers }}</span>
+  <div>
+    <!-- Admin Login Popup -->
+    <div v-if="showAdminPopup" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+      <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-xs">
+        <h2 class="text-xl font-bold mb-4 text-center">Admin Login</h2>
+        <form @submit.prevent="handleAdminLogin">
+          <div class="mb-3">
+            <label class="block text-sm font-medium mb-1">Admin Email</label>
+            <input v-model="adminForm.email" type="email" class="w-full border rounded px-3 py-2" autocomplete="username" />
           </div>
-          <div class="bg-white p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-            <h3 class="text-sm font-medium text-gray-500 mb-2">Doctors</h3>
-            <span class="text-2xl font-bold text-gray-800">{{ totalDoctors }}</span>
-          </div>
-          <div class="bg-white p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-            <h3 class="text-sm font-medium text-gray-500 mb-2">Regular Users</h3>
-            <span class="text-2xl font-bold text-gray-800">{{ totalRegularUsers }}</span>
-          </div>
-        </div>
-
-        <!-- Chart Section -->
-        <div class="bg-white p-4 sm:p-6 rounded-md shadow-md">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-0">Users this week</h2>
-            <div class="flex items-center text-green-500">
-              <span class="mr-1">{{ totalUsers }}</span>
-              <span class="text-gray-600 ml-1">total users</span>
-            </div>
-          </div>
-          <div class="relative h-64 sm:h-80">
-            <canvas id="area-chart"></canvas>
-          </div>
-          <div class="mt-4 flex justify-between items-center">
-            <div class="relative">
-              <button class="flex items-center text-gray-600 hover:text-gray-800 focus:outline-none"
-                @click="toggleDateDropdown">
-                <span class="mr-2">Last 7 days</span>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </button>
-              <div v-show="showDateDropdown" class="absolute z-10 mt-2 bg-white rounded-md shadow-lg">
-                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                  <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                    role="menuitem">Yesterday</a>
-                  <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                    role="menuitem">Today</a>
-                  <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                    role="menuitem">Last 7 days</a>
-                  <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                    role="menuitem">Last 30 days</a>
-                  <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                    role="menuitem">Last 90 days</a>
-                </div>
-              </div>
-            </div>
-            <a href="#" class="flex items-center text-blue-500 hover:text-blue-700transition duration-300">
-            </a>
-          </div>
-        </div>
-        
-        <!-- User Type Distribution Chart -->
-        <div class="bg-white p-4 sm:p-6 rounded-md shadow-md">
           <div class="mb-4">
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-800">User Distribution</h2>
-            <p class="text-gray-500 mt-1">Distribution of doctors vs regular users</p>
+            <label class="block text-sm font-medium mb-1">Password</label>
+            <input v-model="adminForm.password" type="password" class="w-full border rounded px-3 py-2" autocomplete="current-password" />
           </div>
-          <div class="relative h-64 sm:h-80">
-            <canvas id="pie-chart"></canvas>
-          </div>
-        </div>
+          <div v-if="adminError" class="text-red-500 text-sm mb-2 text-center">{{ adminError }}</div>
+          <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold">Login</button>
+        </form>
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row h-screen overflow-hidden">
+      <!-- Sidebar Component -->
+      <Sidebar 
+        :isOpen="showSidebar" 
+        :isAdmin="true" 
+        :activeItem="currentView"
+        @toggle="toggleSidebar"
+        @navigate="toggleView" 
+        class="z-30"
+      />
+
+      <!-- Mobile menu button - only visible on small screens -->
+      <div class="md:hidden fixed top-4 left-4 z-40">
+        <button class="p-2 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-gray-500" @click="toggleSidebar">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
       </div>
 
-      <!-- Users View -->
-      <div v-if="currentView === 'users'" class="space-y-4">
-        <h2 class="text-xl font-bold mb-4 md:hidden">User Management</h2>
-        
-        <!-- Filter Buttons -->
-        <div class="mb-4 flex space-x-2">
-          <button 
-            @click="userTypeFilter = 'all'" 
-            class="px-4 py-2 rounded-md focus:outline-none"
-            :class="userTypeFilter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
-          >
-            All Users
-          </button>
-          <button 
-            @click="userTypeFilter = 'doctors'" 
-            class="px-4 py-2 rounded-md focus:outline-none"
-            :class="userTypeFilter === 'doctors' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
-          >
-            Doctors
-          </button>
-          <button 
-            @click="userTypeFilter = 'regular'" 
-            class="px-4 py-2 rounded-md focus:outline-none"
-            :class="userTypeFilter === 'regular' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
-          >
-            Regular Users
-          </button>
+      <!-- Overlay for mobile when sidebar is open -->
+      <div 
+        v-if="showSidebar" 
+        class="md:hidden fixed inset-0 bg-black bg-opacity-50 z-20"
+        @click="toggleSidebar"
+      ></div>
+
+      <!-- Main content area -->
+      <main class="flex-1 p-4 bg-gray-100 overflow-y-auto transition-all duration-300" :class="{'md:ml-0': showSidebar}">
+        <!-- Page title -->
+        <div class="mb-6 mt-8 md:mt-0">
+          <h1 class="text-2xl font-bold text-gray-800">{{ pageTitle }}</h1>
         </div>
-        
-        <!-- Search Input -->
-        <div class="mb-4">
-          <input 
-            type="text" 
-            v-model="searchTerm" 
-            placeholder="Search users by email or name" 
-            class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        
-        <!-- User Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div v-for="(user, index) in filteredUsers" :key="index"
-            class="bg-white p-4 rounded-md shadow-md flex flex-col">
-            <div class="flex items-start justify-between mb-3">
-              <div>
-                <h3 class="text-lg font-semibold text-gray-800">
-                  {{ user.doctor ? 'Dr. ' + (user.full_name || 'User') : (user.full_name || 'User') }}
-                </h3>
-                <p class="text-sm text-gray-600 break-all">{{ user.email }}</p>
-              </div>
-              <div class="bg-gray-100 px-2 py-1 rounded text-xs font-medium" 
-                :class="user.doctor ? 'text-blue-600 bg-blue-100' : 'text-gray-600'">
-                {{ user.doctor ? 'Doctor' : 'Regular User' }}
+
+        <!-- Home View -->
+        <div v-if="currentView === 'home'" class="space-y-6">
+          <!-- Statistics Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="bg-white p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+              <h3 class="text-sm font-medium text-gray-500 mb-2">Total Users</h3>
+              <span class="text-2xl font-bold text-gray-800">{{ totalUsers }}</span>
+            </div>
+            <div class="bg-white p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+              <h3 class="text-sm font-medium text-gray-500 mb-2">Doctors</h3>
+              <span class="text-2xl font-bold text-gray-800">{{ totalDoctors }}</span>
+            </div>
+            <div class="bg-white p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+              <h3 class="text-sm font-medium text-gray-500 mb-2">Regular Users</h3>
+              <span class="text-2xl font-bold text-gray-800">{{ totalRegularUsers }}</span>
+            </div>
+          </div>
+
+          <!-- Chart Section -->
+          <!-- <div class="bg-white p-4 sm:p-6 rounded-md shadow-md">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-0">Users this week</h2>
+              <div class="flex items-center text-green-500">
+                <span class="mr-1">{{ totalUsers }}</span>
+                <span class="text-gray-600 ml-1">total users</span>
               </div>
             </div>
-            
-            <div class="mt-auto pt-3 border-t flex items-center justify-between">
-              <span class="text-sm font-medium text-gray-500">Doctor Access</span>
-              <label :for="`doctorToggle-${index}`" class="flex items-center cursor-pointer">
-                <div class="relative">
-                  <input 
-                    :id="`doctorToggle-${index}`" 
-                    type="checkbox" 
-                    v-model="user.doctor" 
-                    class="sr-only"
-                    @change="toggleDoctor(user)" 
-                    :disabled="user.isToggling" 
-                  />
-                  <div 
-                    class="w-10 h-6 rounded-full shadow-inner" 
-                    :class="{
-                      'bg-green-500': user.doctor && !user.isToggling,
-                      'bg-gray-300': !user.doctor && !user.isToggling,
-                      'bg-yellow-300': user.isToggling
-                    }"
-                  ></div>
-                  <div
-                    class="absolute inset-y-0 left-0 w-4 h-4 m-1 bg-white rounded-full shadow transition-transform duration-300 ease-in-out transform"
-                    :class="{ 'translate-x-4': user.doctor }">
+            <div class="relative h-64 sm:h-80">
+              <canvas id="area-chart"></canvas>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+              <div class="relative">
+                <button class="flex items-center text-gray-600 hover:text-gray-800 focus:outline-none"
+                  @click="toggleDateDropdown">
+                  <span class="mr-2">Last 7 days</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                <div v-show="showDateDropdown" class="absolute z-10 mt-2 bg-white rounded-md shadow-lg">
+                  <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      role="menuitem">Yesterday</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      role="menuitem">Today</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      role="menuitem">Last 7 days</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      role="menuitem">Last 30 days</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      role="menuitem">Last 90 days</a>
                   </div>
                 </div>
-              </label>
+              </div>
+              <a href="#" class="flex items-center text-blue-500 hover:text-blue-700transition duration-300">
+              </a>
+            </div>
+          </div>
+           -->
+          <!-- User Type Distribution Chart -->
+          <div class="bg-white p-4 sm:p-6 rounded-md shadow-md">
+            <div class="mb-4">
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-800">User Distribution</h2>
+              <p class="text-gray-500 mt-1">Distribution of doctors vs regular users</p>
+            </div>
+            <div class="relative h-64 sm:h-80">
+              <canvas id="pie-chart"></canvas>
             </div>
           </div>
         </div>
-        
-        <!-- No results message -->
-        <div v-if="filteredUsers.length === 0" class="bg-white p-6 rounded-md shadow-md text-center">
-          <p class="text-gray-500">No users found matching your search criteria.</p>
+
+        <!-- Users View -->
+        <div v-if="currentView === 'users'" class="space-y-4">
+          <h2 class="text-xl font-bold mb-4 md:hidden">User Management</h2>
+          
+          <!-- Filter Buttons -->
+          <div class="mb-4 flex space-x-2">
+            <button 
+              @click="userTypeFilter = 'all'" 
+              class="px-4 py-2 rounded-md focus:outline-none"
+              :class="userTypeFilter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
+            >
+              All Users
+            </button>
+            <button 
+              @click="userTypeFilter = 'doctors'" 
+              class="px-4 py-2 rounded-md focus:outline-none"
+              :class="userTypeFilter === 'doctors' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
+            >
+              Doctors
+            </button>
+            <button 
+              @click="userTypeFilter = 'regular'" 
+              class="px-4 py-2 rounded-md focus:outline-none"
+              :class="userTypeFilter === 'regular' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
+            >
+              Regular Users
+            </button>
+          </div>
+          
+          <!-- Search Input -->
+          <div class="mb-4">
+            <input 
+              type="text" 
+              v-model="searchTerm" 
+              placeholder="Search users by email or name" 
+              class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          
+          <!-- User Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div v-for="(user, index) in filteredUsers" :key="index"
+              class="bg-white p-4 rounded-md shadow-md flex flex-col">
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-800">
+                    {{ user.doctor ? 'Dr. ' + (user.full_name || 'User') : (user.full_name || 'User') }}
+                  </h3>
+                  <p class="text-sm text-gray-600 break-all">{{ user.email }}</p>
+                </div>
+                <div class="bg-gray-100 px-2 py-1 rounded text-xs font-medium" 
+                  :class="user.doctor ? 'text-blue-600 bg-blue-100' : 'text-gray-600'">
+                  {{ user.doctor ? 'Doctor' : 'Regular User' }}
+                </div>
+              </div>
+              
+              <div class="mt-auto pt-3 border-t flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-500">Doctor Access</span>
+                <label :for="`doctorToggle-${index}`" class="flex items-center cursor-pointer">
+                  <div class="relative">
+                    <input 
+                      :id="`doctorToggle-${index}`" 
+                      type="checkbox" 
+                      v-model="user.doctor" 
+                      class="sr-only"
+                      @change="toggleDoctor(user)" 
+                      :disabled="user.isToggling" 
+                    />
+                    <div 
+                      class="w-10 h-6 rounded-full shadow-inner" 
+                      :class="{
+                        'bg-green-500': user.doctor && !user.isToggling,
+                        'bg-gray-300': !user.doctor && !user.isToggling,
+                        'bg-yellow-300': user.isToggling
+                      }"
+                    ></div>
+                    <div
+                      class="absolute inset-y-0 left-0 w-4 h-4 m-1 bg-white rounded-full shadow transition-transform duration-300 ease-in-out transform"
+                      :class="{ 'translate-x-4': user.doctor }">
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <!-- No results message -->
+          <div v-if="filteredUsers.length === 0" class="bg-white p-6 rounded-md shadow-md text-center">
+            <p class="text-gray-500">No users found matching your search criteria.</p>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   </div>
 </template>
 
@@ -231,6 +251,12 @@ export default {
         regular: 0
       },
       error: null,
+      showAdminPopup: false,
+      adminForm: {
+        email: 'admin@gmail.com',
+        password: ''
+      },
+      adminError: ''
     };
   },
   computed: {
@@ -275,7 +301,11 @@ export default {
     }
   },
   async mounted() {
-    try {
+    // Admin popup logic
+    if (localStorage.getItem('admin') !== 'true') {
+      this.showAdminPopup = true;
+    }
+    if (!this.showAdminPopup) {
       // Set sidebar based on screen size
       this.showSidebar = window.innerWidth >= 768;
       
@@ -346,9 +376,6 @@ export default {
       this.$nextTick(() => {
         this.renderChart();
       });
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      this.error = 'Failed to load data. Please try again.';
     }
   },
   beforeUnmount() {
@@ -582,6 +609,24 @@ export default {
       } finally {
         // Remove loading state
         user.isToggling = false;
+      }
+    },
+    handleAdminLogin() {
+      const defaultEmail = 'admin@gmail.com';
+      const defaultPassword = 'Admin@123';
+      if (
+        this.adminForm.email.trim().toLowerCase() === defaultEmail &&
+        this.adminForm.password === defaultPassword
+      ) {
+        localStorage.setItem('admin', 'true');
+        this.showAdminPopup = false;
+        this.adminError = '';
+        // Optionally reload to trigger mounted logic
+        this.$nextTick(() => {
+          window.location.reload();
+        });
+      } else {
+        this.adminError = 'Invalid admin credentials';
       }
     }
   },
