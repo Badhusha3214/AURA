@@ -256,7 +256,9 @@ export default {
         email: 'admin@gmail.com',
         password: ''
       },
-      adminError: ''
+      adminError: '',
+      areaChartInstance: null,
+      pieChartInstance: null,
     };
   },
   computed: {
@@ -359,7 +361,7 @@ export default {
           // Update chart data based on userRegistrations or generate from users
           if (graphData.userRegistrations && graphData.userRegistrations.length > 0) {
             this.chartData = graphData.userRegistrations.map(item => ({
-              date: `${item._id.year}-${item._id.month}`,
+              date: `${item._id.year}-${String(item._id.month).padStart(2, '0')}`,
               users: item.count
             }));
           } else {
@@ -448,77 +450,81 @@ export default {
     },
     
     renderChart() {
+      // Destroy previous chart instances if they exist
+      if (this.areaChartInstance) {
+        this.areaChartInstance.destroy();
+        this.areaChartInstance = null;
+      }
+      if (this.pieChartInstance) {
+        this.pieChartInstance.destroy();
+        this.pieChartInstance = null;
+      }
+
+      // Area chart
       const canvas = document.getElementById('area-chart');
-      if (!canvas) {
-        console.error('Chart canvas not found');
-        return;
-      }
-      
-      const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        console.error('Canvas context not available');
-        return;
-      }
-      
-      // Create line chart for user growth
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: this.chartData.map(item => new Date(item.date).toLocaleDateString()),
-          datasets: [
-            {
-              label: 'Users',
-              data: this.chartData.map(item => item.users),
-              backgroundColor: 'rgba(54, 162, 235, 0.2)',
-              borderColor: 'rgba(54, 162, 235, 1)',
-              borderWidth: 2,
-              tension: 0.4,
-              fill: true,
-              pointBackgroundColor: '#fff',
-              pointBorderColor: 'rgba(54, 162, 235, 1)',
-              pointRadius: 4,
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          this.areaChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: this.chartData.map(item => item.date),
+              datasets: [
+                {
+                  label: 'Users',
+                  data: this.chartData.map(item => item.users),
+                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                  borderColor: 'rgba(54, 162, 235, 1)',
+                  borderWidth: 2,
+                  tension: 0.4,
+                  fill: true,
+                  pointBackgroundColor: '#fff',
+                  pointBorderColor: 'rgba(54, 162, 235, 1)',
+                  pointRadius: 4,
+                },
+              ],
             },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                precision: 0
-              }
-            },
-            x: {
-              grid: {
-                display: false
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              backgroundColor: 'rgba(0, 0, 0, 0.7)',
-              padding: 10,
-              titleFont: {
-                size: 14
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    precision: 0
+                  }
+                },
+                x: {
+                  grid: {
+                    display: false
+                  }
+                }
               },
-              bodyFont: {
-                size: 13
+              plugins: {
+                legend: {
+                  display: false
+                },
+                tooltip: {
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  padding: 10,
+                  titleFont: {
+                    size: 14
+                  },
+                  bodyFont: {
+                    size: 13
+                  }
+                }
               }
-            }
-          }
-        },
-      });
-      
-      // Create a pie chart to show doctor vs regular user distribution
+            },
+          });
+        }
+      }
+
+      // Pie chart
       const pieCanvas = document.getElementById('pie-chart');
       if (pieCanvas) {
         const pieCtx = pieCanvas.getContext('2d');
-        new Chart(pieCtx, {
+        this.pieChartInstance = new Chart(pieCtx, {
           type: 'pie',
           data: {
             labels: ['Doctors', 'Regular Users'],
