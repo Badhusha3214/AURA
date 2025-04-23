@@ -272,6 +272,10 @@ export default {
         default:
           return status;
       }
+    },
+    callPatient(phone) {
+      // Open the phone dialer with the patient's phone number
+      window.open(`tel:${phone}`);
     }
   },
 };
