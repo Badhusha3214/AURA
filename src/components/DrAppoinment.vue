@@ -43,8 +43,11 @@
         
         <div class="p-4 bg-gray-50">
           <div v-if="appointment.appointment_status === 'accepted'">
-            <button @click="callNumber(appointment.doctor_phone)" 
-                    class="w-full py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+            <button
+              v-if="appointment.user_phone"
+              @click="callPatient(appointment.user_phone)"
+              class="w-full py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            >
               <span class="flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -52,6 +55,7 @@
                 Call Patient
               </span>
             </button>
+            <span v-else class="text-gray-500 text-sm">No phone number available</span>
           </div>
           
           <div v-else-if="appointment.appointment_status === 'rejected'" class="text-center text-sm text-gray-500">
@@ -274,8 +278,12 @@ export default {
       }
     },
     callPatient(phone) {
-      // Open the phone dialer with the patient's phone number
-      window.open(`tel:${phone}`);
+      if (!phone) {
+        alert('No phone number available for this patient.');
+        return;
+      }
+      // Use location.href for best compatibility
+      window.location.href = `tel:${phone}`;
     }
   },
 };
